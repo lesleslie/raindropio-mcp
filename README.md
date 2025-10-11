@@ -1,248 +1,155 @@
-# OPERA Cloud MCP Server
+# Raindrop.io MCP Server
 
-A Model Context Protocol (MCP) server for Oracle OPERA Cloud API integration, enabling AI agents to interact with hospitality management systems.
+[![Code style: crackerjack](https://img.shields.io/badge/code%20style-crackerjack-000042)](https://github.com/lesleslie/crackerjack)
+[![Python: 3.13+](https://img.shields.io/badge/python-3.13%2B-green)](https://www.python.org/downloads/)
+![Coverage](https://img.shields.io/badge/coverage-82.4%25-brightgreen)
 
-## Features
+FastMCP-based Model Context Protocol server that exposes the Raindrop.io API to
+AI assistants. The server focuses on rich bookmark, collection, tag, highlights,
+filters, batch operations, and account operations while following the latest
+Raindrop REST documentation.
 
-- **Complete OPERA Cloud Integration**: Access to reservations, guests, rooms, operations, and financial data
-- **FastMCP Framework**: Built on FastMCP for high-performance MCP protocol support
-- **Production Ready**: Security, monitoring, rate limiting, and Docker deployment
-- **45+ Tools**: Comprehensive API coverage across 5 core domains
-- **Enterprise Security**: OAuth2 authentication, token refresh, and audit logging
+## Key Capabilities
 
-## Quick Start
+- **Modern Raindrop API coverage** – typed models for collections, bookmarks,
+  tags, highlights/annotations, account profile, and cross-collection search.
+- **Batch operations** – tools for moving, deleting, updating, tagging, and
+  untagging multiple bookmarks at once.
+- **Advanced filtering** – tools for applying complex filters to search and
+  organize bookmarks.
+- **Import/Export** – functionality to import bookmarks from external sources
+  and export them in various formats.
+- **FastMCP tooling** – tools registered with rich metadata so assistants can
+  browse, filter, create, update, and delete Raindrop entities in natural flows.
+- **Typed configuration** – `RaindropSettings` validates environment variables
+  and exposes toggles for stdio or streamable HTTP transports.
+- **Reusable HTTP client** – retry-aware, rate-limit friendly `RaindropClient`
+  with explicit error mapping and pagination helpers.
+- **Tested implementation** – pytest suite covering the client, tools, and
+  entrypoints with coverage guardrails (≥80%).
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.13 (managed by [uv](https://docs.astral.sh/uv/))
+- A Raindrop.io [personal access token](https://help.raindrop.io/api/authentication)
 
 ### Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/lesleslie/opera-cloud-mcp.git
-cd opera-cloud-mcp
-
-# Install dependencies
+# clone and install dependencies
+git clone https://github.com/lesleslie/raindropio-mcp.git
+cd raindropio-mcp
 uv sync
-
-# Copy environment template
-cp .env.example .env
 ```
 
 ### Configuration
 
-Edit `.env` with your OPERA Cloud credentials:
+Set the `RAINDROP_TOKEN` environment variable before launching the server. You
+can export the value or place it inside a `.env` file next to the project root.
 
-```env
-OPERA_CLOUD_BASE_URL=https://your-opera-instance.com/api/v1
-OPERA_CLOUD_CLIENT_ID=your_client_id
-OPERA_CLOUD_CLIENT_SECRET=your_client_secret
-OPERA_CLOUD_USERNAME=your_username
-OPERA_CLOUD_PASSWORD=your_password
+```bash
+export RAINDROP_TOKEN="your-raindrop-token"
 ```
+
+Optional environment variables (all prefixed with `RAINDROP_`):
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `RAINDROP_USER_AGENT` | `raindropio-mcp/0.1.0` | HTTP user agent header |
+| `RAINDROP_REQUEST_TIMEOUT` | `30.0` | Seconds before an HTTP request times out |
+| `RAINDROP_MAX_CONNECTIONS` | `10` | Maximum concurrent HTTP connections |
+| `RAINDROP_ENABLE_HTTP_TRANSPORT` | `false` | Enable streamable HTTP transport |
+| `RAINDROP_HTTP_HOST` | `127.0.0.1` | HTTP bind host when enabled |
+| `RAINDROP_HTTP_PORT` | `3034` | HTTP port when enabled |
+| `RAINDROP_HTTP_PATH` | `/mcp` | HTTP path for the MCP endpoint |
 
 ### Running the Server
 
 ```bash
-# Development
-python -m opera_cloud_mcp
+# stdio (default)
+uv run python -m raindropio_mcp
 
-# Or with uv
-uv run python -m opera_cloud_mcp
+# or via the console script
+uv run raindropio-mcp
+
+# HTTP mode
+uv run python -m raindropio_mcp --http --http-port 3034
 ```
 
-## MCP Integration
-
-### Claude Desktop
-
-Add to your `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "opera-cloud-mcp": {
-      "command": "python",
-      "args": ["-m", "opera_cloud_mcp"],
-      "cwd": "/path/to/opera-cloud-mcp",
-      "env": {
-        "OPERA_CLOUD_BASE_URL": "https://your-opera-instance.com/api/v1",
-        "OPERA_CLOUD_CLIENT_ID": "your_client_id",
-        "OPERA_CLOUD_CLIENT_SECRET": "your_client_secret",
-        "OPERA_CLOUD_USERNAME": "your_username",
-        "OPERA_CLOUD_PASSWORD": "your_password"
-      }
-    }
-  }
-}
-```
-
-### Other MCP Clients
-
-See `example.mcp.json` and `example.mcp.dev.json` for configuration templates.
+`example.mcp.json` and `example.mcp.dev.json` demonstrate how to wire the server
+into MCP-enabled clients such as Claude Desktop or PowerShell integrations.
 
 ## Available Tools
 
-The server provides 45+ tools across 5 domains:
+All tools are declared in `raindropio_mcp/tools` and registered automatically by
+`register_all_tools`.
 
-### Reservation Management (15 tools)
+| Category | Tool | Description |
+|----------|------|-------------|
+| Collections | `list_collections` | Fetch every collection visible to the token |
+| | `get_collection` | Load metadata for a specific collection |
+| | `create_collection` | Create a new collection/folder |
+| | `update_collection` | Update title, description, or appearance |
+| | `delete_collection` | Remove a collection (items move to Inbox) |
+| Bookmarks | `list_bookmarks` | List bookmarks inside a collection with paging/search |
+| | `search_bookmarks` | Full-text search across all collections |
+| | `get_bookmark` | Retrieve a bookmark by id |
+| | `create_bookmark` | Add a bookmark to a collection |
+| | `update_bookmark` | Edit bookmark metadata or move between collections |
+| | `delete_bookmark` | Delete a bookmark |
+| Highlights | `list_highlights` | List all highlights for a specific bookmark |
+| | `get_highlight` | Fetch a single highlight by its ID |
+| | `create_highlight` | Create a new highlight for a bookmark |
+| | `update_highlight` | Update an existing highlight |
+| | `delete_highlight` | Delete a highlight by its ID |
+| Batch | `batch_move_bookmarks` | Move multiple bookmarks to a different collection |
+| | `batch_delete_bookmarks` | Delete multiple bookmarks |
+| | `batch_update_bookmarks` | Update multiple bookmarks with the same changes |
+| | `batch_tag_bookmarks` | Add tags to multiple bookmarks |
+| | `batch_untag_bookmarks` | Remove tags from multiple bookmarks |
+| Filters | `apply_filters` | Apply various filters to search and organize bookmarks across all collections |
+| | `get_filtered_bookmarks_by_collection` | Apply filters to bookmarks within a specific collection |
+| Import/Export | `import_bookmarks` | Import bookmarks from an external source into Raindrop.io |
+| | `export_bookmarks` | Export bookmarks from Raindrop.io in a specified format |
+| Tags | `list_tags` | Fetch tag usage counts |
+| | `rename_tag` | Rename a tag globally |
+| | `delete_tag` | Remove a tag across all bookmarks |
+| Account | `get_account_profile` | Return the authenticated account profile |
+| System | `ping` | Lightweight heartbeat including timestamp |
 
-- Search reservations by date, guest, or status
-- Create, modify, and cancel reservations
-- Handle check-in/check-out operations
-- Manage group bookings and waitlists
+Each tool returns JSON-serialisable payloads closely matching the official API
+shapes so downstream agents can consume data without additional parsing.
 
-### Guest Management (12 tools)
+## Observability & Shutdown
 
-- Guest profile creation and updates
-- Loyalty program management
-- Communication preferences
-- Guest history and analytics
+Logging defaults to structured JSON. Set `RAINDROP_OBSERVABILITY_STRUCTURED_LOGGING=false`
+(or override via `.env`) to switch to classic text formatting.
 
-### Room Management (8 tools)
+The FastMCP app registers a shutdown hook that gracefully closes the shared
+`RaindropClient`, ensuring HTTP connection pools are released when the server
+terminates.
 
-- Room availability and inventory
-- Housekeeping status updates
-- Room assignments and moves
-- Maintenance coordination
-
-### Operations Management (6 tools)
-
-- Daily operations reporting
-- Occupancy forecasting
-- Revenue management
-- Event coordination
-
-### Financial Management (4 tools)
-
-- Billing and invoicing
-- Payment processing
-- Revenue reporting
-- Financial analytics
-
-## Development
-
-### Code Quality
+## Development Workflow
 
 ```bash
-# Run all quality checks
+# lint + type-check + tests + security
 uv run crackerjack
 
-# Individual tools
+# individual tasks
 uv run ruff check --fix
 uv run mypy .
-uv run pytest --cov=opera_cloud_mcp
+uv run pytest --cov=. --cov-report=term-missing
 ```
 
-### Testing
+Test fixtures live in `tests/` and automatically inject `RAINDROP_TOKEN` so unit
+execution never reaches the live API.
 
-```bash
-# Run tests
-uv run pytest
+## Roadmap
 
-# With coverage
-uv run pytest --cov=opera_cloud_mcp --cov-report=html
-```
+- Add optional caching middleware for high-volume assistant workflows
+- Implement sharing functionality when Raindrop exposes those endpoints
+- Enhance filter capabilities with additional options
 
-## Production Deployment
-
-### Docker
-
-```bash
-# Build image
-docker build -t opera-cloud-mcp .
-
-# Run container
-docker run -d \
-  --name opera-cloud-mcp \
-  -p 8000:8000 \
-  --env-file .env \
-  opera-cloud-mcp
-```
-
-### Docker Compose
-
-For full stack with monitoring:
-
-```bash
-docker-compose up -d
-```
-
-Includes:
-
-- OPERA Cloud MCP Server
-- Redis (optional caching)
-- Prometheus (metrics)
-- Grafana (monitoring dashboards)
-
-### Environment Variables
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `OPERA_CLOUD_BASE_URL` | OPERA Cloud API base URL | Yes |
-| `OPERA_CLOUD_CLIENT_ID` | OAuth2 client ID | Yes |
-| `OPERA_CLOUD_CLIENT_SECRET` | OAuth2 client secret | Yes |
-| `OPERA_CLOUD_USERNAME` | OPERA Cloud username | Yes |
-| `OPERA_CLOUD_PASSWORD` | OPERA Cloud password | Yes |
-| `OPERA_CLOUD_TIMEOUT` | Request timeout (seconds) | No (default: 30) |
-| `OPERA_CLOUD_MAX_CONNECTIONS` | Max HTTP connections | No (default: 50) |
-| `OPERA_CLOUD_RATE_LIMIT` | Rate limit (requests/second) | No (default: 10) |
-
-## Monitoring
-
-### Health Checks
-
-- **Health**: `GET /health` - Basic health status
-- **Ready**: `GET /ready` - Readiness probe for K8s
-- **Metrics**: `GET /metrics` - Prometheus metrics
-
-### Observability
-
-- **Structured Logging**: JSON logs with correlation IDs
-- **Metrics**: Request rates, latencies, error rates
-- **Tracing**: Distributed tracing support
-- **Alerting**: Prometheus alerting rules
-
-## Security
-
-### Authentication
-
-- OAuth2 with automatic token refresh
-- Secure credential storage
-- Token binding for enhanced security
-
-### Security Features
-
-- Rate limiting with token bucket algorithm
-- Circuit breaker for service resilience
-- Input validation and sanitization
-- Audit logging for compliance
-
-### Production Security
-
-See `docs/security-implementation.md` for detailed security configuration.
-
-## Documentation
-
-- [Implementation Plan](docs/implementation-plan.md) - Development roadmap
-- [Production Monitoring](docs/production-monitoring.md) - Monitoring setup
-- [Security Implementation](docs/security-implementation.md) - Security configuration
-- [AGENTS.md](AGENTS.md) - Complete tool reference for AI agents
-
-## Contributing
-
-1. Fork the repository
-1. Create a feature branch
-1. Make your changes
-1. Run quality checks: `uv run crackerjack`
-1. Submit a pull request
-
-## License
-
-MIT License - see [LICENSE](LICENSE) for details.
-
-## Support
-
-- **Issues**: [GitHub Issues](https://github.com/lesleslie/opera-cloud-mcp/issues)
-- **Documentation**: See `/docs` directory
-- **Examples**: See `/examples` directory
-
-______________________________________________________________________
-
-Built with d for the hospitality industry using [FastMCP](https://github.com/jlowin/fastmcp) and [Oracle OPERA Cloud](https://www.oracle.com/industries/hospitality/products/opera-cloud/).
+Contributions and feature suggestions are welcome via issues or pull requests.

@@ -7,8 +7,11 @@ wheels/
 *.egg-info
 
 # Virtual environments
-.venv
+/.venv/
 /.envrc
 /.mcp.json
 /.python-version
 /.coverage
+/.claude/
+/htmlcov/
+/.benchmarks/

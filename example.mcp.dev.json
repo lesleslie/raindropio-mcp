@@ -1,34 +1,22 @@
 {
   "mcpServers": {
-    "opera-cloud-mcp": {
+    "raindropio-mcp-dev": {
       "command": "uv",
       "args": [
         "run",
-        "uvicorn",
-        "opera_cloud_mcp.server:app",
-        "--host",
+        "python",
+        "-m",
+        "raindropio_mcp",
+        "--http",
+        "--http-host",
         "127.0.0.1",
-        "--port",
-        "8000",
-        "--reload"
+        "--http-port",
+        "3034"
       ],
-      "cwd": "/path/to/opera-cloud-mcp",
+      "cwd": ".",
       "env": {
-        "OPERA_CLIENT_ID": "your-development-client-id",
-        "OPERA_CLIENT_SECRET": "your-development-client-secret",
-        "OPERA_TOKEN_URL": "https://api-dev.opera-cloud.com/oauth/token",
-        "OPERA_BASE_URL": "https://api-dev.opera-cloud.com/v1",
-        "DEFAULT_HOTEL_ID": "DEMO001",
-        "OPERA_ENVIRONMENT": "development",
-        "OPERA_API_VERSION": "v1",
-        "ENABLE_CACHE": "true",
-        "CACHE_TTL": "60",
-        "LOG_LEVEL": "DEBUG",
-        "LOG_FILE_PATH": "logs/opera-cloud-mcp-dev.log",
-        "ENVIRONMENT": "development",
-        "PORT": "8000",
-        "UV_KEYRING_PROVIDER": "subprocess",
-        "PYTHONPATH": "."
+        "RAINDROP_TOKEN": "your-raindrop-token",
+        "UV_KEYRING_PROVIDER": "subprocess"
       }
     }
   }

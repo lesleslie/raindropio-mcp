@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="833cfa98-3bf1-4d40-99c6-fb0b48fec22d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/raindropio-mcp.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/QWEN.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypy.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dockerignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.pre-commit-config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.pre-commit-config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AGENTS.md" beforeDir="false" afterPath="$PROJECT_DIR$/AGENTS.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CLAUDE.md" beforeDir="false" afterPath="$PROJECT_DIR$/CLAUDE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/base-client-implementation.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/implementation-plan.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/phase5-summary.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/production-monitoring.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/security-implementation.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example.mcp.dev.json" beforeDir="false" afterPath="$PROJECT_DIR$/example.mcp.dev.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example.mcp.json" beforeDir="false" afterPath="$PROJECT_DIR$/example.mcp.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/auth_example.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/auth_example.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/base_client_usage.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/base_client_usage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/monitoring/alert_rules.yml" beforeDir="false" afterPath="$PROJECT_DIR$/monitoring/alert_rules.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/monitoring/prometheus.yml" beforeDir="false" afterPath="$PROJECT_DIR$/monitoring/prometheus.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/__main__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/auth/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/auth/audit_logger.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/auth/oauth_handler.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/auth/secure_oauth_handler.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/auth/security_enhancements.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/auth/security_middleware.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/clients/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/clients/api_clients/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/clients/api_clients/activities.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/clients/api_clients/block.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/clients/api_clients/cashiering.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/clients/api_clients/crm.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/clients/api_clients/front_office.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/clients/api_clients/housekeeping.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/clients/api_clients/inventory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/clients/api_clients/rates.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/clients/api_clients/reservations.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/clients/base_client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/clients/client_factory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/config/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/config/security_settings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/config/settings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/models/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/models/common.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/models/financial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/models/guest.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/models/reservation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/models/room.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/resources/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/resources/api_specs.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/resources/health_check.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/server.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/tools/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/tools/financial_tools.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/tools/guest_tools.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/tools/operation_tools.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/tools/reservation_tools.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/tools/room_tools.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/tools/tool_registry.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/utils/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/utils/cache_manager.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/utils/client_factory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/utils/connection_optimizer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/utils/exceptions.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/utils/formatters.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/utils/observability.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/utils/resilience_manager.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/opera_cloud_mcp/utils/validators.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/conftest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/mock_responses.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/test_main_integration.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/test_reservation_integration.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/test_tools.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/test_workflows.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/performance/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/performance/load_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/performance/test_performance.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_oauth_integration.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_activities_client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_api_specs.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_auth.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_clients.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_crm_client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_enhanced_oauth_integration.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_financial_tools.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_front_office_client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_guest_tools.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_operation_tools.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_reservation_models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_reservation_tools.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_reservation_tools_simple.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_reservations_client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_room_tools.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/uv.lock" beforeDir="false" afterPath="$PROJECT_DIR$/uv.lock" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitLabMergeRequestFiltersHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPENED",
+    "assignee": {
+      "type": "org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue",
+      "username": "lesleslie",
+      "fullname": "Les Leslie"
+    }
+  }
+}]]></component>
+  <component name="GitLabMergeRequestsSettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "first": "https://gitlab.com/lesleslie/opera-cloud-mcp.git",
+    "second": "97b5872b-7573-42a7-9547-7db3d03839d1"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 5
+}]]></component>
+  <component name="ProjectId" id="33u08LqPPfDUSlV76SPmGCKpiIW" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "com.google.cloudcode.ide_session_index": "20251010_0001",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/les/Projects/raindropio-mcp",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.augmentcode.intellij.settings",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-PY-252.26830.99" />
+        <option value="bundled-python-sdk-164cda30dcd9-0af03a5fa574-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.26830.99" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="833cfa98-3bf1-4d40-99c6-fb0b48fec22d" name="Changes" comment="" />
+      <created>1760151488736</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1760151488736</updated>
+      <workItem from="1760151490728" duration="4558000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

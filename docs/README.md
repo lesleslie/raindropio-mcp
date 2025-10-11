@@ -1,45 +1,25 @@
-# OPERA Cloud MCP Documentation
+# Raindrop.io MCP Documentation
 
-This directory contains comprehensive documentation for the OPERA Cloud MCP server implementation.
+This directory collects focused guides for operating and extending the
+Raindrop.io MCP server.
 
-## Documentation Files
+## Document Index
 
-### Implementation Guides
+- **[overview.md](overview.md)** – architecture summary, tool registry layout,
+  and lifecycle management.
+- **[clients.md](clients.md)** – details about the `BaseHTTPClient`,
+  `RaindropClient`, error handling, and pagination helpers.
+- **[operations.md](operations.md)** – environment configuration, logging,
+  HTTP transport, and deployment considerations for assistants.
 
-- **[base-client-implementation.md](base-client-implementation.md)** - Complete BaseAPIClient technical implementation details
-- **[security-implementation.md](security-implementation.md)** - Security features and configuration guide
-- **[production-monitoring.md](production-monitoring.md)** - Production deployment and monitoring guide
-
-### Project History
-
-- **[implementation-plan.md](implementation-plan.md)** - Complete 5-phase implementation plan and architecture design
-- **[phase5-summary.md](phase5-summary.md)** - Phase 5 (Production Readiness) implementation summary
-
-### Project Documentation
-
-- **[../README.md](../README.md)** - Main project overview and setup instructions
-- **[../AGENTS.md](../AGENTS.md)** - MCP tools and capabilities reference for AI agents
-- **[../OPERA_CLOUD_MCP_PLAN.md](../OPERA_CLOUD_MCP_PLAN.md)** - Complete implementation plan and phases
-
-### Configuration Examples
-
-- **[../example.mcp.json](../example.mcp.json)** - Production MCP server configuration
-- **[../example.mcp.dev.json](../example.mcp.dev.json)** - Development MCP server configuration
-
-## Documentation Structure
-
-The documentation is organized to support different audiences:
-
-- **Developers**: Implementation guides and technical details
-- **Operators**: Production deployment and monitoring
-- **AI Agents**: Tools and capabilities reference (AGENTS.md)
-- **Users**: Setup and configuration instructions (README.md)
+Example MCP configuration files live at the repository root:
+`example.mcp.json` and `example.mcp.dev.json`.
 
 ## Contributing
 
 When adding new documentation:
 
-1. Use clear, descriptive filenames with kebab-case
-1. Include a brief description in this README
-1. Link between related documents where helpful
-1. Follow existing formatting conventions
+1. Use descriptive kebab-case filenames.
+1. Update this index with a short synopsis.
+1. Link to related docs to help navigation.
+1. Keep examples aligned with the current FastMCP tool set.
