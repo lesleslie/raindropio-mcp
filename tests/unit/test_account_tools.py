@@ -1,11 +1,14 @@
 """Unit tests for the account tools module."""
-from unittest.mock import AsyncMock, MagicMock
+
+from unittest.mock import AsyncMock
+
 import pytest
-from raindropio_mcp.tools.account import register_account_tools
-from raindropio_mcp.clients.raindrop_client import RaindropClient
-from raindropio_mcp.tools.tool_registry import FastMCPToolRegistry
-from raindropio_mcp.models import User
 from fastmcp import FastMCP
+
+from raindropio_mcp.clients.raindrop_client import RaindropClient
+from raindropio_mcp.models import User
+from raindropio_mcp.tools.account import register_account_tools
+from raindropio_mcp.tools.tool_registry import FastMCPToolRegistry
 
 
 @pytest.mark.asyncio
@@ -17,7 +20,7 @@ async def test_register_account_tools():
         id=123,
         email="test@example.com",
         name="Test User",
-        avatar="https://example.com/avatar.jpg"
+        avatar="https://example.com/avatar.jpg",
     )
     mock_client.get_me = AsyncMock(return_value=mock_user)
 

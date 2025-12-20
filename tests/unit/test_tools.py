@@ -28,13 +28,17 @@ class DummyClient:
         bookmark = Bookmark.model_validate(
             {"_id": 7, "title": "Example", "link": "https://example.com"}
         )
-        return PaginatedBookmarks(items=[bookmark], count=1, collection_id=collection_id, page=0, per_page=50)
+        return PaginatedBookmarks(
+            items=[bookmark], count=1, collection_id=collection_id, page=0, per_page=50
+        )
 
     async def search_bookmarks(self, query: str, **kwargs):  # noqa: ARG002
         bookmark = Bookmark.model_validate(
             {"_id": 9, "title": "Search", "link": "https://example.com"}
         )
-        return PaginatedBookmarks(items=[bookmark], count=1, collection_id=None, page=0, per_page=50)
+        return PaginatedBookmarks(
+            items=[bookmark], count=1, collection_id=None, page=0, per_page=50
+        )
 
     async def get_bookmark(self, bookmark_id: int):  # noqa: ARG002
         return Bookmark.model_validate(
@@ -46,7 +50,11 @@ class DummyClient:
         return Bookmark.model_validate(payload)
 
     async def update_bookmark(self, bookmark_id: int, data):  # noqa: ARG002
-        payload = {"_id": bookmark_id, "title": data.title or "", "link": data.link or "https://example.com"}
+        payload = {
+            "_id": bookmark_id,
+            "title": data.title or "",
+            "link": data.link or "https://example.com",
+        }
         return Bookmark.model_validate(payload)
 
     async def delete_bookmark(self, bookmark_id: int):  # noqa: ARG002
@@ -62,7 +70,9 @@ class DummyClient:
         return True
 
     async def get_me(self):
-        return User.model_validate({"_id": 1, "name": "Demo", "email": "demo@example.com"})
+        return User.model_validate(
+            {"_id": 1, "name": "Demo", "email": "demo@example.com"}
+        )
 
 
 @pytest.mark.asyncio

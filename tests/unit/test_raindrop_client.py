@@ -12,7 +12,7 @@ from raindropio_mcp.utils.exceptions import APIError
 
 @pytest.fixture
 async def client() -> RaindropClient:
-    settings = RaindropSettings(token="demo-token")
+    settings = RaindropSettings(token="test_token_1234567890abcdefghijklmnopqr")
     instance = RaindropClient(settings)
     yield instance
     await instance.close()
@@ -72,7 +72,9 @@ async def test_create_bookmark_builds_payload(client: RaindropClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_search_bookmarks_returns_serialisable_page(client: RaindropClient) -> None:
+async def test_search_bookmarks_returns_serialisable_page(
+    client: RaindropClient,
+) -> None:
     payload = {
         "result": True,
         "items": [

@@ -1,11 +1,14 @@
 """Unit tests for the bookmarks tools module."""
-from unittest.mock import AsyncMock, MagicMock
+
+from unittest.mock import AsyncMock
+
 import pytest
-from raindropio_mcp.tools.bookmarks import register_bookmark_tools, _serialize_page
-from raindropio_mcp.clients.raindrop_client import RaindropClient, PaginatedBookmarks
-from raindropio_mcp.tools.tool_registry import FastMCPToolRegistry
-from raindropio_mcp.models import Bookmark, BookmarkCreate, BookmarkUpdate
 from fastmcp import FastMCP
+
+from raindropio_mcp.clients.raindrop_client import PaginatedBookmarks, RaindropClient
+from raindropio_mcp.models import Bookmark
+from raindropio_mcp.tools.bookmarks import _serialize_page, register_bookmark_tools
+from raindropio_mcp.tools.tool_registry import FastMCPToolRegistry
 
 
 @pytest.mark.asyncio
@@ -20,7 +23,7 @@ async def test_register_bookmark_tools():
         title="Test Bookmark",
         link="https://example.com",
         excerpt="A test bookmark",
-        tags=["test", "example"]
+        tags=["test", "example"],
     )
 
     # Create updated bookmark for update test
@@ -29,29 +32,27 @@ async def test_register_bookmark_tools():
         title="Updated Title",
         link="https://example.com",
         excerpt="A test bookmark",
-        tags=["test", "example"]
+        tags=["test", "example"],
     )
 
     # Set up mock returns
-    mock_client.list_bookmarks = AsyncMock(return_value=PaginatedBookmarks(
-        items=[sample_bookmark],
-        count=1,
-        collection_id=123,
-        page=0,
-        per_page=50
-    ))
+    mock_client.list_bookmarks = AsyncMock(
+        return_value=PaginatedBookmarks(
+            items=[sample_bookmark], count=1, collection_id=123, page=0, per_page=50
+        )
+    )
 
-    mock_client.search_bookmarks = AsyncMock(return_value=PaginatedBookmarks(
-        items=[sample_bookmark],
-        count=1,
-        collection_id=None,
-        page=0,
-        per_page=50
-    ))
+    mock_client.search_bookmarks = AsyncMock(
+        return_value=PaginatedBookmarks(
+            items=[sample_bookmark], count=1, collection_id=None, page=0, per_page=50
+        )
+    )
 
     mock_client.get_bookmark = AsyncMock(return_value=sample_bookmark)
     mock_client.create_bookmark = AsyncMock(return_value=sample_bookmark)
-    mock_client.update_bookmark = AsyncMock(return_value=updated_bookmark)  # Return updated bookmark
+    mock_client.update_bookmark = AsyncMock(
+        return_value=updated_bookmark
+    )  # Return updated bookmark
     mock_client.delete_bookmark = AsyncMock(return_value=True)
 
     # Create a FastMCP app instance to pass to the registry
@@ -79,24 +80,19 @@ async def test_register_bookmark_tools():
     assert get_result["title"] == "Test Bookmark"
 
     # Test create_bookmark
-    create_payload = {
-        "link": "https://example.com",
-        "title": "New Bookmark"
-    }
+    create_payload = {"link": "https://example.com", "title": "New Bookmark"}
     create_result = await registry._tools["create_bookmark"].coroutine(
-        collection_id=123,
-        payload=create_payload
+        collection_id=123, payload=create_payload
     )
     assert create_result["_id"] == 789  # Model serializes id as _id
 
     # Test update_bookmark
     update_payload = {
         "link": "https://example.com",  # Required field
-        "title": "Updated Title"
+        "title": "Updated Title",
     }
     update_result = await registry._tools["update_bookmark"].coroutine(
-        bookmark_id=789,
-        payload=update_payload
+        bookmark_id=789, payload=update_payload
     )
     assert update_result["_id"] == 789  # Model serializes id as _id
     assert update_result["title"] == "Updated Title"
@@ -122,15 +118,11 @@ def test_serialize_page():
         title="Test Bookmark",
         link="https://example.com",
         excerpt="A test bookmark",
-        tags=["test", "example"]
+        tags=["test", "example"],
     )
 
     paginated_data = PaginatedBookmarks(
-        items=[sample_bookmark],
-        count=1,
-        collection_id=123,
-        page=0,
-        per_page=50
+        items=[sample_bookmark], count=1, collection_id=123, page=0, per_page=50
     )
 
     serialized = _serialize_page(paginated_data)

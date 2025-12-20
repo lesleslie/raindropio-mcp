@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from unittest.mock import AsyncMock
+
 import pytest
-from unittest.mock import AsyncMock, MagicMock
 
 from raindropio_mcp.clients.raindrop_client import RaindropClient
 from raindropio_mcp.models import Highlight
@@ -22,6 +23,7 @@ def mock_client():
 def registry():
     """FastMCPToolRegistry for testing."""
     from fastmcp import FastMCP
+
     app = FastMCP(name="test", version="0.1.0")
     return FastMCPToolRegistry(app)
 
@@ -35,7 +37,7 @@ def sample_highlight():
         text="Sample highlight text",
         type="highlight",
         color="yellow",
-        position=100
+        position=100,
     )
 
 
@@ -50,10 +52,12 @@ async def test_register_highlight_tools(registry, mock_client):
         "get_highlight",
         "create_highlight",
         "update_highlight",
-        "delete_highlight"
+        "delete_highlight",
     }
 
-    assert expected_tools.issubset(tool_names), f"Missing tools: {expected_tools - tool_names}"
+    assert expected_tools.issubset(tool_names), (
+        f"Missing tools: {expected_tools - tool_names}"
+    )
 
 
 @pytest.mark.asyncio
@@ -107,7 +111,7 @@ async def test_create_highlight_tool(registry, mock_client, sample_highlight):
     highlight_data = {
         "text": "New highlight text",
         "type": "highlight",
-        "color": "blue"
+        "color": "blue",
     }
 
     # Execute the tool
@@ -134,10 +138,7 @@ async def test_update_highlight_tool(registry, mock_client, sample_highlight):
 
     mock_client.update_highlight.return_value = sample_highlight
 
-    update_data = {
-        "text": "Updated highlight text",
-        "color": "red"
-    }
+    update_data = {"text": "Updated highlight text", "color": "red"}
 
     # Execute the tool
     tool = registry.tools["update_highlight"].coroutine

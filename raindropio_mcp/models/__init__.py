@@ -75,3 +75,52 @@ __all__ = [
     "User",
     "UserResponse",
 ]
+
+
+# Rebuild models to resolve forward references after all imports are complete
+def _rebuild_models() -> None:
+    """Rebuild models to resolve forward references across modules."""
+    from datetime import datetime
+
+    from raindropio_mcp.models.bookmark import (
+        Bookmark,
+        BookmarkResponse,
+        BookmarksResponse,
+    )
+    from raindropio_mcp.models.collection import (
+        Collection,
+        CollectionRef,
+        CollectionResponse,
+        CollectionsResponse,
+    )
+    from raindropio_mcp.models.highlight import (
+        Highlight,
+        HighlightResponse,
+        HighlightsResponse,
+    )
+    from raindropio_mcp.models.payloads import BookmarkUpdate
+    from raindropio_mcp.models.user import User, UserResponse
+
+    # Create namespace with all forward-referenced types
+    types_namespace = {"CollectionRef": CollectionRef, "datetime": datetime}
+
+    # Rebuild models that have forward references
+    Bookmark.model_rebuild(_types_namespace=types_namespace)
+    BookmarkResponse.model_rebuild(_types_namespace=types_namespace)
+    BookmarksResponse.model_rebuild(_types_namespace=types_namespace)
+    BookmarkUpdate.model_rebuild(_types_namespace=types_namespace)
+
+    Collection.model_rebuild(_types_namespace=types_namespace)
+    CollectionResponse.model_rebuild(_types_namespace=types_namespace)
+    CollectionsResponse.model_rebuild(_types_namespace=types_namespace)
+
+    Highlight.model_rebuild(_types_namespace=types_namespace)
+    HighlightResponse.model_rebuild(_types_namespace=types_namespace)
+    HighlightsResponse.model_rebuild(_types_namespace=types_namespace)
+
+    User.model_rebuild(_types_namespace=types_namespace)
+    UserResponse.model_rebuild(_types_namespace=types_namespace)
+
+
+# Call rebuild after all imports are complete
+_rebuild_models()

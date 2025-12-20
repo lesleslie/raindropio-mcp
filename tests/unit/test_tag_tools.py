@@ -1,11 +1,14 @@
 """Unit tests for the tags tools module."""
-from unittest.mock import AsyncMock, MagicMock
+
+from unittest.mock import AsyncMock
+
 import pytest
-from raindropio_mcp.tools.tags import register_tag_tools
-from raindropio_mcp.clients.raindrop_client import RaindropClient
-from raindropio_mcp.tools.tool_registry import FastMCPToolRegistry
-from raindropio_mcp.models import Tag
 from fastmcp import FastMCP
+
+from raindropio_mcp.clients.raindrop_client import RaindropClient
+from raindropio_mcp.models import Tag
+from raindropio_mcp.tools.tags import register_tag_tools
+from raindropio_mcp.tools.tool_registry import FastMCPToolRegistry
 
 
 @pytest.mark.asyncio
@@ -17,7 +20,7 @@ async def test_register_tag_tools():
     # Create sample tags - Tag model expects string _id
     sample_tags = [
         Tag(_id="1", name="test", count=5),
-        Tag(_id="2", name="example", count=3)
+        Tag(_id="2", name="example", count=3),
     ]
 
     # Set up mock returns
@@ -42,8 +45,7 @@ async def test_register_tag_tools():
 
     # Test rename_tag
     rename_result = await registry._tools["rename_tag"].coroutine(
-        old_tag="old_tag",
-        new_tag="new_tag"
+        old_tag="old_tag", new_tag="new_tag"
     )
     assert rename_result["result"] is True
     assert rename_result["from"] == "old_tag"

@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import pytest
 from unittest.mock import AsyncMock
+
+import pytest
 
 from raindropio_mcp.clients.raindrop_client import RaindropClient
 from raindropio_mcp.models import BatchOperationResponse
@@ -22,6 +23,7 @@ def mock_client():
 def registry():
     """FastMCPToolRegistry for testing."""
     from fastmcp import FastMCP
+
     app = FastMCP(name="test", version="0.1.0")
     return FastMCPToolRegistry(app)
 
@@ -30,10 +32,7 @@ def registry():
 def sample_batch_response():
     """Sample batch operation response for testing."""
     return BatchOperationResponse(
-        result=True,
-        processed_count=3,
-        success_count=3,
-        error_count=0
+        result=True, processed_count=3, success_count=3, error_count=0
     )
 
 
@@ -48,10 +47,12 @@ async def test_register_batch_tools(registry, mock_client):
         "batch_delete_bookmarks",
         "batch_update_bookmarks",
         "batch_tag_bookmarks",
-        "batch_untag_bookmarks"
+        "batch_untag_bookmarks",
     }
 
-    assert expected_tools.issubset(tool_names), f"Missing tools: {expected_tools - tool_names}"
+    assert expected_tools.issubset(tool_names), (
+        f"Missing tools: {expected_tools - tool_names}"
+    )
 
 
 @pytest.mark.asyncio
@@ -61,10 +62,7 @@ async def test_batch_move_bookmarks_tool(registry, mock_client, sample_batch_res
 
     mock_client.batch_move_bookmarks.return_value = sample_batch_response
 
-    payload = {
-        "bookmark_ids": [111, 222, 333],
-        "collection_id": 4
-    }
+    payload = {"bookmark_ids": [111, 222, 333], "collection_id": 4}
 
     # Execute the tool
     tool = registry.tools["batch_move_bookmarks"].coroutine
@@ -82,15 +80,15 @@ async def test_batch_move_bookmarks_tool(registry, mock_client, sample_batch_res
 
 
 @pytest.mark.asyncio
-async def test_batch_delete_bookmarks_tool(registry, mock_client, sample_batch_response):
+async def test_batch_delete_bookmarks_tool(
+    registry, mock_client, sample_batch_response
+):
     """Test the batch_delete_bookmarks tool."""
     register_batch_tools(registry, mock_client)
 
     mock_client.batch_delete_bookmarks.return_value = sample_batch_response
 
-    payload = {
-        "bookmark_ids": [111, 222, 333]
-    }
+    payload = {"bookmark_ids": [111, 222, 333]}
 
     # Execute the tool
     tool = registry.tools["batch_delete_bookmarks"].coroutine
@@ -106,7 +104,9 @@ async def test_batch_delete_bookmarks_tool(registry, mock_client, sample_batch_r
 
 
 @pytest.mark.asyncio
-async def test_batch_update_bookmarks_tool(registry, mock_client, sample_batch_response):
+async def test_batch_update_bookmarks_tool(
+    registry, mock_client, sample_batch_response
+):
     """Test the batch_update_bookmarks tool."""
     register_batch_tools(registry, mock_client)
 
@@ -115,7 +115,7 @@ async def test_batch_update_bookmarks_tool(registry, mock_client, sample_batch_r
     payload = {
         "bookmark_ids": [111, 222, 333],
         "title": "New Title",
-        "tags": ["important"]
+        "tags": ["important"],
     }
 
     # Execute the tool
@@ -140,10 +140,7 @@ async def test_batch_tag_bookmarks_tool(registry, mock_client, sample_batch_resp
 
     mock_client.batch_tag_bookmarks.return_value = sample_batch_response
 
-    payload = {
-        "bookmark_ids": [111, 222, 333],
-        "tags": ["important", "readlater"]
-    }
+    payload = {"bookmark_ids": [111, 222, 333], "tags": ["important", "readlater"]}
 
     # Execute the tool
     tool = registry.tools["batch_tag_bookmarks"].coroutine
@@ -166,10 +163,7 @@ async def test_batch_untag_bookmarks_tool(registry, mock_client, sample_batch_re
 
     mock_client.batch_untag_bookmarks.return_value = sample_batch_response
 
-    payload = {
-        "bookmark_ids": [111, 222, 333],
-        "tags": ["old-tag"]
-    }
+    payload = {"bookmark_ids": [111, 222, 333], "tags": ["old-tag"]}
 
     # Execute the tool
     tool = registry.tools["batch_untag_bookmarks"].coroutine

@@ -12,6 +12,10 @@ wheels/
 /.mcp.json
 /.python-version
 /.coverage
+.coverage.*
 /.claude/
 /htmlcov/
 /.benchmarks/
+/.complexipy_cache/
+/.crackerjack/
+.mcp.json.backup

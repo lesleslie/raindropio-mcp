@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from raindropio_mcp.utils.exceptions import AuthenticationError
 
 
-@dataclass(slots=True)
+@dataclass
 class BearerTokenProvider:
     """Wrap a static Raindrop.io bearer token."""
 

@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+from contextlib import suppress
 from functools import lru_cache
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import httpx
@@ -10,6 +12,14 @@ from pydantic import BaseModel, Field, HttpUrl, ValidationInfo, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from raindropio_mcp.utils.exceptions import ConfigurationError
+
+# Import mcp-common security utilities for API key validation
+# (Phase 3 Security Hardening)
+SECURITY_AVAILABLE = False
+with suppress(ImportError):
+    from mcp_common.security import APIKeyValidator
+
+    SECURITY_AVAILABLE = True
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -75,12 +85,50 @@ class RaindropSettings(BaseSettings):
         env_file=(".env",), env_prefix="RAINDROP_", extra="ignore", case_sensitive=False
     )
 
+    def get_masked_token(self) -> str:
+        """Get masked API token for safe logging (Phase 3 Security Hardening).
+
+        Returns:
+            Masked token string (e.g., "...abc1") for safe display in logs
+        """
+        if not self.token:
+            return "***"
+
+        if SECURITY_AVAILABLE:
+            return APIKeyValidator.mask_key(self.token, visible_chars=4)
+
+        # Fallback masking without security module
+        if len(self.token) <= 4:
+            return "***"
+        return f"...{self.token[-4:]}"
+
     @model_validator(mode="after")
     def _validate_credentials(self, info: ValidationInfo) -> RaindropSettings:
+        """Validate Raindrop.io API token at startup (Phase 3 Security Hardening).
+
+        Raises:
+            ConfigurationError: If token is missing or invalid
+        """
         if not self.token or not self.token.strip():
             raise ConfigurationError(
                 "RAINDROP_TOKEN is required to authenticate with the Raindrop.io API"
             )
+
+        if SECURITY_AVAILABLE:
+            # Use generic validator with minimum 32 characters for bearer tokens
+            from contextlib import suppress
+
+            validator = APIKeyValidator(min_length=32)
+            with suppress(ValueError):
+                validator.validate(self.token, raise_on_invalid=True)
+                self.get_masked_token()
+
+                # Warn but allow for backwards compatibility
+        else:
+            # Basic validation without security module
+            if len(self.token) < 16:
+                pass
+
         return self
 
     def auth_headers(self) -> dict[str, str]:

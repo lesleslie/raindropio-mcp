@@ -1,7 +1,10 @@
 """Unit tests for the raindrop client module."""
-from unittest.mock import AsyncMock, MagicMock, patch
+
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
-from raindropio_mcp.clients.raindrop_client import RaindropClient, PaginatedBookmarks
+
+from raindropio_mcp.clients.raindrop_client import PaginatedBookmarks, RaindropClient
 from raindropio_mcp.models import (
     Bookmark,
     BookmarkCreate,
@@ -39,14 +42,12 @@ async def test_raindrop_client_init(mock_settings):
 async def test_get_me_success(mock_settings):
     """Test successful retrieval of user profile."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={
-        "result": True,
-        "user": {
-            "_id": 123,
-            "email": "test@example.com",
-            "name": "Test User"
+    client.get_json = AsyncMock(
+        return_value={
+            "result": True,
+            "user": {"_id": 123, "email": "test@example.com", "name": "Test User"},
         }
-    })
+    )
 
     user = await client.get_me()
     assert isinstance(user, User)
@@ -67,16 +68,18 @@ async def test_get_me_api_error(mock_settings):
 async def test_list_collections_success(mock_settings):
     """Test successful listing of collections."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={
-        "result": True,
-        "items": [
-            {
-                "_id": 123,
-                "title": "Test Collection",
-                "description": "A test collection"
-            }
-        ]
-    })
+    client.get_json = AsyncMock(
+        return_value={
+            "result": True,
+            "items": [
+                {
+                    "_id": 123,
+                    "title": "Test Collection",
+                    "description": "A test collection",
+                }
+            ],
+        }
+    )
 
     collections = await client.list_collections()
     assert len(collections) == 1
@@ -98,14 +101,16 @@ async def test_list_collections_api_error(mock_settings):
 async def test_get_collection_success(mock_settings):
     """Test successful retrieval of a collection."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={
-        "result": True,
-        "collection": {
-            "_id": 123,
-            "title": "Test Collection",
-            "description": "A test collection"
+    client.get_json = AsyncMock(
+        return_value={
+            "result": True,
+            "collection": {
+                "_id": 123,
+                "title": "Test Collection",
+                "description": "A test collection",
+            },
         }
-    })
+    )
 
     collection = await client.get_collection(123)
     assert isinstance(collection, Collection)
@@ -127,16 +132,20 @@ async def test_get_collection_api_error(mock_settings):
 async def test_create_collection_success(mock_settings):
     """Test successful creation of a collection."""
     client = RaindropClient(mock_settings)
-    collection_data = CollectionCreate(title="New Collection", description="A new collection")
+    collection_data = CollectionCreate(
+        title="New Collection", description="A new collection"
+    )
 
-    client.get_json = AsyncMock(return_value={
-        "result": True,
-        "collection": {
-            "_id": 456,
-            "title": "New Collection",
-            "description": "A new collection"
+    client.get_json = AsyncMock(
+        return_value={
+            "result": True,
+            "collection": {
+                "_id": 456,
+                "title": "New Collection",
+                "description": "A new collection",
+            },
         }
-    })
+    )
 
     created_collection = await client.create_collection(collection_data)
     assert isinstance(created_collection, Collection)
@@ -150,14 +159,16 @@ async def test_update_collection_success(mock_settings):
     client = RaindropClient(mock_settings)
     update_data = CollectionUpdate(title="Updated Title")
 
-    client.get_json = AsyncMock(return_value={
-        "result": True,
-        "collection": {
-            "_id": 123,
-            "title": "Updated Title",
-            "description": "A test collection"
+    client.get_json = AsyncMock(
+        return_value={
+            "result": True,
+            "collection": {
+                "_id": 123,
+                "title": "Updated Title",
+                "description": "A test collection",
+            },
         }
-    })
+    )
 
     updated_collection = await client.update_collection(123, update_data)
     assert isinstance(updated_collection, Collection)
@@ -194,17 +205,15 @@ async def test_delete_collection_api_error(mock_settings):
 async def test_list_bookmarks_success(mock_settings):
     """Test successful listing of bookmarks."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={
-        "result": True,
-        "items": [
-            {
-                "_id": 789,
-                "title": "Test Bookmark",
-                "link": "https://example.com"
-            }
-        ],
-        "count": 1
-    })
+    client.get_json = AsyncMock(
+        return_value={
+            "result": True,
+            "items": [
+                {"_id": 789, "title": "Test Bookmark", "link": "https://example.com"}
+            ],
+            "count": 1,
+        }
+    )
 
     bookmarks = await client.list_bookmarks(123)
     assert isinstance(bookmarks, PaginatedBookmarks)
@@ -217,17 +226,15 @@ async def test_list_bookmarks_success(mock_settings):
 async def test_search_bookmarks_success(mock_settings):
     """Test successful bookmark search."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={
-        "result": True,
-        "items": [
-            {
-                "_id": 789,
-                "title": "Test Bookmark",
-                "link": "https://example.com"
-            }
-        ],
-        "count": 1
-    })
+    client.get_json = AsyncMock(
+        return_value={
+            "result": True,
+            "items": [
+                {"_id": 789, "title": "Test Bookmark", "link": "https://example.com"}
+            ],
+            "count": 1,
+        }
+    )
 
     bookmarks = await client.search_bookmarks("test query")
     assert isinstance(bookmarks, PaginatedBookmarks)
@@ -239,14 +246,16 @@ async def test_search_bookmarks_success(mock_settings):
 async def test_get_bookmark_success(mock_settings):
     """Test successful retrieval of a bookmark."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={
-        "result": True,
-        "item": {
-            "_id": 789,
-            "title": "Test Bookmark",
-            "link": "https://example.com"
+    client.get_json = AsyncMock(
+        return_value={
+            "result": True,
+            "item": {
+                "_id": 789,
+                "title": "Test Bookmark",
+                "link": "https://example.com",
+            },
         }
-    })
+    )
 
     bookmark = await client.get_bookmark(789)
     assert isinstance(bookmark, Bookmark)
@@ -260,14 +269,16 @@ async def test_create_bookmark_success(mock_settings):
     client = RaindropClient(mock_settings)
     bookmark_data = BookmarkCreate(link="https://example.com", title="Test Bookmark")
 
-    client.get_json = AsyncMock(return_value={
-        "result": True,
-        "item": {
-            "_id": 999,
-            "title": "Test Bookmark",
-            "link": "https://example.com"
+    client.get_json = AsyncMock(
+        return_value={
+            "result": True,
+            "item": {
+                "_id": 999,
+                "title": "Test Bookmark",
+                "link": "https://example.com",
+            },
         }
-    })
+    )
 
     created_bookmark = await client.create_bookmark(123, bookmark_data)
     assert isinstance(created_bookmark, Bookmark)
@@ -281,14 +292,16 @@ async def test_update_bookmark_success(mock_settings):
     client = RaindropClient(mock_settings)
     update_data = BookmarkUpdate(link="https://example.com", title="Updated Title")
 
-    client.get_json = AsyncMock(return_value={
-        "result": True,
-        "item": {
-            "_id": 789,
-            "title": "Updated Title",
-            "link": "https://example.com"
+    client.get_json = AsyncMock(
+        return_value={
+            "result": True,
+            "item": {
+                "_id": 789,
+                "title": "Updated Title",
+                "link": "https://example.com",
+            },
         }
-    })
+    )
 
     updated_bookmark = await client.update_bookmark(789, update_data)
     assert isinstance(updated_bookmark, Bookmark)
@@ -325,13 +338,12 @@ async def test_delete_bookmark_api_error(mock_settings):
 async def test_list_tags_success(mock_settings):
     """Test successful listing of tags."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={
-        "result": True,
-        "items": [
-            {"_id": "test", "count": 5},
-            {"_id": "example", "count": 2}
-        ]
-    })
+    client.get_json = AsyncMock(
+        return_value={
+            "result": True,
+            "items": [{"_id": "test", "count": 5}, {"_id": "example", "count": 2}],
+        }
+    )
 
     tags = await client.list_tags()
     assert len(tags) == 2

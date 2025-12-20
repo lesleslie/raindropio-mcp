@@ -1,11 +1,14 @@
 """Unit tests for the collections tools module."""
-from unittest.mock import AsyncMock, MagicMock
+
+from unittest.mock import AsyncMock
+
 import pytest
-from raindropio_mcp.tools.collections import register_collection_tools
-from raindropio_mcp.clients.raindrop_client import RaindropClient
-from raindropio_mcp.tools.tool_registry import FastMCPToolRegistry
-from raindropio_mcp.models import Collection, CollectionCreate, CollectionUpdate
 from fastmcp import FastMCP
+
+from raindropio_mcp.clients.raindrop_client import RaindropClient
+from raindropio_mcp.models import Collection
+from raindropio_mcp.tools.collections import register_collection_tools
+from raindropio_mcp.tools.tool_registry import FastMCPToolRegistry
 
 
 @pytest.mark.asyncio
@@ -19,7 +22,7 @@ async def test_register_collection_tools():
         id=123,
         title="Test Collection",
         description="A test collection",
-        color="#FF0000"
+        color="#FF0000",
     )
 
     # Set up mock returns
@@ -49,31 +52,28 @@ async def test_register_collection_tools():
     assert get_result["title"] == "Test Collection"
 
     # Test create_collection
-    create_payload = {
-        "title": "New Collection",
-        "description": "A new collection"
-    }
-    create_result = await registry._tools["create_collection"].coroutine(payload=create_payload)
+    create_payload = {"title": "New Collection", "description": "A new collection"}
+    create_result = await registry._tools["create_collection"].coroutine(
+        payload=create_payload
+    )
     assert create_result["_id"] == 123
 
     # Test update_collection
     updated_collection = Collection(
-        id=123,
-        title="Updated Title",
-        description="A test collection",
-        color="#FF0000"
+        id=123, title="Updated Title", description="A test collection", color="#FF0000"
     )
     mock_client.update_collection = AsyncMock(return_value=updated_collection)
     update_payload = {"title": "Updated Title"}
     update_result = await registry._tools["update_collection"].coroutine(
-        collection_id=123,
-        payload=update_payload
+        collection_id=123, payload=update_payload
     )
     assert update_result["_id"] == 123
     assert update_result["title"] == "Updated Title"
 
     # Test delete_collection
-    delete_result = await registry._tools["delete_collection"].coroutine(collection_id=123)
+    delete_result = await registry._tools["delete_collection"].coroutine(
+        collection_id=123
+    )
     assert delete_result["result"] is True
     assert delete_result["collection_id"] == 123
 

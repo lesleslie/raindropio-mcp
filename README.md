@@ -2,7 +2,7 @@
 
 [![Code style: crackerjack](https://img.shields.io/badge/code%20style-crackerjack-000042)](https://github.com/lesleslie/crackerjack)
 [![Python: 3.13+](https://img.shields.io/badge/python-3.13%2B-green)](https://www.python.org/downloads/)
-![Coverage](https://img.shields.io/badge/coverage-82.4%25-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-88.8%25-brightgreen)
 
 FastMCP-based Model Context Protocol server that exposes the Raindrop.io API to
 AI assistants. The server focuses on rich bookmark, collection, tag, highlights,
@@ -33,7 +33,7 @@ Raindrop REST documentation.
 ### Prerequisites
 
 - Python 3.13 (managed by [uv](https://docs.astral.sh/uv/))
-- A Raindrop.io [personal access token](https://help.raindrop.io/api/authentication)
+- A Raindrop.io [personal access token](https://app.raindrop.io/settings/integrations)
 
 ### Installation
 

@@ -1,7 +1,6 @@
 {
   "mcpServers": {
     "raindropio-mcp-dev": {
-      "command": "uv",
       "args": [
         "run",
         "python",
@@ -13,6 +12,7 @@
         "--http-port",
         "3034"
       ],
+      "command": "uv",
       "cwd": ".",
       "env": {
         "RAINDROP_TOKEN": "your-raindrop-token",

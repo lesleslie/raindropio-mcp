@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import pytest
 from unittest.mock import AsyncMock
+
+import pytest
 
 from raindropio_mcp.clients.raindrop_client import RaindropClient
 from raindropio_mcp.models import FilteredBookmarksResponse
@@ -22,6 +23,7 @@ def mock_client():
 def registry():
     """FastMCPToolRegistry for testing."""
     from fastmcp import FastMCP
+
     app = FastMCP(name="test", version="0.1.0")
     return FastMCPToolRegistry(app)
 
@@ -36,7 +38,7 @@ def sample_filtered_response():
         total=1,
         page=0,
         per_page=50,
-        filters_applied=["important", "tag:ai"]
+        filters_applied=["important", "tag:ai"],
     )
 
 
@@ -46,12 +48,11 @@ async def test_register_filter_tools(registry, mock_client):
     register_filter_tools(registry, mock_client)
 
     tool_names = set(registry.tools.keys())
-    expected_tools = {
-        "apply_filters",
-        "get_filtered_bookmarks_by_collection"
-    }
+    expected_tools = {"apply_filters", "get_filtered_bookmarks_by_collection"}
 
-    assert expected_tools.issubset(tool_names), f"Missing tools: {expected_tools - tool_names}"
+    assert expected_tools.issubset(tool_names), (
+        f"Missing tools: {expected_tools - tool_names}"
+    )
 
 
 @pytest.mark.asyncio
@@ -61,11 +62,7 @@ async def test_apply_filters_tool(registry, mock_client, sample_filtered_respons
 
     mock_client.apply_filters.return_value = sample_filtered_response
 
-    payload = {
-        "search": "AI research",
-        "tags": ["important", "ai"],
-        "important": True
-    }
+    payload = {"search": "AI research", "tags": ["important", "ai"], "important": True}
 
     # Execute the tool
     tool = registry.tools["apply_filters"].coroutine
@@ -84,16 +81,17 @@ async def test_apply_filters_tool(registry, mock_client, sample_filtered_respons
 
 
 @pytest.mark.asyncio
-async def test_get_filtered_bookmarks_by_collection_tool(registry, mock_client, sample_filtered_response):
+async def test_get_filtered_bookmarks_by_collection_tool(
+    registry, mock_client, sample_filtered_response
+):
     """Test the get_filtered_bookmarks_by_collection tool."""
     register_filter_tools(registry, mock_client)
 
-    mock_client.get_filtered_bookmarks_by_collection.return_value = sample_filtered_response
+    mock_client.get_filtered_bookmarks_by_collection.return_value = (
+        sample_filtered_response
+    )
 
-    payload = {
-        "tags": ["important"],
-        "favorite": True
-    }
+    payload = {"tags": ["important"], "favorite": True}
 
     # Execute the tool
     tool = registry.tools["get_filtered_bookmarks_by_collection"].coroutine

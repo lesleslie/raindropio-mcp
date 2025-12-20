@@ -1,10 +1,11 @@
 """Unit tests for the main module."""
-import json
+
 import logging
-import sys
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
+
 import pytest
-from raindropio_mcp.main import main, configure_logging, build_parser
+
+from raindropio_mcp.main import build_parser, configure_logging, main
 
 
 def test_build_parser():
@@ -12,34 +13,37 @@ def test_build_parser():
     parser = build_parser()
 
     # Test that parser has the expected arguments
-    args = parser.parse_args(['--version'])
+    args = parser.parse_args(["--version"])
     assert args.version is True
 
-    args = parser.parse_args(['--http'])
+    args = parser.parse_args(["--http"])
     assert args.http is True
 
-    args = parser.parse_args(['--http-host', 'localhost'])
-    assert args.http_host == 'localhost'
+    args = parser.parse_args(["--http-host", "localhost"])
+    assert args.http_host == "localhost"
 
-    args = parser.parse_args(['--http-port', '8000'])
+    args = parser.parse_args(["--http-port", "8000"])
     assert args.http_port == 8000
 
-    args = parser.parse_args(['--http-path', '/mcp'])
-    assert args.http_path == '/mcp'
+    args = parser.parse_args(["--http-path", "/mcp"])
+    assert args.http_path == "/mcp"
 
 
 def test_main_version_flag(capsys):
     """Test main function with --version flag."""
     # Test the function directly with --version flag
     with pytest.raises(SystemExit):
-        main(['--version'])
+        main(["--version"])
 
 
-@patch('raindropio_mcp.main.configure_logging')
-@patch('raindropio_mcp.main.create_app')
-@patch('raindropio_mcp.main.get_settings')
-@patch('raindropio_mcp.main.asyncio.run')
-def test_main_stdio_mode(mock_asyncio_run, mock_get_settings, mock_create_app, mock_configure_logging):
+@patch("raindropio_mcp.main.SERVERPANELS_AVAILABLE", False)
+@patch("raindropio_mcp.main.configure_logging")
+@patch("raindropio_mcp.main.create_app")
+@patch("raindropio_mcp.main.get_settings")
+@patch("raindropio_mcp.main.asyncio.run")
+def test_main_stdio_mode(
+    mock_asyncio_run, mock_get_settings, mock_create_app, mock_configure_logging
+):
     """Test main function with stdio mode."""
     # Mock settings to not enable HTTP transport
     settings_mock = MagicMock()
@@ -57,19 +61,26 @@ def test_main_stdio_mode(mock_asyncio_run, mock_get_settings, mock_create_app, m
     app_mock.run.assert_called_once_with()
 
 
-@patch('raindropio_mcp.main.configure_logging')
-@patch('raindropio_mcp.main.create_app')
-@patch('raindropio_mcp.main.get_settings')
-@patch('raindropio_mcp.main.asyncio.run')
-@patch('raindropio_mcp.main.logger')
-def test_main_http_mode(mock_logger, mock_asyncio_run, mock_get_settings, mock_create_app, mock_configure_logging):
+@patch("raindropio_mcp.main.SERVERPANELS_AVAILABLE", False)
+@patch("raindropio_mcp.main.configure_logging")
+@patch("raindropio_mcp.main.create_app")
+@patch("raindropio_mcp.main.get_settings")
+@patch("raindropio_mcp.main.asyncio.run")
+@patch("raindropio_mcp.main.logger")
+def test_main_http_mode(
+    mock_logger,
+    mock_asyncio_run,
+    mock_get_settings,
+    mock_create_app,
+    mock_configure_logging,
+):
     """Test main function with HTTP mode."""
     # Mock settings to enable HTTP transport
     settings_mock = MagicMock()
     settings_mock.enable_http_transport = True
-    settings_mock.http_host = 'localhost'
+    settings_mock.http_host = "localhost"
     settings_mock.http_port = 8000
-    settings_mock.http_path = '/mcp'
+    settings_mock.http_path = "/mcp"
     mock_get_settings.return_value = settings_mock
 
     # Mock the app
@@ -82,17 +93,17 @@ def test_main_http_mode(mock_logger, mock_asyncio_run, mock_get_settings, mock_c
     mock_asyncio_run.assert_called_once()
     app_mock.run.assert_called_once_with(
         transport="streamable-http",
-        host='localhost',
+        host="localhost",
         port=8000,
-        streamable_http_path='/mcp'
+        streamable_http_path="/mcp",
     )
 
 
 def test_configure_logging_basic():
     """Test basic logging configuration."""
-    with patch('raindropio_mcp.main.get_settings') as mock_get_settings:
+    with patch("raindropio_mcp.main.get_settings") as mock_get_settings:
         settings_mock = MagicMock()
-        settings_mock.observability.log_level = 'INFO'
+        settings_mock.observability.log_level = "INFO"
         settings_mock.observability.structured_logging = False
         mock_get_settings.return_value = settings_mock
 
@@ -101,9 +112,9 @@ def test_configure_logging_basic():
 
 def test_configure_logging_structured():
     """Test structured logging configuration."""
-    with patch('raindropio_mcp.main.get_settings') as mock_get_settings:
+    with patch("raindropio_mcp.main.get_settings") as mock_get_settings:
         settings_mock = MagicMock()
-        settings_mock.observability.log_level = 'DEBUG'
+        settings_mock.observability.log_level = "DEBUG"
         settings_mock.observability.structured_logging = True
         mock_get_settings.return_value = settings_mock
 

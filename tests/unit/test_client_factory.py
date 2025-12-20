@@ -1,7 +1,13 @@
 """Unit tests for the client factory module."""
+
 from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
-from raindropio_mcp.clients.client_factory import build_raindrop_client, raindrop_client_context
+
+from raindropio_mcp.clients.client_factory import (
+    build_raindrop_client,
+    raindrop_client_context,
+)
 from raindropio_mcp.clients.raindrop_client import RaindropClient
 
 
@@ -15,9 +21,11 @@ def test_build_raindrop_client():
     # Can't easily test the settings were passed, but construction should succeed
 
     # Test with no settings (should call get_settings)
-    with patch('raindropio_mcp.clients.client_factory.get_settings') as mock_get_settings:
+    with patch(
+        "raindropio_mcp.clients.client_factory.get_settings"
+    ) as mock_get_settings:
         mock_get_settings.return_value = mock_settings
-        client2 = build_raindrop_client()
+        build_raindrop_client()
         mock_get_settings.assert_called_once()
 
 
@@ -26,7 +34,9 @@ async def test_raindrop_client_context():
     """Test the raindrop client context manager."""
     mock_settings = MagicMock()
 
-    with patch('raindropio_mcp.clients.client_factory.build_raindrop_client') as mock_build:
+    with patch(
+        "raindropio_mcp.clients.client_factory.build_raindrop_client"
+    ) as mock_build:
         mock_client = MagicMock()
         mock_client.close = AsyncMock()
         mock_build.return_value = mock_client
@@ -42,15 +52,19 @@ async def test_raindrop_client_context():
 @pytest.mark.asyncio
 async def test_raindrop_client_context_with_none_settings():
     """Test the context manager with None settings."""
-    with patch('raindropio_mcp.clients.client_factory.get_settings') as mock_get_settings:
+    with patch(
+        "raindropio_mcp.clients.client_factory.get_settings"
+    ) as mock_get_settings:
         mock_settings = MagicMock()
         mock_get_settings.return_value = mock_settings
 
-        with patch('raindropio_mcp.clients.client_factory.RaindropClient') as MockRaindropClient:
+        with patch(
+            "raindropio_mcp.clients.client_factory.RaindropClient"
+        ) as mock_raindrop_client:
             mock_client = MagicMock()
             mock_client.close = AsyncMock()
             # Make RaindropClient constructor return our mock
-            MockRaindropClient.return_value = mock_client
+            mock_raindrop_client.return_value = mock_client
 
             # Use the context manager with None settings
             async with raindrop_client_context(None) as client:

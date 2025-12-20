@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import pytest
 from unittest.mock import AsyncMock
+
+import pytest
 
 from raindropio_mcp.clients.raindrop_client import RaindropClient
 from raindropio_mcp.models import ImportResult
@@ -22,6 +23,7 @@ def mock_client():
 def registry():
     """FastMCPToolRegistry for testing."""
     from fastmcp import FastMCP
+
     app = FastMCP(name="test", version="0.1.0")
     return FastMCPToolRegistry(app)
 
@@ -32,12 +34,11 @@ async def test_register_import_export_tools(registry, mock_client):
     register_import_export_tools(registry, mock_client)
 
     tool_names = set(registry.tools.keys())
-    expected_tools = {
-        "import_bookmarks",
-        "export_bookmarks"
-    }
+    expected_tools = {"import_bookmarks", "export_bookmarks"}
 
-    assert expected_tools.issubset(tool_names), f"Missing tools: {expected_tools - tool_names}"
+    assert expected_tools.issubset(tool_names), (
+        f"Missing tools: {expected_tools - tool_names}"
+    )
 
 
 @pytest.mark.asyncio
@@ -46,18 +47,14 @@ async def test_import_bookmarks_tool(registry, mock_client):
     register_import_export_tools(registry, mock_client)
 
     mock_result = ImportResult(
-        result=True,
-        imported_count=5,
-        skipped_count=1,
-        errors=[],
-        collection_id=123
+        result=True, imported_count=5, skipped_count=1, errors=[], collection_id=123
     )
     mock_client.import_bookmarks.return_value = mock_result
 
     payload = {
         "format": "netscape",
         "source": "browser",
-        "options": {"merge_duplicates": True}
+        "options": {"merge_duplicates": True},
     }
 
     # Execute the tool
@@ -82,14 +79,12 @@ async def test_export_bookmarks_tool(registry, mock_client):
     """Test the export_bookmarks tool."""
     register_import_export_tools(registry, mock_client)
 
-    expected_export_data = '{"bookmarks": [{"title": "Test", "link": "https://example.com"}]}'
+    expected_export_data = (
+        '{"bookmarks": [{"title": "Test", "link": "https://example.com"}]}'
+    )
     mock_client.export_bookmarks.return_value = expected_export_data
 
-    payload = {
-        "format": "json",
-        "include_highlights": True,
-        "include_notes": False
-    }
+    payload = {"format": "json", "include_highlights": True, "include_notes": False}
 
     # Execute the tool
     tool = registry.tools["export_bookmarks"].coroutine
