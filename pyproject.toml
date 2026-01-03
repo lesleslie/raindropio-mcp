@@ -11,7 +11,8 @@ dependencies = [
     "bevy>=3.1.0b12",
     "fastmcp>=2.12.0",
     "httpx>=0.27.0",
-    "mcp-common>=0.2.0",
+    "mcp-common>=0.4.4",
+    "oneiric>=0.3.6",
     "pydantic>=2.5.0",
     "pydantic-settings>=2.1.0",
 ]
@@ -111,6 +112,7 @@ python_classes = [
 python_functions = [
     "test_*",
 ]
+timeout = 300
 addopts = "--cov=raindropio_mcp --cov-report=term-missing --cov-report=html"
 asyncio_mode = "auto"
 
@@ -156,3 +158,7 @@ max_complexity = 15
 paths = [
     "raindropio_mcp",
 ]
+
+[tool.uv.sources.mcp-common]
+path = "../mcp-common"
+

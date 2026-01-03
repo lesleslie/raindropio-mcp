@@ -1,8 +1,118 @@
-"""Module entrypoint so `python -m raindropio_mcp` starts the server."""
+#!/usr/bin/env python3
+"""Raindrop.io MCP Server - Oneiric CLI Entry Point."""
 
-from __future__ import annotations
+from mcp_common.cli import MCPServerCLIFactory
+from mcp_common.server import BaseOneiricServerMixin, create_runtime_components
+from oneiric.core.config import OneiricMCPConfig
+from oneiric.runtime.mcp_health import HealthStatus
 
-from raindropio_mcp.main import main
+# Import the main server from the existing codebase
+from raindropio_mcp.server import create_app, get_settings
+
+
+class RaindropConfig(OneiricMCPConfig):
+    """Raindrop.io MCP Server Configuration."""
+
+    http_port: int = 3041
+    http_host: str = "127.0.0.1"
+    enable_http_transport: bool = True
+
+    class Config:
+        env_prefix = "RAINDROP_MCP_"
+        env_file = ".env"
+
+
+class RaindropMCPServer(BaseOneiricServerMixin):
+    """Raindrop.io MCP Server with Oneiric integration."""
+
+    def __init__(self, config: RaindropConfig):
+        self.config = config
+        self.app = create_app()  # Use the existing FastMCP instance
+
+        # Initialize runtime components using mcp-common helper
+        self.runtime = create_runtime_components(
+            server_name="raindropio-mcp",
+            cache_dir=config.cache_dir or ".oneiric_cache"
+        )
+
+    async def startup(self) -> None:
+        """Server startup lifecycle hook."""
+        # Validate settings at startup
+        settings = get_settings()
+        settings._validate_credentials(None)
+
+        # Initialize runtime components
+        await self.runtime.initialize()
+
+        # Create startup snapshot with custom components
+        await self._create_startup_snapshot(
+            custom_components={
+                "raindrop": {
+                    "status": "initialized",
+                    "timestamp": self._get_timestamp(),
+                },
+            }
+        )
+
+    async def shutdown(self) -> None:
+        """Server shutdown lifecycle hook."""
+        # Create shutdown snapshot
+        await self._create_shutdown_snapshot()
+
+        # Clean up runtime components
+        await self.runtime.cleanup()
+
+    async def health_check(self):
+        """Perform health check."""
+        # Build base health components using mixin helper
+        base_components = await self._build_health_components()
+
+        # Check Raindrop configuration
+        settings = get_settings()
+        raindrop_configured = bool(settings and settings.token)
+
+        # Add raindrop-specific health checks
+        base_components.append(
+            self.runtime.health_monitor.create_component_health(
+                name="raindrop",
+                status=HealthStatus.HEALTHY
+                if raindrop_configured
+                else HealthStatus.UNHEALTHY,
+                details={
+                    "configured": raindrop_configured,
+                    "api_token": bool(settings.token if settings else False),
+                },
+            )
+        )
+
+        # Create health response
+        return self.runtime.health_monitor.create_health_response(base_components)
+
+    def get_app(self):
+        """Get the ASGI application."""
+        return self.app.http_app
+
+    def _get_timestamp(self) -> str:
+        """Get current timestamp in ISO format."""
+        import time
+        return time.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def main():
+    """Main entry point for Raindrop.io MCP Server."""
+
+    # Create CLI factory using mcp-common's enhanced factory
+    cli_factory = MCPServerCLIFactory.create_server_cli(
+        server_class=RaindropMCPServer,
+        config_class=RaindropConfig,
+        name="raindropio-mcp",
+        description="Raindrop.io MCP Server - Bookmark management via Raindrop.io API",
+    )
+
+    # Create and run CLI
+    app = cli_factory.create_app()
+    app()
+
 
 if __name__ == "__main__":
     main()
