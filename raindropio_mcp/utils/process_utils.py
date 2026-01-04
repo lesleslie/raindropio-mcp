@@ -49,7 +49,7 @@ class ServerManager:
         """Starts the server as a background process and saves its PID."""
         if self.is_running():
             typer.echo(f"Server '{self.project_name}' is already running.")
-            raise typer.Exit()
+            raise SystemExit(0)
 
         # Set environment variables for the subprocess
         env = os.environ.copy()
@@ -77,7 +77,7 @@ class ServerManager:
         except OSError as e:
             typer.echo(f"Error writing PID file: {e}", err=True)
             process.kill()
-            raise typer.Exit(1) from e
+            raise SystemExit(1) from e
 
     def stop_server(self) -> None:
         """Stops the running server process using the stored PID."""

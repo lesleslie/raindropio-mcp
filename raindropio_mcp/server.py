@@ -24,7 +24,7 @@ SERVERPANELS_AVAILABLE = importlib.util.find_spec("mcp_common.ui") is not None
 
 # Import security availability flag (Phase 3 Security Hardening)
 try:
-    from mcp_common.security import APIKeyValidator
+    from mcp_common import security  # noqa: F401 - check availability only
 
     SECURITY_AVAILABLE = True
 except ImportError:
@@ -88,6 +88,7 @@ def __getattr__(name: str) -> Any:
 
 __all__ = [
     "create_app",
+    "get_settings",  # Added to fix zuban type error
     "APP_NAME",
     "APP_VERSION",
     "RATE_LIMITING_AVAILABLE",

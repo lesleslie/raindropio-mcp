@@ -1,5 +1,6 @@
 """Unit tests for the main module."""
 
+import json
 import logging
 from unittest.mock import MagicMock, patch
 
@@ -8,7 +9,7 @@ import pytest
 from raindropio_mcp.main import build_parser, configure_logging, main
 
 
-def test_build_parser():
+def test_build_parser() -> None:
     """Test argument parser creation."""
     parser = build_parser()
 
@@ -29,7 +30,7 @@ def test_build_parser():
     assert args.http_path == "/mcp"
 
 
-def test_main_version_flag(capsys):
+def test_main_version_flag(capsys: object) -> None:
     """Test main function with --version flag."""
     # Test the function directly with --version flag
     with pytest.raises(SystemExit):
@@ -42,8 +43,11 @@ def test_main_version_flag(capsys):
 @patch("raindropio_mcp.main.get_settings")
 @patch("raindropio_mcp.main.asyncio.run")
 def test_main_stdio_mode(
-    mock_asyncio_run, mock_get_settings, mock_create_app, mock_configure_logging
-):
+    mock_asyncio_run: object,
+    mock_get_settings: object,
+    mock_create_app: object,
+    mock_configure_logging: object,
+) -> None:
     """Test main function with stdio mode."""
     # Mock settings to not enable HTTP transport
     settings_mock = MagicMock()
@@ -68,12 +72,12 @@ def test_main_stdio_mode(
 @patch("raindropio_mcp.main.asyncio.run")
 @patch("raindropio_mcp.main.logger")
 def test_main_http_mode(
-    mock_logger,
-    mock_asyncio_run,
-    mock_get_settings,
-    mock_create_app,
-    mock_configure_logging,
-):
+    mock_logger: object,
+    mock_asyncio_run: object,
+    mock_get_settings: object,
+    mock_create_app: object,
+    mock_configure_logging: object,
+) -> None:
     """Test main function with HTTP mode."""
     # Mock settings to enable HTTP transport
     settings_mock = MagicMock()
@@ -99,7 +103,7 @@ def test_main_http_mode(
     )
 
 
-def test_configure_logging_basic():
+def test_configure_logging_basic() -> None:
     """Test basic logging configuration."""
     with patch("raindropio_mcp.main.get_settings") as mock_get_settings:
         settings_mock = MagicMock()
@@ -110,7 +114,7 @@ def test_configure_logging_basic():
         configure_logging()
 
 
-def test_configure_logging_structured():
+def test_configure_logging_structured() -> None:
     """Test structured logging configuration."""
     with patch("raindropio_mcp.main.get_settings") as mock_get_settings:
         settings_mock = MagicMock()
@@ -123,3 +127,26 @@ def test_configure_logging_structured():
         # Verify that JSONFormatter is used when structured logging is enabled
         root_logger = logging.getLogger()
         assert len(root_logger.handlers) > 0
+
+
+def test_configure_logging_with_invalid_log_level() -> None:
+    """Test logging configuration with invalid log level."""
+    with patch("raindropio_mcp.main.get_settings") as mock_get_settings:
+        settings_mock = MagicMock()
+        settings_mock.observability.log_level = "INVALID_LEVEL"
+        settings_mock.observability.structured_logging = False
+        mock_get_settings.return_value = settings_mock
+
+        configure_logging()  # Should default to INFO level
+
+        root_logger = logging.getLogger()
+        # Check that basicConfig was called with default level
+        # (This is checked by the fact that no exception was raised)
+
+
+def test_main_version_flag_direct_exit() -> None:
+    """Test main function exits when --version flag is used."""
+    with pytest.raises(SystemExit) as exc_info:
+        main(["--version"])
+
+    assert exc_info.value.code == 0

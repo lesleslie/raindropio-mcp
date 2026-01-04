@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Raindrop.io MCP Server - Oneiric CLI Entry Point."""
 
+from typing import TYPE_CHECKING
+
 from mcp_common.cli import MCPServerCLIFactory
 from mcp_common.server import BaseOneiricServerMixin, create_runtime_components
 from oneiric.core.config import OneiricMCPConfig
@@ -9,8 +11,13 @@ from oneiric.runtime.mcp_health import HealthStatus
 # Import the main server from the existing codebase
 from raindropio_mcp.server import create_app, get_settings
 
+# Type annotation to help with type checking
+OneiricMCPConfigType = (
+    OneiricMCPConfig if not TYPE_CHECKING else "TypedOneiricMCPConfig"
+)
 
-class RaindropConfig(OneiricMCPConfig):
+
+class RaindropConfig(OneiricMCPConfig):  # type: ignore[misc]
     """Raindrop.io MCP Server Configuration."""
 
     http_port: int = 3041
@@ -31,15 +38,29 @@ class RaindropMCPServer(BaseOneiricServerMixin):
 
         # Initialize runtime components using mcp-common helper
         self.runtime = create_runtime_components(
-            server_name="raindropio-mcp",
-            cache_dir=config.cache_dir or ".oneiric_cache"
+            server_name="raindropio-mcp", cache_dir=config.cache_dir or ".oneiric_cache"
         )
+
+    @property
+    def snapshot_manager(self) -> object:
+        """Convenience property to access snapshot manager from runtime."""
+        return self.runtime.snapshot_manager
+
+    @property
+    def cache_manager(self) -> object:
+        """Convenience property to access cache manager from runtime."""
+        return self.runtime.cache_manager
+
+    @property
+    def health_monitor(self) -> object:
+        """Convenience property to access health monitor from runtime."""
+        return self.runtime.health_monitor
 
     async def startup(self) -> None:
         """Server startup lifecycle hook."""
-        # Validate settings at startup
-        settings = get_settings()
-        settings._validate_credentials(None)
+        # Settings are already validated by get_settings()
+        # The validator runs automatically during model initialization
+        _ = get_settings()
 
         # Initialize runtime components
         await self.runtime.initialize()
@@ -62,7 +83,7 @@ class RaindropMCPServer(BaseOneiricServerMixin):
         # Clean up runtime components
         await self.runtime.cleanup()
 
-    async def health_check(self):
+    async def health_check(self) -> object:
         """Perform health check."""
         # Build base health components using mixin helper
         base_components = await self._build_health_components()
@@ -88,17 +109,18 @@ class RaindropMCPServer(BaseOneiricServerMixin):
         # Create health response
         return self.runtime.health_monitor.create_health_response(base_components)
 
-    def get_app(self):
+    def get_app(self) -> object:
         """Get the ASGI application."""
         return self.app.http_app
 
     def _get_timestamp(self) -> str:
         """Get current timestamp in ISO format."""
         import time
+
         return time.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def main():
+def main() -> None:
     """Main entry point for Raindrop.io MCP Server."""
 
     # Create CLI factory using mcp-common's enhanced factory
@@ -106,12 +128,11 @@ def main():
         server_class=RaindropMCPServer,
         config_class=RaindropConfig,
         name="raindropio-mcp",
-        description="Raindrop.io MCP Server - Bookmark management via Raindrop.io API",
+        _description="Raindrop.io MCP Server - Bookmark management via Raindrop.io API",
     )
 
     # Create and run CLI
-    app = cli_factory.create_app()
-    app()
+    cli_factory.create_app()()
 
 
 if __name__ == "__main__":

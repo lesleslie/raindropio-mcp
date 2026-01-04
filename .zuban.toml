@@ -1,0 +1,7 @@
+# Zuban type checking configuration
+# Zuban is a fast Python type checker (Rust-based)
+
+# Only check the main source code
+paths = [
+    "raindropio_mcp",
+]
