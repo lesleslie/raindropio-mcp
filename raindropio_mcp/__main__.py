@@ -20,7 +20,7 @@ OneiricMCPConfigType = (
 class RaindropConfig(OneiricMCPConfig):  # type: ignore[misc]
     """Raindrop.io MCP Server Configuration."""
 
-    http_port: int = 3041
+    http_port: int = 3034
     http_host: str = "127.0.0.1"
     enable_http_transport: bool = True
 

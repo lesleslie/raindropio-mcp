@@ -168,7 +168,7 @@ def test_main_with_none_argv():
             http_path=None
         )
         mock_build_parser.return_value = mock_parser
-        
+
         with patch("raindropio_mcp.main.configure_logging"), \
              patch("raindropio_mcp.main.get_settings"), \
              patch("raindropio_mcp.main.create_app"), \

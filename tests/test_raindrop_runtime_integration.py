@@ -39,7 +39,7 @@ def test_raindrop_config():
     config = RaindropConfig()
 
     # Verify default values
-    assert config.http_port == 3041
+    assert config.http_port == 3034
     assert config.http_host == "127.0.0.1"
     assert config.enable_http_transport is True
     assert config.cache_dir is None or config.cache_dir == ".oneiric_cache"

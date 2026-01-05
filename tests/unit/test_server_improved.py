@@ -30,7 +30,7 @@ def test_getattr_app(mock_create_app):
     """Test the __getattr__ function for 'app'."""
     mock_app = MagicMock()
     mock_create_app.return_value = mock_app
-    
+
     result = __getattr__("app")
     assert result == mock_app
     mock_create_app.assert_called_once()
@@ -43,7 +43,7 @@ def test_getattr_http_app(mock_create_app):
     mock_http_app = MagicMock()
     mock_app.http_app = mock_http_app
     mock_create_app.return_value = mock_app
-    
+
     result = __getattr__("http_app")
     assert result == mock_http_app
     mock_create_app.assert_called_once()
@@ -64,20 +64,20 @@ def test_create_app_with_rate_limiting_not_addable(mock_hasattr, mock_get_settin
     mock_settings = MagicMock()
     mock_settings.token = "test_token_1234567890abcdefghijklmnopqr"
     mock_get_settings.return_value = mock_settings
-    
+
     # Mock hasattr to return False so middleware is not added
     mock_hasattr.return_value = False
-    
+
     # Mock the app's _mcp_server
     with patch("raindropio_mcp.server.FastMCP") as mock_fastmcp_class:
         mock_app = MagicMock()
         mock_server = MagicMock()
         mock_app._mcp_server = mock_server
         mock_fastmcp_class.return_value = mock_app
-        
+
         # Create the app
         result = create_app()
-        
+
         # Verify that rate limiting middleware was NOT added
         # (because hasattr returned False)
         mock_server.add_middleware.assert_not_called()
@@ -91,17 +91,17 @@ def test_create_app_without_rate_limiting(mock_get_settings):
     mock_settings = MagicMock()
     mock_settings.token = "test_token_1234567890abcdefghijklmnopqr"
     mock_get_settings.return_value = mock_settings
-    
+
     # Mock the app's _mcp_server
     with patch("raindropio_mcp.server.FastMCP") as mock_fastmcp_class:
         mock_app = MagicMock()
         mock_server = MagicMock()
         mock_app._mcp_server = mock_server
         mock_fastmcp_class.return_value = mock_app
-        
+
         # Create the app
         result = create_app()
-        
+
         # Verify that rate limiting middleware was NOT added
         # (because RATE_LIMITING_AVAILABLE is False)
         mock_server.add_middleware.assert_not_called()

@@ -31,17 +31,17 @@ def test_retry_config_validation():
     config = RetryConfig(total=5, backoff_factor=1.0)
     assert config.total == 5
     assert config.backoff_factor == 1.0
-    
+
     # Test validation constraints
     with pytest.raises(ValidationError):
         RetryConfig(total=-1)  # total must be >= 0
-    
+
     with pytest.raises(ValidationError):
         RetryConfig(total=15)  # total must be <= 10
-    
+
     with pytest.raises(ValidationError):
         RetryConfig(backoff_factor=-1.0)  # backoff_factor must be >= 0.0
-    
+
     with pytest.raises(ValidationError):
         RetryConfig(backoff_factor=15.0)  # backoff_factor must be <= 10.0
 
@@ -60,17 +60,17 @@ def test_cache_config_validation():
     config = CacheConfig(ttl_seconds=300, max_entries=5000)
     assert config.ttl_seconds == 300
     assert config.max_entries == 5000
-    
+
     # Test validation constraints
     with pytest.raises(ValidationError):
         CacheConfig(ttl_seconds=-1)  # ttl_seconds must be >= 0
-    
+
     with pytest.raises(ValidationError):
         CacheConfig(ttl_seconds=4000)  # ttl_seconds must be <= 3600
-    
+
     with pytest.raises(ValidationError):
         CacheConfig(max_entries=-1)  # max_entries must be >= 0
-    
+
     with pytest.raises(ValidationError):
         CacheConfig(max_entries=2_000_000)  # max_entries must be <= 1_000_000
 
@@ -114,7 +114,7 @@ def test_raindrop_settings_custom_values():
         "http_path": "/custom-mcp",
         "cache_dir": Path("/tmp/cache"),
     }
-    
+
     settings = RaindropSettings(**custom_values)
     assert settings.token == "test_token_12345678901234567890123456789012"
     assert str(settings.base_url) == "https://api.example.com/rest/v1"
@@ -181,7 +181,7 @@ def test_http_client_config():
         max_connections=15,
         user_agent="test-agent/1.0"
     )
-    
+
     config = settings.http_client_config()
     assert str(config["base_url"]) == "https://api.example.com/rest/v1"
     assert config["timeout"] == 45.0
