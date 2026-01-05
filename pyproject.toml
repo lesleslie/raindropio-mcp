@@ -1,6 +1,6 @@
 [project]
 name = "raindropio-mcp"
-version = "0.2.1"
+version = "0.2.2"
 description = "Unofficial MCP Server for the Raindrop.io API"
 readme = "README.md"
 authors = [
