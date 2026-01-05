@@ -1,0 +1,25 @@
+{
+  "server_name": "raindropio-mcp",
+  "timestamp": "2026-01-05T06-20-11",
+  "version": "1.0",
+  "components": {
+    "server": {
+      "status": "started",
+      "timestamp": "2026-01-05T06:20:11Z",
+      "config": {
+        "http_port": 3041,
+        "http_host": "127.0.0.1",
+        "debug": false,
+        "enable_http_transport": true
+      }
+    },
+    "raindrop": {
+      "status": "initialized",
+      "timestamp": "2026-01-05T06:20:11Z"
+    }
+  },
+  "metadata": {
+    "system_time": 1767622811.13053,
+    "python_version": "3.13"
+  }
+}
