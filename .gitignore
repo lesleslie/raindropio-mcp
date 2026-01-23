@@ -18,6 +18,7 @@ wheels/
 /.benchmarks/
 /.complexipy_cache/
 /.crackerjack/
+**/.skylos
 .mcp.json.backup
 
 # Crackerjack patterns

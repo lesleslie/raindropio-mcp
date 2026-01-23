@@ -90,6 +90,7 @@ This document provides a comprehensive mapping of Raindrop.io REST API endpoints
 ## Coverage Status
 
 ✅ **Fully Covered:**
+
 - Account operations (100%)
 - Collection CRUD (100%)
 - Bookmark CRUD (100%)
@@ -100,6 +101,7 @@ This document provides a comprehensive mapping of Raindrop.io REST API endpoints
 - Import/Export (100%)
 
 📋 **Not Yet Implemented:**
+
 - Sharing functionality (when Raindrop exposes these endpoints)
 - User profile updates beyond GET
 
@@ -108,8 +110,8 @@ This document provides a comprehensive mapping of Raindrop.io REST API endpoints
 When adding new Raindrop.io API endpoints:
 
 1. Add the HTTP client method to `RaindropClient` in `raindropio_mcp/clients/raindrop_client.py`
-2. Create/update Pydantic models in `raindropio_mcp/models/` for request/response
-3. Create a tool function in the appropriate `raindropio_mcp/tools/*.py` file
-4. Register the tool with `@registry.register(ToolMetadata(...))`
-5. Add the mapping to this document
-6. Update the API mapping diagram above
+1. Create/update Pydantic models in `raindropio_mcp/models/` for request/response
+1. Create a tool function in the appropriate `raindropio_mcp/tools/*.py` file
+1. Register the tool with `@registry.register(ToolMetadata(...))`
+1. Add the mapping to this document
+1. Update the API mapping diagram above
