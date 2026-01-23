@@ -5,6 +5,6 @@
   "lifecycle_state": {},
   "orchestrator_pid": 81056,
   "remote_enabled": false,
-  "updated_at": "2026-01-05T18:56:30.191104+00:00",
-  "watchers_running": true
+  "updated_at": "2026-01-08T21:14:42.932217+00:00",
+  "watchers_running": false
 }

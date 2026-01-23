@@ -90,6 +90,10 @@ uv run bandit -r raindropio_mcp           # Security scanning
      - Supports both stdio and HTTP transports
      - Accepts `--http`, `--http-host`, `--http-port`, `--http-path` flags
 
+### Layered Architecture
+
+![Five-layer architecture diagram showing Config, Client, Models, Tools, and Server layers with dependencies](https://mermaid.ink/svg/pako:eNqFklFrgzAUhd_7K8Q9d1ZtN9zDQGNKBx2U1jcZkmmahqZGYjrw3y8mlcU5uoBcjt-9nOONRKDm5Gz3M0ed9vpJtAa8PlKSu6ZeBZKU184WdVi4H7q1P7Gfu3tE60rw5oClpDVpbRzkLsGyaMcI15WuvxwZxbVUjrpOrBJllaAWb7JsZ1psGPzkmMIwd0v9sjiiUnLR3c3xzivM2tw1dZID9Dk4P1-QOHuAM4bLfjVehoi3oeTE1GO7AxVthzrGUdV6CZLlyVtTJrG4v42M8z6ELpMMqcoQ6RYHIIkJFxTbe0-Vp1S0EJjQVv7zwQcsvrDIXVMnZlCZlQIrnwI1jQ2Uy0Ut_bHpHLB9-8sjDpz5_FVdz8zcklG-rcBYmc7U1yodqWSkbnODMgze5nxbxTdmHKBvrUB2DKuf2DlSxl4eYLRMwpVFVChDnmEaBr5FwDCzXsVPQWiRdCDLOFrAwCJwINHCD9fwG6-G56o)
+
 ### Data Flow
 
 1. MCP client sends tool request → FastMCP receives and routes to registered tool
@@ -98,6 +102,8 @@ uv run bandit -r raindropio_mcp           # Security scanning
 1. `BaseHTTPClient` applies retry logic, handles errors, maps to exceptions
 1. Response validated with Pydantic models → returned as JSON-serializable dict
 1. FastMCP sends response back to MCP client
+
+![Sequence diagram showing complete request lifecycle from MCP client through FastMCP, Tool, RaindropClient, BaseHTTPClient to Raindrop API with retry and error handling](https://mermaid.ink/svg/pako:eNp1kVFrwjAUhd_3K-4PqCibwixDaOuKG4srXdh71gYNxKRL0qH_fjdpXVdFHy7Id3rPPSeWf7dcVXwt2M6wwx3gr2HGiUo0TDkgGTCLs4BMCq7clSAnXpAz61B0RamHVGsJeasqJ7S6kpTBoWRC1UY3N1zSIEqZ5RtKixuipHj5v8r_D5owSDZZrXISd9eUPrbtVuQECY2h1K3j4HRQBEI78MmkqBmy4lSjj6iA6JpL-6cps7ivBwh3e11DxmS3ovS2KXJ_98g2PZOkaeQJkTMneNM7UQ0YE8Qhlt_39GWmq5Qzww0krdsHGcLJ2ME2Wlk-tiCsgWdjtLFhyYapWnKY3y-ni-PxLO2DFMxYXsPrx_t2SODBjRrOoq4remrw4wH0FWZa_XDjfLtrUbke9S_ircaH45MgI_7y7CJTGFuNZ2jciHdHoaSuPq1imM8eI4y28GMZwWI28-Pejwc_5hcbaOTDJVKC6X0sYMdDykN47F_iMOwi)
 
 ### Error Handling Strategy
 
@@ -109,6 +115,10 @@ uv run bandit -r raindropio_mcp           # Security scanning
   - `ConfigurationError`: Missing/invalid settings
 - Retry logic in `BaseHTTPClient` for status codes: 408, 425, 429, 500, 502, 503, 504
 - Exponential backoff with configurable factor and max attempts
+
+### Error Mapping Flow
+
+![Flowchart showing HTTP status codes mapped to appropriate exception types including NotFoundError, RateLimitError, and APIError](https://mermaid.ink/svg/pako:eNpdkV1vgjAUhu_3K06yazIGss1lMeFTmR8xyh3xAuEYG5G6triRsf--WtkEetGc9H16Pt6zy-lnuk-YgMi7A3nseBJFS1ghP9GC4wY0bQTO91okouTg0gx_FKcu56LWhq5rxnBYgxuvUJSsgHWZpsj5pgUNdL0GL7aXoc8YZW9b9jBykkwW-iiRiy76WIPfRcPinOQkg4gesOjCZg1BFw4o25Is64ODGsbxgoqAlkV2o-WotGQpgpRAad1vLzVMLoOxqsFVwxCRI9Ky27hhSbbzIF0J41UicEaORNyKRpTCPCmqv_m5enX3mB5A1dLsnUDWzm5Jm62Lze-tbtbIzshAJd7cFuOqtU3jZZUlhSApzOXi8ivgKW32bxn4XymeBKGNXf5VV3HQiscqnncd7H8OFbTojdyn1MVFlaPsdEfy_PX-2fdM47EljBshsOwnw2wJYSP4w4FjWi1h2giW7puu8QuaANQT)
 
 ## Development Guidelines
 
@@ -220,3 +230,88 @@ For HTTP transport (see `example.mcp.json` and `example.mcp.dev.json` in repo).
 ### Debug Mode
 
 Set `RAINDROP_OBSERVABILITY_LOG_LEVEL=DEBUG` for verbose logging.
+
+<!-- CRACKERJACK INTEGRATION START -->
+
+This project uses crackerjack for Python project management and quality assurance.
+
+For optimal development experience with this crackerjack - enabled project, use these specialized agents:
+
+- **🏗️ crackerjack-architect**: Expert in crackerjack's modular architecture and Python project management patterns. **Use PROACTIVELY** for all feature development, architectural decisions, and ensuring code follows crackerjack standards from the start.
+
+- **🐍 python-pro**: Modern Python development with type hints, async/await patterns, and clean architecture
+
+- **🧪 pytest-hypothesis-specialist**: Advanced testing patterns, property-based testing, and test optimization
+
+- **🧪 crackerjack-test-specialist**: Advanced testing specialist for complex testing scenarios and coverage optimization
+
+- **🏗️ backend-architect**: System design, API architecture, and service integration patterns
+
+- **🔒 security-auditor**: Security analysis, vulnerability detection, and secure coding practices
+
+```bash
+
+Task tool with subagent_type ="crackerjack-architect" for feature planning
+
+
+Task tool with subagent_type ="python-pro" for code implementation
+
+
+Task tool with subagent_type ="pytest-hypothesis-specialist" for test development
+
+
+Task tool with subagent_type ="security-auditor" for security analysis
+```
+
+**💡 Pro Tip**: The crackerjack-architect agent automatically ensures code follows crackerjack patterns from the start, eliminating the need for retrofitting and quality fixes.
+
+This project follows crackerjack's clean code philosophy:
+
+- **EVERY LINE OF CODE IS A LIABILITY**: The best code is no code
+
+- **DRY (Don't Repeat Yourself)**: If you write it twice, you're doing it wrong
+
+- **YAGNI (You Ain't Gonna Need It)**: Build only what's needed NOW
+
+- **KISS (Keep It Simple, Stupid)**: Complexity is the enemy of maintainability
+
+- \*\*Cognitive complexity ≤15 \*\*per function (automatically enforced)
+
+- **Coverage ratchet system**: Never decrease coverage, always improve toward 100%
+
+- **Type annotations required**: All functions must have return type hints
+
+- **Security patterns**: No hardcoded paths, proper temp file handling
+
+- **Python 3.13+ modern patterns**: Use `|` unions, pathlib over os.path
+
+```bash
+
+python -m crackerjack
+
+
+python -m crackerjack - t
+
+
+python -m crackerjack - - ai - agent - t
+
+
+python -m crackerjack - a patch
+```
+
+1. **Plan with crackerjack-architect**: Ensure proper architecture from the start
+1. **Implement with python-pro**: Follow modern Python patterns
+1. **Test comprehensively**: Use pytest-hypothesis-specialist for robust testing
+1. **Run quality checks**: `python -m crackerjack -t` before committing
+1. **Security review**: Use security-auditor for final validation
+
+- **Use crackerjack-architect agent proactively** for all significant code changes
+- **Never reduce test coverage** - the ratchet system only allows improvements
+- **Follow crackerjack patterns** - the tools will enforce quality automatically
+- **Leverage AI agent auto-fixing** - `python -m crackerjack --ai-agent -t` for autonomous quality fixes
+
+______________________________________________________________________
+
+- This project is enhanced by crackerjack's intelligent Python project management.\*
+
+<!-- CRACKERJACK INTEGRATION END -->

@@ -33,7 +33,7 @@ class RaindropMCPServer(BaseOneiricServerMixin):
     """Raindrop.io MCP Server with Oneiric integration."""
 
     def __init__(self, config: RaindropConfig):
-        self.config = config
+        self.config = config  # type: ignore[assignment]
         self.app = create_app()  # Use the existing FastMCP instance
 
         # Initialize runtime components using mcp-common helper

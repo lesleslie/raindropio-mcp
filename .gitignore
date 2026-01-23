@@ -19,3 +19,46 @@ wheels/
 /.complexipy_cache/
 /.crackerjack/
 .mcp.json.backup
+
+# Crackerjack patterns
+
+
+
+
+# Build/Distribution
+# Caches
+# Coverage
+# Crackerjack specific
+# Development
+*.egg-info
+*.egg-info/
+*.py[oc]
+*.pyc
+.DS_STORE
+.coverage*
+.coverage.*
+.crackerjack-*
+.mcp.json.backup
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.venv/
+/.benchmarks/
+/.claude/
+/.complexipy_cache/
+/.coverage
+/.crackerjack/
+/.envrc
+/.mcp.json
+/.python-version
+/.venv/
+/build/
+/dist/
+/htmlcov/
+__pycache__/
+build/
+crackerjack-ai-debug-*.log
+crackerjack-debug-*.log
+dist/
+htmlcov/
+wheels/

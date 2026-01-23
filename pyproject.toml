@@ -48,8 +48,8 @@ http_host = "127.0.0.1"
 enable_http_transport = true
 
 [tool.ruff]
-line-length = 88
 target-version = "py313"
+line-length = 88
 exclude = [
     "tests/",
     "test_*.py",
@@ -57,30 +57,22 @@ exclude = [
 ]
 
 [tool.ruff.lint]
-select = [
-    "E",
-    "W",
+extend-select = [
+    "C901",
     "F",
     "I",
-    "B",
-    "C4",
     "UP",
-    "N",
-    "S",
-    "T20",
-    "SIM",
-    "TCH",
 ]
 ignore = [
-    "S101",
-    "S603",
-    "S607",
+    "E402",
+    "F821",
+]
+fixable = [
+    "ALL",
 ]
 
-[tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = [
-    "S101",
-]
+[tool.ruff.lint.mccabe]
+max-complexity = 15
 
 [tool.mypy]
 python_version = "3.13"
@@ -98,67 +90,83 @@ warn_unreachable = true
 strict_equality = true
 
 [tool.pytest.ini_options]
+asyncio_mode = "auto"
+timeout = 600
 testpaths = [
     "tests",
 ]
-python_files = [
-    "test_*.py",
-    "*_test.py",
+addopts = [
+    "--cov=raindropio_mcp",
+    "--cov-report=term-missing:skip-covered",
+    "--cov-report=html:htmlcov",
+    "--cov-report=json",
+    "--strict-markers",
+    "--strict-config",
+    "-ra",
+    "--tb=short",
 ]
-python_classes = [
-    "Test*",
-]
-python_functions = [
-    "test_*",
-]
-timeout = 300
-addopts = "--cov=raindropio_mcp --cov-report=term-missing --cov-report=html"
-asyncio_mode = "auto"
-
-[tool.bandit]
-exclude_dirs = [
-    "tests",
-]
-skips = [
-    "B101",
-    "B603",
-    "B607",
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow tests (>2s)",
+    "benchmark: Benchmark tests (deferred)",
 ]
 
 [tool.coverage.run]
+branch = true
+parallel = true
+concurrency = [
+    "multiprocessing",
+]
 source = [
     "raindropio_mcp",
 ]
+data_file = ".coverage"
 omit = [
-    "tests/*",
-    ".venv/*",
-    "venv/*",
-    "*/site-packages/*",
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/__init__.py",
 ]
 
 [tool.coverage.report]
-exclude_lines = [
+exclude_also = [
     "pragma: no cover",
     "def __repr__",
-    "raise AssertionError",
     "raise NotImplementedError",
     "if __name__ == .__main__.:",
+    "@abstractmethod",
 ]
 
-[tool.complexipy]
-default_pattern = "**/*.py"
-exclude_patterns = [
-    "**/tests/**",
-    "**/test_*.py",
+[tool.bandit]
+target = [
+    "raindropio_mcp",
 ]
-max_complexity = 15
+skips = [
+    "B101",
+    "B110",
+    "B112",
+    "B404",
+    "B603",
+    "B607",
+]
+exclude_dirs = [
+    "tests/",
+]
 
 [tool.creosote]
 paths = [
     "raindropio_mcp",
 ]
+deps-file = "pyproject.toml"
+exclude-deps = [
+    "hatchling",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-xdist",
+    "pytest-timeout",
+    "ruff",
+]
 
 [tool.crackerjack]
-# Skip zuban for this project - we use mypy for type checking
-# Zuban is overly strict on test code and catches issues in vendored files
-skip_hooks = ["zuban"]

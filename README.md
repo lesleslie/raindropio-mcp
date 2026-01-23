@@ -28,6 +28,10 @@ Raindrop REST documentation.
 - **Tested implementation** – pytest suite covering the client, tools, and
   entrypoints with coverage guardrails (≥80%).
 
+## Architecture Overview
+
+![Architecture diagram showing MCP client connecting through FastMCP tools to Raindrop API](https://mermaid.ink/svg/pako:eNp9k9uK2zAQhu_zFMP2sqTb2DmWsuBjvNCyITH0QuRCa09tEcUyslI2kIdfW07jYVkiMNb3_yPNaGQXmtclpP4I2tGcXgvLD7-DDQRSYGXgFz-jfrB-NzwWSH7KEUJsDkbVe7hZPnsxJWoYFjd7a2KV2_eHJDvU_9rwDwkCFvPGdHv0_s9X_fikuahyrWqhxses3t-CQ5YqJWGLhWiMPtvYFQTcYKG0wPv57dIhdighmrBASYmZEapqhmyRw3ylDkeuD1R1WcoLKkxZIopSto-h8oz53GQlvNRUnbNYSIOaagv2fKyVNo_RW_cizpJ5WaZOFdVWbHduDB7vHvbz24zZ9trZ3rcNTM815vCnXVejHvKs2_IbTNJ0Q2K32LYdvkKktdKQ8CqXoiruVhK9taetuARv8zxUktwq-SYUbKNd2vmfbOTBePx0aUwu1AUCK_lW6ir7rwSdAqGdh3YeTSg4FFwKUwozCnMKCwpLCqtR_wlZintwKLgUphRmFOYUFhSWBGI7X9v52rbBR67bv8o7mfICCbkAc5bYNuavkPLHl6m3-n7tQm_EV2MRha4zIUZyNeKZN3fc0TuNBwzz)
+
 ## Getting Started
 
 ### Prerequisites
@@ -81,6 +85,10 @@ uv run python -m raindropio_mcp --http --http-port 3034
 `example.mcp.json` and `example.mcp.dev.json` demonstrate how to wire the server
 into MCP-enabled clients such as Claude Desktop or PowerShell integrations.
 
+### Quick Start Flowchart
+
+![Quick start flowchart showing installation, configuration, and server startup steps](https://mermaid.ink/svg/pako:eNqFkc1OAjEUhfc-xc245s_BGIliYGYQ5DcwmpgJITgUpqH2TtqiTsSlOx9BX84nsXRqIG7soknvd8657e2S4XOczIWC0D8CvRqRM1H67EyhUKhDM3I8hpzAmKQoqUKRXTyIUn1FFcQGCA2cqfE2jcWLnM0TyIzHtuyZsq-DiYJxozPwx8PRLBx2g4HJIi8pir_kslgsWr9v_MGrlyBKAn1ckDcDzBbs6FaqBcUttExvseGQZipBDoVHEHPKFwJTirPHOLWZuasdhqMtXP9r0uJEqV-v2VrmUm09HuRLutoIfTFvBB6jhCsrvDaaTuQMU8Jhl1ArlRjGc5agVDW37FYPI9tGfhM5d0TQZQbPVCWQUr4ChcisspOL9q4bU-i-TjZxTKS8ykfTNe-7J3ILvcj5_nzXHzhfZDoJbiWxWblooOfW15qvD_ASEq8hxDXhpR6upNX18w_c95QqYwQasKSM1Y7PyxW3FRyAngVnge-eVA5A34LgvNp0T38ANO20NA)
+
 ## Available Tools
 
 All tools are declared in `raindropio_mcp/tools` and registered automatically by
@@ -121,6 +129,10 @@ All tools are declared in `raindropio_mcp/tools` and registered automatically by
 
 Each tool returns JSON-serialisable payloads closely matching the official API
 shapes so downstream agents can consume data without additional parsing.
+
+### Tool Categories Overview
+
+![Mind map showing nine tool categories: Collections, Bookmarks, Tags, Highlights, Batch Operations, Filters, Import/Export, Account, and System](https://mermaid.ink/svg/pako:eNqdj0FOAzEMRfecwssZacRcACFBBaIL1Ap6AZMxmahJHDkG0duTSUYVRaxYJLae__9xgotTwHQFIMzadS9YgHC6dnzzJuPt82YPB2af-75oADbsPRl1HHOdd95lHcBSuYwQKg2Vf6Rp6WEiT0rNe898DCjHC2cmFDO3hMrXFPgr4YD2wiwUMfzSPDk7-3L0Hwuimhl2iQR__DDw51l3XquOFG0BsZTmf3ReSVYbpuRP9WF4r5ymptqGxKLjw9dSmtZVNABV1mR3xnDJboIlJQmXoHXV11NWCm2YXLTjTOh17r8BmH-Xfg)
 
 ## Observability & Shutdown
 
