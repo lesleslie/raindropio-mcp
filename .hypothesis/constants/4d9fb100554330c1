@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/mcp-common/mcp_common/schemas/__init__.py
+# hypothesis_version: 6.151.4
+
+['1', '2', '3', 'Alice', 'Bob', 'Charlie', 'ToolInput', 'ToolResponse', 'data', 'description', 'error', 'example', 'examples', 'id', 'json_encoders', 'json_schema_extra', 'message', 'name', 'next_steps', 'parameters', 'records', 'success']

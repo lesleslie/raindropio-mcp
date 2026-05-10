@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/utils/process_utils.py
+# hypothesis_version: 6.151.4
+
+['-c', '.cache', 'MCP_DEBUG', 'MCP_RELOAD', 'MCP_SERVER_HOST', 'MCP_SERVER_PORT', 'Server stopped.', 'mcp']

@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/tools/highlights.py
+# hypothesis_version: 6.151.4
+
+['create_highlight', 'delete_highlight', 'get_highlight', 'highlight_id', 'list_highlights', 'result', 'update_highlight']

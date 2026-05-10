@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/mcp-common/mcp_common/security/sanitization.py
+# hypothesis_version: 6.151.4
+
+['***', '..', '/boot', '/etc', '/proc', '/root', '/sys', '<[^>]+>', 'Expected string', '[REDACTED]', '\\b[0-9a-f]{32,}\\b', 'anthropic', 'api-key', 'api_key', 'apikey', 'auth', 'authorization', 'bearer', 'credential', 'generic_hex', 'github', 'jwt', 'openai', 'passwd', 'password', 'private_key', 'pwd', 'secret', 'secret_key', 'sk-[A-Za-z0-9]{48}', 'token']

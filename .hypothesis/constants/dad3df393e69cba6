@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/clients/base_client.py
+# hypothesis_version: 6.151.4
+
+[200, 300, 401, 403, 404, 429, 'BaseHTTPClient', 'Rate limit exceeded', 'Request timed out', 'RequestMetrics', 'Resource not found', 'Retry-After', 'body', 'http', 'method', 'payload', 'url']

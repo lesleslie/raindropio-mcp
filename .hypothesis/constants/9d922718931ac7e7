@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/mcp-common/mcp_common/config/validation_mixin.py
+# hypothesis_version: 6.151.4
+
+[65535, ', ', 'ValidationMixin', 'host', 'multiple_fields', 'password', 'port', 'username']

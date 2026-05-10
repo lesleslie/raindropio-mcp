@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/mcp-common/mcp_common/security/api_keys.py
+# hypothesis_version: 6.151.4
+
+['***', 'Anthropic', 'Gemini', 'Generic', 'GitHub', 'Mailgun', 'OpenAI', '^.{16,}$', '^[0-9a-f]{32}$', '^sk-[A-Za-z0-9]{48}$', 'abc123...def456', 'anthropic', 'api_key', 'gemini', 'generic', 'ghp_', 'ghp_...abc123', 'ghs_', 'github', 'mailgun', 'openai', 'sk-', 'sk-...abc123', 'sk-ant-...xyz789', 'str', 'x']

@@ -45,6 +45,23 @@ def create_app() -> FastMCP:
     settings = get_settings()
     app = FastMCP(name=APP_NAME, version=APP_VERSION)
 
+    # HTTP health endpoint for Claude Code compatibility
+    @app.custom_route("/health", methods=["GET"])
+    async def health_check(request: Any) -> Any:
+        """HTTP health check endpoint for Claude Code `mcp list` compatibility."""
+        from starlette.responses import JSONResponse
+
+        return JSONResponse(
+            {"status": "ok", "service": "raindropio", "version": APP_VERSION}
+        )
+
+    @app.custom_route("/healthz", methods=["GET"])
+    async def healthz_check(request: Any) -> Any:
+        """Kubernetes-style health check endpoint."""
+        from starlette.responses import JSONResponse
+
+        return JSONResponse({"status": "ok"})
+
     # Add rate limiting middleware (Phase 3 Security Hardening)
     if RATE_LIMITING_AVAILABLE and hasattr(app._mcp_server, "add_middleware"):
         from fastmcp.server.middleware.rate_limiting import RateLimitingMiddleware

@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/tools/batch.py
+# hypothesis_version: 6.151.4
+
+['batch_move_bookmarks', 'batch_tag_bookmarks', 'register_batch_tools']

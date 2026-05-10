@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+For a shorter, tool-neutral bootstrap document, start with `AGENTS.md`.
+
 ## Project Overview
 
 FastMCP-based Model Context Protocol server that exposes the Raindrop.io API to AI assistants. The server provides comprehensive bookmark management including collections, tags, highlights, batch operations, filtering, and import/export functionality.

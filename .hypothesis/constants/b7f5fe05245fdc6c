@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/models/highlight.py
+# hypothesis_version: 6.151.4
+
+['Highlight', 'HighlightCreate', 'HighlightResponse', 'HighlightUpdate', 'HighlightsResponse', '_id', 'highlight', 'lastUpdate', 'raindropId']

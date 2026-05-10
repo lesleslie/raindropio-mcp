@@ -2,14 +2,11 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-if TYPE_CHECKING:
-    from datetime import datetime
-
-    from raindropio_mcp.models.collection import CollectionRef
+from raindropio_mcp.models.collection import CollectionRef
 
 
 class MediaPreview(BaseModel):
@@ -18,6 +15,8 @@ class MediaPreview(BaseModel):
     type: str | None = None
     link: str | None = None
     screenshot: str | None = None
+
+    model_config = ConfigDict(extra="ignore")
 
 
 class Bookmark(BaseModel):
@@ -34,15 +33,20 @@ class Bookmark(BaseModel):
     type: str | None = None
     cover: str | None = None
     collection: CollectionRef | None = None
-    created: datetime | None = None
-    last_update: datetime | None = Field(default=None, alias="lastUpdate")
+    collection_id: int | None = Field(default=None, alias="collectionId")
+    created: str | None = None  # API returns ISO date string
+    last_update: str | None = Field(default=None, alias="lastUpdate")
     domain: str | None = None
     source: str | None = None
     sort: int | None = None
-    media: list[MediaPreview] | None = None
+    media: list[Any] | None = None  # Can be list of MediaPreview or empty list
+    highlights: list[Any] | None = None
     please_parse: dict[str, Any] | None = Field(default=None, alias="pleaseParse")
+    creator_ref: dict[str, Any] | None = Field(default=None, alias="creatorRef")
+    user: dict[str, Any] | None = None
+    removed: bool | None = None
 
-    model_config = ConfigDict(populate_by_name=True)
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
 
 
 class BookmarkResponse(BaseModel):

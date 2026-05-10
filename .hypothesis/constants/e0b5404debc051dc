@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/models/__init__.py
+# hypothesis_version: 6.151.4
+
+['BatchDeleteBookmarks', 'BatchMoveBookmarks', 'BatchTagBookmarks', 'BatchUntagBookmarks', 'BatchUpdateBookmarks', 'Bookmark', 'BookmarkCreate', 'BookmarkFilter', 'BookmarkResponse', 'BookmarkUpdate', 'BookmarksResponse', 'Collection', 'CollectionCreate', 'CollectionRef', 'CollectionResponse', 'CollectionUpdate', 'CollectionsResponse', 'ExportFormat', 'Highlight', 'HighlightCreate', 'HighlightResponse', 'HighlightUpdate', 'HighlightsResponse', 'ImportResult', 'ImportSource', 'Tag', 'TagRename', 'TagsResponse', 'User', 'UserResponse', 'datetime']

@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/utils/exceptions.py
+# hypothesis_version: 6.151.4
+
+[400, 404, 408, 412, 425, 429, 500, 'APIError', 'AuthenticationError', 'AuthorizationError', 'ConfigurationError', 'NetworkError', 'NotFoundError', 'RaindropError', 'RateLimitError', 'SerializationError', 'ValidationError']

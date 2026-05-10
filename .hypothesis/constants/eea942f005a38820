@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/mcp-common/mcp_common/config/base.py
+# hypothesis_version: 6.151.4
+
+[100, 300, 500, 86400, '***', '-', '/', 'CRITICAL', 'Cache TTL in seconds', 'DEBUG', 'ERROR', 'INFO', 'MCP Server', 'WARNING', '_', 'after', 'api_key', 'base_url', 'data', 'http://', 'https://', 'local.yaml', 'server_name', 'settings']

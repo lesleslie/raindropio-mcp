@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/mcp-common/mcp_common/cli/factory.py
+# hypothesis_version: 6.151.4
+
+[0.1, 8000, '--force', '--json', '--probe', '--timeout', '127.0.0.1', 'Corrupted PID file', 'MCP Server', 'MCPServerCLIFactory', 'N/A', 'No PID file found', 'Process not found', 'Server killed', 'Server not running', 'Server started', 'Server stopped', 'Shutdown timed out', 'Snapshot age: N/A', 'Starting server', 'already running', 'already_running', 'corrupted_pid', 'error', 'health', 'health_check', 'healthy', 'http_host', 'http_port', 'info', 'invalid_pid', 'killed', 'log_level', 'message', 'not_running', 'permission', 'pid', 'ready', 'restart', 'restart_failed', 'running', 'snapshot_age_seconds', 'snapshot_fresh', 'stale', 'stale_pid', 'start', 'starting', 'status', 'stop', 'stopped', 'timeout']

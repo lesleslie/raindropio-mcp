@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/models/payloads.py
+# hypothesis_version: 6.151.4
+
+['BookmarkCreate', 'BookmarkUpdate', 'CollectionCreate', 'CollectionUpdate', 'TagRename', 'collectionId', 'from', 'parentId', 'pleaseParse', 'to']

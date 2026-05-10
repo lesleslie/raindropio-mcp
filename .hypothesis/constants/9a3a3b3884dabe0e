@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/config/settings.py
+# hypothesis_version: 6.151.4
+
+[0.0, 0.5, 1.0, 10.0, 30.0, 120.0, 100, 408, 425, 429, 500, 502, 503, 504, 1024, 3034, 3600, 65535, 1000000, '***', '.env', '/mcp', '127.0.0.1', 'Authorization', 'HTTP bind address', 'HTTP port', 'INFO', 'RAINDROP_', 'RaindropSettings', 'User-Agent', 'after', 'base_url', 'get_settings', 'headers', 'ignore', 'limits', 'raindropio-mcp/0.1.0', 'timeout']

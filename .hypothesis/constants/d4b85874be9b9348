@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/main.py
+# hypothesis_version: 6.151.4
+
+['--http', '--http-host', '--http-path', '--http-port', '--version', 'Claude Desktop', 'HTTP (streamable)', 'HTTP path override', 'HTTP port override', 'Raindrop.io MCP', 'STDIO', '__main__', 'exception', 'host', 'level', 'logger', 'message', 'path', 'port', 'store_true', 'streamable-http', 'timestamp', '🏷️  Tag Management', '🔍 Search & Filtering']

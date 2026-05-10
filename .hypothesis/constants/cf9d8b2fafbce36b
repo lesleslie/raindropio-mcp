@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/models/batch_payloads.py
+# hypothesis_version: 6.151.4
+
+['BatchDeleteBookmarks', 'BatchMoveBookmarks', 'BatchTagBookmarks', 'BatchUntagBookmarks', 'BatchUpdateBookmarks']

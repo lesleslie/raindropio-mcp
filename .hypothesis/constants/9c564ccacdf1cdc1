@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/models/filter_payloads.py
+# hypothesis_version: 6.151.4
+
+['BookmarkFilter', 'ISO 8601 date string']

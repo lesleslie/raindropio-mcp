@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/tools/bookmarks.py
+# hypothesis_version: 6.151.4
+
+['bookmark_id', 'collectionId', 'count', 'create_bookmark', 'delete_bookmark', 'get_bookmark', 'items', 'list_bookmarks', 'page', 'perPage', 'result', 'search_bookmarks', 'update_bookmark']

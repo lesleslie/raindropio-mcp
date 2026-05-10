@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/mcp-common/mcp_common/ui/panels.py
+# hypothesis_version: 6.151.4
+
+['%Y-%m-%d %H:%M', '%Y-%m-%d %H:%M:%S', '-', 'CPU %', 'Component', 'Created', 'Degraded', 'Description', 'Details', 'Error', 'Failed', 'Feature', 'HTTP Endpoint', 'Healthy', 'ID', 'Memory (MB)', 'Name', 'No backups found', 'PID', 'Profile', 'Running Processes', 'Server Endpoints', 'Server Status', 'Setting', 'Status', 'Value', 'Warning', 'WebSocket Monitor', '[', '[/dim]', '[dim]', ']', '_', 'bold', 'bold cyan', 'created_at', 'cyan', 'degrad', 'description', 'dim', 'down', 'error', 'failed', 'green', 'healthy', 'id', 'info', 'name', 'ok', 'pid', 'profile', 'red', 'running', 'stopped', 'success', 'unhealthy', 'value', 'warn', 'warning', 'white', 'yellow', '─', '⚠️', '✅', '❌']

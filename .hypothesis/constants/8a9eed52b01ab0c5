@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/clients/raindrop_client.py
+# hypothesis_version: 6.151.4
+
+['/collection', '/collections', '/export', '/import', '/me', '/raindrops', '/raindrops/search', '/raindrops/tags', '/tags', 'DELETE', 'Failed to list tags', 'GET', 'POST', 'PUT', 'PaginatedBookmarks', 'RaindropClient', 'collection', 'created_after', 'created_before', 'imported_count', 'item', 'items', 'page', 'perpage', 'processed_count', 'result', 'search', 'sort', 'tag']

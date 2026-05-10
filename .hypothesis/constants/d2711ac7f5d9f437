@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/models/user.py
+# hypothesis_version: 6.151.4
+
+['User', 'UserResponse', '_id', 'lastSync']
