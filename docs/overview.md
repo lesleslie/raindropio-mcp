@@ -17,7 +17,7 @@ set of Python packages:
 
 ## Package Dependency Graph
 
-![Package dependency graph showing inter-package dependencies between config, client, models, tools, and server layers](https://mermaid.ink/svg/pako:eNp9kF1rwjAUhu_3K4K7dlOrGx1D6EdqKwxk612QEttjF4hNSbJB__00VnuQ4bnJ0_OE9_Sk1rz9Jnn8QI5lfna1-x6VqtmLeuS6pwrYJxdNpVX7BdaKpjbvO_28rMEWpm9s3WVoKnfe5kkBjTVDYMhCbiDN803k1PZqouuoWxOzc0yx56VVurs78aAqkGggZZuu4o0VJflwashN2IZ3UvHq_g5WKRy4YqdGoaEWxl5-5lQp80l-VCQREu5HGtC_oIfMjJUauIWCt-0QuGaH44s8tf8tHJPxeEkCx5HjEDHuU8SJ49TxCnGEmCI-388cp4gjxOdZa8cZWtZ2EkhA9kLKt0fqz0NvgUTUi1cae7MpErQXySJ4mXlIpL2YB_6EzpDIeuFPpl5C_wCmcbZo)
+!Package dependency graph showing inter-package dependencies between config, client, models, tools, and server layers
 
 ## Tool Registration Flow
 
@@ -27,7 +27,7 @@ set of Python packages:
    by category (collections, bookmarks, tags, account, system).
 1. A shutdown hook closes the `RaindropClient` to release `httpx` resources.
 
-![Component interaction flowchart showing tool registration and lifecycle](https://mermaid.ink/svg/pako:eNptktFugjAUhu_3FA270Qs3AVFZFhOQ4q6Nd2QhtVRprJS0Nerbr9ZmOcsg4TQ_31dKOT0IeaUtUQbtihdkr6wKqGLEsJr0_WgcfKPJZIXyKthfuGhqRXjXKNnXVHDWmYfgpuVOW1fB1gtrxxHvtCEdZV7LnFZUgWJHrg1TNRGiNlIK_fsqVwon4hCYVArBqOGye07wujcjYO6lPJ2JOg15MfAMOQ4pM6C0_NgKe5shMYFrEkPbIWkOpAMXbt3_1gJY_NxLZWp2c8OAvIT_j1J56Qa1FGj6bofzH8sVHDq3rILdA6Gtn8Aab-HoKTxDDMMMhgSGOQwLGJYwpCC4UroHmyqwPdbtxTTy2qHWdtN_zMbxL3tE3el6o0JqNhp_7tX7assEI5qh1pj-hnq7G7hPbe6C2eNnOyA-XtNpGJcYgNyDBS7iKASg8GCWpVMcAVB6kExxvIZg4wFOZ3mcAPDlQZlk8yj-Abll-60)
+!Component interaction flowchart showing tool registration and lifecycle
 
 Tools use the minimal wrappers in `raindropio_mcp.tools.*` to validate payloads
 with Pydantic models (`BookmarkCreate`, `CollectionUpdate`, etc.) before calling

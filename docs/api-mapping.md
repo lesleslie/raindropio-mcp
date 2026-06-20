@@ -85,7 +85,7 @@ This document provides a comprehensive mapping of Raindrop.io REST API endpoints
 
 ## Visual Map
 
-![API endpoint mapping flowchart showing Raindrop API endpoints, RaindropClient methods, and MCP tools](https://mermaid.ink/svg/pako:eNrNU1trwjAYffdXlA72JtXoGMoQvGQXECabe5IhMY02GJuSpIz9-7VNoknsXscCpek5J8npd77sGf_CGRIqWr51omrIcncQqMiiKca8zNUmNpPoNppzxghWlOcy_mzU9ZiuXvqb-Amuo6SURDzsRDJpvvBZnoxp2obLBly9vnuoBj_ad1jAJVzDkHLszBkluaocHYjankizqJ4G-zMqXUw7wYIgRUJpWaQtaEoY8VDHw5pzJo0FpMu3LQTfU_b3fkieNm8_3RnnxxMSR7mJz9Mq4Wd6yFj1qCBgYAIWiOap4IUfqEVlMsYuLgkSOHMytsJLwlcb2nzbT8qsv9bQga74zvzQpa4W0VXVtgLQlNpbawrtYabMHlYfenYWtsF_MuX1Qn1vo253Ym9Mx7k9Da672GqBowWOFly0wGk09c2IPqLqeja-gaPhbHDnc8Bwo15_8AgdzrrQ9D1cDED_iga_0dq3YYfTUQ-CkAUe-wP0paXi)
+!API endpoint mapping flowchart showing Raindrop API endpoints, RaindropClient methods, and MCP tools
 
 ## Coverage Status
 

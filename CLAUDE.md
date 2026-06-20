@@ -94,7 +94,7 @@ uv run bandit -r raindropio_mcp           # Security scanning
 
 ### Layered Architecture
 
-![Five-layer architecture diagram showing Config, Client, Models, Tools, and Server layers with dependencies](https://mermaid.ink/svg/pako:eNqFklFrgzAUhd_7K8Q9d1ZtN9zDQGNKBx2U1jcZkmmahqZGYjrw3y8mlcU5uoBcjt-9nOONRKDm5Gz3M0ed9vpJtAa8PlKSu6ZeBZKU184WdVi4H7q1P7Gfu3tE60rw5oClpDVpbRzkLsGyaMcI15WuvxwZxbVUjrpOrBJllaAWb7JsZ1psGPzkmMIwd0v9sjiiUnLR3c3xzivM2tw1dZID9Dk4P1-QOHuAM4bLfjVehoi3oeTE1GO7AxVthzrGUdV6CZLlyVtTJrG4v42M8z6ELpMMqcoQ6RYHIIkJFxTbe0-Vp1S0EJjQVv7zwQcsvrDIXVMnZlCZlQIrnwI1jQ2Uy0Ut_bHpHLB9-8sjDpz5_FVdz8zcklG-rcBYmc7U1yodqWSkbnODMgze5nxbxTdmHKBvrUB2DKuf2DlSxl4eYLRMwpVFVChDnmEaBr5FwDCzXsVPQWiRdCDLOFrAwCJwINHCD9fwG6-G56o)
+!Five-layer architecture diagram showing Config, Client, Models, Tools, and Server layers with dependencies
 
 ### Data Flow
 
@@ -105,7 +105,7 @@ uv run bandit -r raindropio_mcp           # Security scanning
 1. Response validated with Pydantic models → returned as JSON-serializable dict
 1. FastMCP sends response back to MCP client
 
-![Sequence diagram showing complete request lifecycle from MCP client through FastMCP, Tool, RaindropClient, BaseHTTPClient to Raindrop API with retry and error handling](https://mermaid.ink/svg/pako:eNp1kVFrwjAUhd_3K-4PqCibwixDaOuKG4srXdh71gYNxKRL0qH_fjdpXVdFHy7Id3rPPSeWf7dcVXwt2M6wwx3gr2HGiUo0TDkgGTCLs4BMCq7clSAnXpAz61B0RamHVGsJeasqJ7S6kpTBoWRC1UY3N1zSIEqZ5RtKixuipHj5v8r_D5owSDZZrXISd9eUPrbtVuQECY2h1K3j4HRQBEI78MmkqBmy4lSjj6iA6JpL-6cps7ivBwh3e11DxmS3ovS2KXJ_98g2PZOkaeQJkTMneNM7UQ0YE8Qhlt_39GWmq5Qzww0krdsHGcLJ2ME2Wlk-tiCsgWdjtLFhyYapWnKY3y-ni-PxLO2DFMxYXsPrx_t2SODBjRrOoq4remrw4wH0FWZa_XDjfLtrUbke9S_ircaH45MgI_7y7CJTGFuNZ2jciHdHoaSuPq1imM8eI4y28GMZwWI28-Pejwc_5hcbaOTDJVKC6X0sYMdDykN47F_iMOwi)
+!Sequence diagram showing complete request lifecycle from MCP client through FastMCP, Tool, RaindropClient, BaseHTTPClient to Raindrop API with retry and error handling
 
 ### Error Handling Strategy
 
@@ -120,7 +120,7 @@ uv run bandit -r raindropio_mcp           # Security scanning
 
 ### Error Mapping Flow
 
-![Flowchart showing HTTP status codes mapped to appropriate exception types including NotFoundError, RateLimitError, and APIError](https://mermaid.ink/svg/pako:eNpdkV1vgjAUhu_3K06yazIGss1lMeFTmR8xyh3xAuEYG5G6triRsf--WtkEetGc9H16Pt6zy-lnuk-YgMi7A3nseBJFS1ghP9GC4wY0bQTO91okouTg0gx_FKcu56LWhq5rxnBYgxuvUJSsgHWZpsj5pgUNdL0GL7aXoc8YZW9b9jBykkwW-iiRiy76WIPfRcPinOQkg4gesOjCZg1BFw4o25Is64ODGsbxgoqAlkV2o-WotGQpgpRAad1vLzVMLoOxqsFVwxCRI9Ky27hhSbbzIF0J41UicEaORNyKRpTCPCmqv_m5enX3mB5A1dLsnUDWzm5Jm62Lze-tbtbIzshAJd7cFuOqtU3jZZUlhSApzOXi8ivgKW32bxn4XymeBKGNXf5VV3HQiscqnncd7H8OFbTojdyn1MVFlaPsdEfy_PX-2fdM47EljBshsOwnw2wJYSP4w4FjWi1h2giW7puu8QuaANQT)
+!Flowchart showing HTTP status codes mapped to appropriate exception types including NotFoundError, RateLimitError, and APIError
 
 ## Development Guidelines
 

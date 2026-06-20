@@ -27,7 +27,7 @@
 
 ### Type System Reference
 
-![Type system diagram showing modern Python 3.13 typing patterns with pipe operator, t. prefix, and built-in collection types](https://mermaid.ink/svg/pako:eNp9UktOwzAQ3XOKkZEQCFJUAkIUqNQ06U_lsyhsrC7cxkktubblOFV7AHYcAS7HSYidVnKRqBeZZ795M_NGyTVRC5hER1Cdopzl7v4kU6oFRnWE141ZSAFhoxmew2SjmMjR1Cns6WD0VlBQTFHIpIZSMCmKh5m-bBdGQ_XChLHhWQrq6aJaZxqgNM3Y2inYUkltwLgmQAownqKLUVQybgImbAatm3BWmAtI2bz6mlLxXQ8qUhf3rXWEkIYYOyJGlRfqv3i9Yox6pZjbZ9DUlHprKaUZZKdnEJzk5t468zQJRu9EMzLj1Jtv3QK7h0dYEV76C-hh1KeCajb_4wZX-dPDLlaSpRi54FXsY_Tz_QmZlsvdCrcLHVdlvcRBnfiirD_C8WTqkcOaNI3xoVk6EARtiB2OPNx1uOdw7PCoqvf1AV1OibC_D93tOalph3serr2aTbXGEWSM89bxbRKHV02P6G-J5O46Cm88YvAfMdwjfgGZctkW)
+!Type system diagram showing modern Python 3.13 typing patterns with pipe operator, t. prefix, and built-in collection types
 
 - **Modern Python Features**
 
@@ -46,7 +46,7 @@
 
 ### Clean Code Decision Tree
 
-![Decision tree for code extraction following DRY, YAGNI, and KISS principles](https://mermaid.ink/svg/pako:eNp1jsFOwkAQhu_8-xbgeDZG2oMEYSNvdAjHBQ02MIRywHewmC9u02wgpHrn5CPpyPollWaE9MIe5fN_88y-E_IiSeabgmV5ANe6UhIksRAxjYGuVzaMKJTwHX8Y4IDNotfrglYQWqeDRXGH88Jbd9O1rUHyJ-YB8HmK055fEl8tU4Jqrjfb6YHWbDi3JBDE2OZOnl3-sl7d3tq-Yb4FNye_37lgqQZFiRmZa809acNDCqp6CRbGKFJcro1GtTeQWhpX18wUUBSoEri4bhg4alSTk-_KAK1m8J41eo5M3Pjx8REyrIMj1jYkbHR_6p9tcbapQFxZciPurXttyAlYDngGs1_Gcbg34BgRd99Z2aoAa0HF7bWbXADPgjlHHtmogOAeG58C4Af4A2HGhEA)
+!Decision tree for code extraction following DRY, YAGNI, and KISS principles
 
 - **Code Organization**
 
