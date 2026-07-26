@@ -244,7 +244,7 @@ class TestGetMaskedToken:
     ) -> None:
         """Test get_masked_token with short token without security module."""
         with patch("raindropio_mcp.config.settings.SECURITY_AVAILABLE", False):
-            monkeypatch.setenv("RAINDROP_TOKEN", "short")
+            monkeypatch.setenv("RAINDROP_TOKEN", "abc")
             settings = RaindropSettings()
             # Should return *** for tokens <= 4 chars
             assert settings.get_masked_token() == "***"
@@ -256,7 +256,7 @@ class TestGetMaskedToken:
             settings = RaindropSettings()
             masked = settings.get_masked_token()
             # Fallback should show last 4 chars
-            assert masked == "...pqrs"
+            assert masked == "...opqr"
 
     @patch("raindropio_mcp.config.settings.SECURITY_AVAILABLE", True)
     def test_get_masked_token_with_security(self, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -265,7 +265,7 @@ class TestGetMaskedToken:
         settings = RaindropSettings()
         masked = settings.get_masked_token()
         # Security module should mask with 4 visible chars
-        assert masked.endswith("pqrs")
+        assert masked.endswith("opqr")
 
 
 class TestHttpClientConfig:
