@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -120,13 +120,9 @@ class TestRaindropMCPServer:
 
     @patch("raindropio_mcp.__main__.create_runtime_components")
     @patch("raindropio_mcp.__main__.create_app")
-    @patch("raindropio_mcp.__main__.get_settings")
     @pytest.mark.asyncio
     async def test_startup_lifecycle(
-        self,
-        mock_get_settings: MagicMock,
-        mock_create_app: MagicMock,
-        mock_create_runtime: MagicMock,
+        self, mock_create_app: MagicMock, mock_create_runtime: MagicMock
     ) -> None:
         """Test server startup lifecycle."""
         from raindropio_mcp.__main__ import RaindropConfig, RaindropMCPServer
@@ -135,12 +131,7 @@ class TestRaindropMCPServer:
         mock_create_app.return_value = mock_app
 
         mock_runtime = MagicMock()
-        mock_runtime.initialize = AsyncMock()
-        mock_snapshot_manager = MagicMock()
-        mock_snapshot_manager.create_snapshot = AsyncMock()
-        mock_runtime.snapshot_manager = mock_snapshot_manager
         mock_create_runtime.return_value = mock_runtime
-        mock_get_settings.return_value = MagicMock()
 
         config = RaindropConfig()
         server = RaindropMCPServer(config)
@@ -163,10 +154,6 @@ class TestRaindropMCPServer:
         mock_create_app.return_value = mock_app
 
         mock_runtime = MagicMock()
-        mock_runtime.cleanup = AsyncMock()
-        mock_snapshot_manager = MagicMock()
-        mock_snapshot_manager.create_snapshot = AsyncMock()
-        mock_runtime.snapshot_manager = mock_snapshot_manager
         mock_create_runtime.return_value = mock_runtime
 
         config = RaindropConfig()
@@ -197,17 +184,6 @@ class TestRaindropMCPServer:
         mock_runtime = MagicMock()
         mock_health_monitor = MagicMock()
         mock_runtime.health_monitor = mock_health_monitor
-        mock_cache_manager = MagicMock()
-        mock_cache_manager.get_cache_stats = AsyncMock(
-            return_value={
-                "total_entries": 0,
-                "hits": 0,
-                "misses": 0,
-                "hit_rate": 0.0,
-                "initialized": True,
-            }
-        )
-        mock_runtime.cache_manager = mock_cache_manager
 
         mock_health_monitor.create_component_health.return_value = MagicMock(
             status=HealthStatus.HEALTHY
@@ -248,17 +224,6 @@ class TestRaindropMCPServer:
         mock_runtime = MagicMock()
         mock_health_monitor = MagicMock()
         mock_runtime.health_monitor = mock_health_monitor
-        mock_cache_manager = MagicMock()
-        mock_cache_manager.get_cache_stats = AsyncMock(
-            return_value={
-                "total_entries": 0,
-                "hits": 0,
-                "misses": 0,
-                "hit_rate": 0.0,
-                "initialized": True,
-            }
-        )
-        mock_runtime.cache_manager = mock_cache_manager
 
         def create_component_health(name: str, status: HealthStatus, details: dict):
             return MagicMock(status=status, details=details)

@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from hypothesis import HealthCheck, given, settings as hyp_settings
+from hypothesis import given, settings as hyp_settings
 from hypothesis import strategies as st
 from hypothesis.strategies import just, none
 from pydantic import ValidationError
@@ -15,31 +15,6 @@ from raindropio_mcp.config.settings import (
     CacheConfig,
     ObservabilityConfig,
     RetryConfig,
-)
-
-# Suppress Hypothesis warnings about overly aggressive filters and
-# warnings about slow test execution (settings involve model construction).
-HYP_FILTER_HUSH = hyp_settings(
-    max_examples=10,
-    suppress_health_check=[HealthCheck.filter_too_much, HealthCheck.too_slow],
-)
-
-# Strategies ---------------------------------------------------------------
-# Token: alphanumeric-only, 32-100 chars, with no whitespace so the security
-# validator (which strips before matching) accepts it.
-token_strategy = st.text(
-    alphabet=st.characters(
-        whitelist_categories=("Lu", "Ll", "Nd"), max_codepoint=122
-    ),
-    min_size=32,
-    max_size=100,
-)
-
-# URL-safe alphanumeric path segments, no characters requiring percent-encoding.
-url_path_strategy = st.text(
-    alphabet="abcdefghijklmnopqrstuvwxyz0123456789",
-    min_size=1,
-    max_size=10,
 )
 
 
@@ -149,11 +124,11 @@ class TestRaindropSettingsProperties:
     """Property-based tests for RaindropSettings."""
 
     @given(
-        token=token_strategy,
+        token=st.text(min_size=32, max_size=100).filter(lambda x: len(x.strip()) > 0),
         request_timeout=st.floats(min_value=1.0, max_value=120.0, allow_infinity=False, allow_nan=False),
         max_connections=st.integers(min_value=1, max_value=100),
     )
-    @HYP_FILTER_HUSH
+    @hyp_settings(max_examples=10)  # Limit examples for external API calls
     def test_valid_settings_with_long_token(
         self, token: str, request_timeout: float, max_connections: int
     ) -> None:
@@ -235,8 +210,7 @@ class TestRaindropSettingsProperties:
 class TestTokenMaskingProperties:
     """Property-based tests for token masking."""
 
-    @given(token=token_strategy)
-    @HYP_FILTER_HUSH
+    @given(token=st.text(min_size=32, max_size=100))
     def test_masked_token_always_shorter(self, token: str) -> None:
         """Test that masked token is always shorter than original."""
         from raindropio_mcp.config.settings import RaindropSettings
@@ -246,8 +220,7 @@ class TestTokenMaskingProperties:
 
         assert len(masked) <= len(token)
 
-    @given(token=token_strategy)
-    @HYP_FILTER_HUSH
+    @given(token=st.text(min_size=32, max_size=100))
     def test_masked_token_never_equals_original(self, token: str) -> None:
         """Test that masked token is never equal to original (for sufficiently long tokens)."""
         from raindropio_mcp.config.settings import RaindropSettings
@@ -260,22 +233,17 @@ class TestTokenMaskingProperties:
             assert masked != token
 
     @given(token=st.text(min_size=0, max_size=10))
-    @HYP_FILTER_HUSH
     def test_short_token_returns_placeholder(self, token: str) -> None:
-        """Test that very short tokens return placeholder or raise ConfigurationError."""
+        """Test that very short tokens return placeholder."""
         from raindropio_mcp.config.settings import RaindropSettings
 
         # Test with short or empty tokens
         if len(token) < 5:
-            try:
-                settings = RaindropSettings.model_validate({"token": token})
-                masked = settings.get_masked_token()
-                # For non-empty short tokens (<=4 chars), should return "***"
-                if 0 < len(token) <= 4:
-                    assert masked == "***"
-            except Exception:
-                # Empty/whitespace tokens raise ConfigurationError — also valid
-                pass
+            settings = RaindropSettings.model_validate({"token": token})
+            masked = settings.get_masked_token()
+            # Should return placeholder for very short tokens
+            if not token:
+                assert masked == "***"
 
 
 class TestURLValidationProperties:
@@ -283,14 +251,9 @@ class TestURLValidationProperties:
 
     @given(
         scheme=st.sampled_from(["https", "http"]),
-        domain=st.text(
-            alphabet="abcdefghijklmnopqrstuvwxyz0123456789",
-            min_size=3,
-            max_size=20,
-        ),
-        path=url_path_strategy,
+        domain=st.text(min_size=3, max_size=20).filter(lambda x: x.isalnum()),
+        path=st.text(min_size=1, max_size=10),
     )
-    @HYP_FILTER_HUSH
     def test_base_url_formats(self, scheme: str, domain: str, path: str) -> None:
         """Test that various URL formats are handled."""
         from raindropio_mcp.config.settings import RaindropSettings
@@ -314,7 +277,7 @@ class TestAuthHeadersProperties:
     """Property-based tests for authentication headers."""
 
     @given(
-        token=token_strategy,
+        token=st.text(min_size=32, max_size=100),
         user_agent=st.text(min_size=5, max_size=50),
     )
     def test_auth_headers_always_contain_bearer(self, token: str, user_agent: str) -> None:
@@ -334,8 +297,7 @@ class TestAuthHeadersProperties:
         assert "User-Agent" in headers
         assert headers["User-Agent"] == user_agent
 
-    @given(token=token_strategy)
-    @HYP_FILTER_HUSH
+    @given(token=st.text(min_size=32, max_size=100))
     def test_auth_headers_token_is_stripped(self, token: str) -> None:
         """Test that token in auth headers is stripped of whitespace."""
         from raindropio_mcp.config.settings import RaindropSettings

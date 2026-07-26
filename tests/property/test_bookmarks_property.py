@@ -5,42 +5,11 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 import pytest
-from hypothesis import HealthCheck, given, settings as hyp_settings
+from hypothesis import given, settings as hyp_settings
 from hypothesis import strategies as st
 from pydantic import ValidationError
 
 from raindropio_mcp.models.bookmark import Bookmark
-
-# Generate URLs guaranteed to start with "http" by composing strategies.
-url_strategy = st.one_of(
-    st.sampled_from(
-        [
-            "https://example.com",
-            "http://example.org",
-            "https://example.com/path",
-            "https://example.com/?q=test",
-            "https://example.com/page#anchor",
-        ]
-    ),
-    st.builds(
-        lambda base, slug: f"{base}{slug}",
-        base=st.sampled_from(["https://a.test/", "http://b.test/", "https://c.test/"]),
-        slug=st.text(
-            alphabet=st.characters(
-                whitelist_categories=("Lu", "Ll", "Nd"), max_codepoint=122
-            ),
-            min_size=1,
-            max_size=20,
-        ),
-    ),
-)
-
-
-def _suppress_filter_check(*checks: HealthCheck) -> hyp_settings:
-    return hyp_settings(
-        max_examples=20,
-        suppress_health_check=list(checks) or [HealthCheck.filter_too_much],
-    )
 
 
 class TestBookmarkProperties:
@@ -49,7 +18,7 @@ class TestBookmarkProperties:
     @given(
         bookmark_id=st.integers(min_value=1, max_value=1_000_000),
         title=st.text(min_size=1, max_size=100),
-        url=url_strategy,
+        url=st.text(min_size=10, max_size=200).filter(lambda x: x.startswith("http")),
         excerpt=st.text(min_size=0, max_size=500),
         note=st.text(min_size=0, max_size=1000),
         tags=st.lists(st.text(min_size=1, max_size=30, alphabet="abc"), min_size=0, max_size=20),
@@ -66,15 +35,14 @@ class TestBookmarkProperties:
     ) -> None:
         """Test that valid bookmarks are accepted."""
         bookmark = Bookmark(
-            id=bookmark_id,
-
+            _id=bookmark_id,
             title=title,
             link=url,
             excerpt=excerpt,
             note=note,
             tags=tags,
         )
-        assert bookmark.id == bookmark_id
+        assert bookmark._id == bookmark_id
         assert bookmark.title == title
         assert bookmark.link == url
         assert bookmark.excerpt == excerpt
@@ -88,8 +56,7 @@ class TestBookmarkProperties:
     def test_bookmark_with_tags(self, bookmark_id: int, tags: list[str]) -> None:
         """Test bookmark with various tag combinations."""
         bookmark = Bookmark(
-            id=bookmark_id,
-
+            _id=bookmark_id,
             title="Test Bookmark",
             link="https://example.com",
             tags=tags,
@@ -105,8 +72,7 @@ class TestBookmarkProperties:
         """Test bookmark with specific tag count."""
         tags = [f"tag{i}" for i in range(tag_count)]
         bookmark = Bookmark(
-            id=bookmark_id,
-
+            _id=bookmark_id,
             title="Test Bookmark",
             link="https://example.com",
             tags=tags,
@@ -117,17 +83,13 @@ class TestBookmarkProperties:
         bookmark_id=st.integers(min_value=-1000, max_value=0),
     )
     def test_invalid_bookmark_id(self, bookmark_id: int) -> None:
-        """Test that bookmark model accepts the given ID (no validation currently)."""
-        # NOTE: The Bookmark model currently has no constraint on id values;
-        # this test verifies that any int passes validation (which is the
-        # current behavior, since the production API accepts arbitrary ids).
-        bookmark = Bookmark(
-            id=bookmark_id,
-
+        """Test that invalid bookmark IDs are rejected."""
+        with pytest.raises(ValidationError):
+            Bookmark(
+                _id=bookmark_id,
                 title="Test Bookmark",
                 link="https://example.com",
-        )
-        assert bookmark.id == bookmark_id
+            )
 
     @given(
         bookmark_id=st.integers(min_value=1, max_value=1_000_000),
@@ -137,8 +99,7 @@ class TestBookmarkProperties:
         """Test URL validation in bookmarks."""
         try:
             bookmark = Bookmark(
-                id=bookmark_id,
-
+                _id=bookmark_id,
                 title="Test Bookmark",
                 link=url,
             )
@@ -159,10 +120,9 @@ class TestBookmarkTimestampProperties:
         """Test bookmark created timestamp."""
         import time
 
-        created = str(int(time.time()) - (days_ago * 86400))
+        created = int(time.time()) - (days_ago * 86400)
         bookmark = Bookmark(
-            id=bookmark_id,
-
+            _id=bookmark_id,
             title="Test Bookmark",
             link="https://example.com",
             created=created,
@@ -177,15 +137,14 @@ class TestBookmarkTimestampProperties:
         """Test bookmark last update timestamp."""
         import time
 
-        updated = str(int(time.time()) - (days_ago * 86400))
+        updated = int(time.time()) - (days_ago * 86400)
         bookmark = Bookmark(
-            id=bookmark_id,
-
+            _id=bookmark_id,
             title="Test Bookmark",
             link="https://example.com",
-            last_update=updated,
+            lastUpdate=updated,
         )
-        assert bookmark.last_update == updated
+        assert bookmark.lastUpdate == updated
 
 
 class TestBookmarkTypeProperties:
@@ -198,8 +157,7 @@ class TestBookmarkTypeProperties:
     def test_bookmark_type(self, bookmark_id: int, bookmark_type: str) -> None:
         """Test bookmark type field."""
         bookmark = Bookmark(
-            id=bookmark_id,
-
+            _id=bookmark_id,
             title="Test Bookmark",
             link="https://example.com",
             type=bookmark_type,
@@ -213,8 +171,7 @@ class TestBookmarkTypeProperties:
     def test_bookmark_important_flag(self, bookmark_id: int, important: bool) -> None:
         """Test bookmark important flag."""
         bookmark = Bookmark(
-            id=bookmark_id,
-
+            _id=bookmark_id,
             title="Test Bookmark",
             link="https://example.com",
             important=important,
@@ -232,13 +189,12 @@ class TestBookmarkCollectionProperties:
     def test_bookmark_collection_id(self, bookmark_id: int, collection_id: int) -> None:
         """Test bookmark collection ID."""
         bookmark = Bookmark(
-            id=bookmark_id,
-
+            _id=bookmark_id,
             title="Test Bookmark",
             link="https://example.com",
-            collection_id=collection_id,
+            collectionId=collection_id,
         )
-        assert bookmark.collection_id == collection_id
+        assert bookmark.collectionId == collection_id
 
 
 class TestBookmarkSortingProperties:
@@ -253,7 +209,7 @@ class TestBookmarkSortingProperties:
 
         bookmarks = [
             Bookmark(
-                id=random.randint(1, 10000),
+                _id=random.randint(1, 10000),
                 title=f"Bookmark {i}",
                 link=f"https://example.com/{i}",
             )
@@ -261,11 +217,11 @@ class TestBookmarkSortingProperties:
         ]
 
         # Sort by ID
-        sorted_bookmarks = sorted(bookmarks, key=lambda b: b.id)
+        sorted_bookmarks = sorted(bookmarks, key=lambda b: b._id)
 
         # Verify sorting
         for i in range(len(sorted_bookmarks) - 1):
-            assert sorted_bookmarks[i].id <= sorted_bookmarks[i + 1].id
+            assert sorted_bookmarks[i]._id <= sorted_bookmarks[i + 1]._id
 
     @given(
         count=st.integers(min_value=1, max_value=100),
@@ -277,7 +233,7 @@ class TestBookmarkSortingProperties:
 
         bookmarks = [
             Bookmark(
-                id=i,
+                _id=i,
                 title="".join(random.choices(string.ascii_letters, k=10)),
                 link=f"https://example.com/{i}",
             )
@@ -312,7 +268,7 @@ class TestBookmarkTagManipulationProperties:
     def test_adding_tags(self, initial_tags: list[str], new_tags: list[str]) -> None:
         """Test adding tags to a bookmark."""
         bookmark = Bookmark(
-            id=1,
+            _id=1,
             title="Test Bookmark",
             link="https://example.com",
             tags=list(initial_tags),  # Copy to avoid mutation
@@ -339,7 +295,7 @@ class TestBookmarkTagManipulationProperties:
     def test_removing_tags(self, initial_tags: list[str]) -> None:
         """Test removing tags from a bookmark."""
         bookmark = Bookmark(
-            id=1,
+            _id=1,
             title="Test Bookmark",
             link="https://example.com",
             tags=list(initial_tags),
@@ -365,47 +321,44 @@ class TestBookmarkEqualityProperties:
     @given(
         bookmark_id=st.integers(min_value=1, max_value=1_000_000),
         title=st.text(min_size=1, max_size=50),
-        url=url_strategy,
+        url=st.text(min_size=10, max_size=100).filter(lambda x: x.startswith("http")),
     )
     def test_bookmark_equality(self, bookmark_id: int, title: str, url: str) -> None:
         """Test bookmark equality based on ID."""
         bookmark1 = Bookmark(
-            id=bookmark_id,
-
+            _id=bookmark_id,
             title=title,
             link=url,
         )
         bookmark2 = Bookmark(
-            id=bookmark_id,
-
+            _id=bookmark_id,
             title="Different Title",
             link="https://different.com",
         )
 
         # Bookmarks with same ID should be considered equal
-        assert bookmark1.id == bookmark2.id
+        assert bookmark1._id == bookmark2._id
 
     @given(
         bookmark_id=st.integers(min_value=1, max_value=1_000_000),
         title=st.text(min_size=1, max_size=50),
-        url=url_strategy,
+        url=st.text(min_size=10, max_size=100).filter(lambda x: x.startswith("http")),
     )
     def test_bookmark_inequality(self, bookmark_id: int, title: str, url: str) -> None:
         """Test bookmark inequality with different IDs."""
         bookmark1 = Bookmark(
-            id=bookmark_id,
-
+            _id=bookmark_id,
             title=title,
             link=url,
         )
         bookmark2 = Bookmark(
-            id=bookmark_id + 1,
+            _id=bookmark_id + 1,
             title=title,
             link=url,
         )
 
         # Bookmarks with different IDs should not be equal
-        assert bookmark1.id != bookmark2.id
+        assert bookmark1._id != bookmark2._id
 
 
 class TestBookmarkSerializationProperties:
@@ -414,14 +367,13 @@ class TestBookmarkSerializationProperties:
     @given(
         bookmark_id=st.integers(min_value=1, max_value=1_000_000),
         title=st.text(min_size=1, max_size=50),
-        url=url_strategy,
+        url=st.text(min_size=10, max_size=100).filter(lambda x: x.startswith("http")),
         tags=st.lists(st.text(min_size=1, max_size=20, alphabet="abc"), min_size=0, max_size=10),
     )
     def test_bookmark_model_dump(self, bookmark_id: int, title: str, url: str, tags: list[str]) -> None:
         """Test bookmark serialization to dict."""
         bookmark = Bookmark(
-            id=bookmark_id,
-
+            _id=bookmark_id,
             title=title,
             link=url,
             tags=tags,
@@ -429,7 +381,7 @@ class TestBookmarkSerializationProperties:
 
         data = bookmark.model_dump()
 
-        assert data["id"] == bookmark_id
+        assert data["_id"] == bookmark_id
         assert data["title"] == title
         assert data["link"] == url
         assert data["tags"] == tags
@@ -437,7 +389,7 @@ class TestBookmarkSerializationProperties:
     @given(
         bookmark_id=st.integers(min_value=1, max_value=1_000_000),
         title=st.text(min_size=1, max_size=50),
-        url=url_strategy,
+        url=st.text(min_size=10, max_size=100).filter(lambda x: x.startswith("http")),
         tags=st.lists(st.text(min_size=1, max_size=20, alphabet="abc"), min_size=0, max_size=10),
     )
     def test_bookmark_json_serialization(self, bookmark_id: int, title: str, url: str, tags: list[str]) -> None:
@@ -445,8 +397,7 @@ class TestBookmarkSerializationProperties:
         import json
 
         bookmark = Bookmark(
-            id=bookmark_id,
-
+            _id=bookmark_id,
             title=title,
             link=url,
             tags=tags,
@@ -456,7 +407,7 @@ class TestBookmarkSerializationProperties:
 
         # Verify it's valid JSON
         data = json.loads(json_str)
-        assert data["id"] == bookmark_id
+        assert data["_id"] == bookmark_id
         assert data["title"] == title
         assert data["link"] == url
         assert data["tags"] == tags
