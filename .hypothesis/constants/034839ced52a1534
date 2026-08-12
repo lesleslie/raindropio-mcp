@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/mcp-common/mcp_common/tools/profiles.py
+# hypothesis_version: 6.158.0
+
+['full', 'get_liveness', 'get_readiness', 'health_check', 'health_check_all', 'minimal', 'standard']

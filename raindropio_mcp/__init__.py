@@ -10,7 +10,7 @@ __author__ = "Raindrop.io MCP Team"
 __description__ = "MCP Server for the Raindrop.io API"
 
 __all__ = [
-    "__version__",
     "__author__",
     "__description__",
+    "__version__",
 ]

@@ -1,6 +1,6 @@
 [project]
 name = "raindropio-mcp"
-version = "0.2.6"
+version = "0.3.0"
 description = "Unofficial MCP Server for the Raindrop.io API"
 readme = "README.md"
 authors = [
@@ -18,6 +18,12 @@ dependencies = [
 
 [tool.uv.sources]
 mcp-common = { path = "../mcp-common", editable = true }
+
+[tool.uv]
+constraint-dependencies = [
+    "aiohttp>=3.14.3",
+    "cryptography>=50.0.0",
+]
 
 [project.scripts]
 raindropio-mcp = "raindropio_mcp.__main__:main"

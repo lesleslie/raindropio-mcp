@@ -94,7 +94,7 @@ class RateLimitError(APIError):
         self,
         message: str,
         *,
-        retry_after: int | float | None = None,
+        retry_after: float | None = None,
         limit: str | None = None,
         details: dict[str, Any] | None = None,
         status_code: int = 429,

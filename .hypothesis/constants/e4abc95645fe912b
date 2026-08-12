@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/mcp-common/mcp_common/health.py
+# hypothesis_version: 6.158.0
+
+[0.0, 1.0, 16.0, 1000, 8080, '/health', '0.0.0', 'ComponentHealth', 'DependencyConfig', 'DependencyWaiter', 'GET', 'HealthCheckFunc', 'HealthCheckResponse', 'HealthCheckResult', 'HealthChecker', 'HealthStatus', 'Timeout', 'WaitResult', 'checks', 'components', 'degraded', 'dependencies', 'elapsed_seconds', 'error', 'failed_required', 'healthy', 'healthy_services', 'http', 'https', 'json', 'latency_ms', 'localhost', 'mcp-server', 'message', 'metadata', 'method', 'name', 'ok', 'process', 'ready', 'response', 'service', 'service_name', 'services', 'skipped_optional', 'status', 'status_code', 'success', 'timeout', 'timeout_seconds', 'timestamp', 'total_services', 'total_wait_seconds', 'unhealthy', 'unknown', 'up', 'uptime_seconds', 'url', 'version', 'warning']

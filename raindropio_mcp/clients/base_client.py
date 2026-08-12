@@ -7,7 +7,7 @@ import json
 import logging
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Self
 
 import httpx
 
@@ -56,10 +56,10 @@ class BaseHTTPClient:
     async def close(self) -> None:
         await self._client.aclose()
 
-    async def __aenter__(self) -> BaseHTTPClient:  # pragma: no cover - convenience
+    async def __aenter__(self) -> Self:  # pragma: no cover - convenience
         return self
 
-    async def __aexit__(self, *_exc_info: Any) -> None:  # pragma: no cover
+    async def __aexit__(self, *_exc_info: object) -> None:  # pragma: no cover
         await self.close()
 
     async def request(

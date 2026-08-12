@@ -69,7 +69,7 @@ def create_app() -> FastMCP:
             burst_capacity=16,  # Allow brief bursts
             global_limit=True,  # Protect the Raindrop.io API globally
         )
-        app._mcp_server.add_middleware(rate_limiter)
+        app._mcp_server.add_middleware(rate_limiter)  # ty: ignore[call-non-callable]
         logger.info("Rate limiting enabled: 8 req/sec, burst 16")
 
     client = build_raindrop_client(settings)
@@ -86,7 +86,7 @@ def create_app() -> FastMCP:
                 await client.close()
 
     app._mcp_server.lifespan = lifespan
-    app._raindrop_client = client  # type: ignore[attr-defined]
+    app._raindrop_client = client  # ty: ignore[unresolved-attribute]
     logger.debug("Registered Raindrop.io MCP tools")
     return app
 
@@ -102,11 +102,11 @@ def __getattr__(name: str) -> Any:
 
 
 __all__ = [
-    "create_app",
-    "get_settings",  # Added to fix zuban type error
     "APP_NAME",
     "APP_VERSION",
     "RATE_LIMITING_AVAILABLE",
     "SECURITY_AVAILABLE",
     "SERVERPANELS_AVAILABLE",
+    "create_app",
+    "get_settings",  # Added to fix zuban type error
 ]

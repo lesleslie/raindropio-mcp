@@ -44,8 +44,6 @@ class HighlightCreate(BaseModel):
 class HighlightUpdate(HighlightCreate):
     """Request payload for updating a highlight."""
 
-    pass
-
 
 class HighlightsResponse(BaseModel):
     """Response wrapper for multiple highlights."""
@@ -67,7 +65,7 @@ class HighlightResponse(BaseModel):
 __all__ = [
     "Highlight",
     "HighlightCreate",
-    "HighlightUpdate",
     "HighlightResponse",
+    "HighlightUpdate",
     "HighlightsResponse",
 ]

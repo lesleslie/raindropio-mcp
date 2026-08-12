@@ -135,9 +135,8 @@ def _handle_stdio_mode(app: Any) -> None:
 
 def main(argv: list[str] | None = None) -> None:
     parser = build_parser()
-    args = parser.parse_args(argv)  # noqa
 
-    if args.version:
+    if parser.parse_args(argv).version:
         import sys
 
         sys.exit(0)
@@ -145,6 +144,7 @@ def main(argv: list[str] | None = None) -> None:
     configure_logging()
     settings = get_settings()
     app = create_app()
+    args = parser.parse_args(argv)
 
     use_http = args.http or settings.enable_http_transport
     if use_http:

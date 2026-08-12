@@ -53,8 +53,8 @@ class RaindropSettings(BaseSettings):
     """Environment-driven configuration for the Raindrop.io MCP server."""
 
     token: str = Field("", description="Raindrop.io personal access token")
-    base_url: HttpUrl = Field(  # type: ignore[assignment]
-        default="https://api.raindrop.io/rest/v1",  # type: ignore[arg-type]
+    base_url: HttpUrl = Field(  # ty: ignore[invalid-assignment]
+        default="https://api.raindrop.io/rest/v1",
         description="Root URL for Raindrop.io REST API",
     )
     user_agent: str = Field(

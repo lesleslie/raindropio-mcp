@@ -57,10 +57,10 @@ class BatchOperationResponse(BaseModel):
 
 
 __all__ = [
-    "BatchMoveBookmarks",
     "BatchDeleteBookmarks",
-    "BatchUpdateBookmarks",
+    "BatchMoveBookmarks",
+    "BatchOperationResponse",
     "BatchTagBookmarks",
     "BatchUntagBookmarks",
-    "BatchOperationResponse",
+    "BatchUpdateBookmarks",
 ]

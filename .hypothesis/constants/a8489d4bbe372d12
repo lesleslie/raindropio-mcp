@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/mcp-common/mcp_common/profiles/full.py
+# hypothesis_version: 6.158.0
+
+['<anonymous>', 'Full MCP Server', 'FullServerSettings', 'Server description', '__name__', 'auth', 'description', 'enabled', 'healthy', 'prompts', 'resources', 'server', 'status', 'telemetry', 'tools', 'type', 'workers']

@@ -1,0 +1,4 @@
+# file: /Users/les/Projects/mcp-common/mcp_common/profiles/__init__.py
+# hypothesis_version: 6.158.0
+
+['FullServer', 'MinimalServer', 'StandardServer']
