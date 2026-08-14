@@ -26,7 +26,9 @@ RAINDROP_HTTP_PORT=3034
 
 - **Streamable HTTP** – enable with `--http` or `RAINDROP_ENABLE_HTTP_TRANSPORT`.
   The server listens on the configured host/port/path and exposes the FastMCP
-  streamable endpoint.
+  streamable endpoint. Override the bind host/port/path with the corresponding
+  flags `--http-host`, `--http-port`, `--http-path` (or the `RAINDROP_HTTP_HOST`,
+  `RAINDROP_HTTP_PORT`, `RAINDROP_HTTP_PATH` environment variables).
 
 !Sequence diagram showing HTTP/SSE communication between web client, reverse proxy, server, and Raindrop API
 
@@ -36,8 +38,13 @@ RAINDROP_HTTP_PORT=3034
 
 - Structured JSON logging by default.
 - Switch to classic log format by setting
-  `RAINDROP_OBSERVABILITY_STRUCTURED_LOGGING=false`.
-- Log level is controlled through `RAINDROP_OBSERVABILITY_LOG_LEVEL`.
+  `RAINDROP_OBSERVABILITY__STRUCTURED_LOGGING=false`.
+- Log level is controlled through `RAINDROP_OBSERVABILITY__LOG_LEVEL`.
+
+> **Note:** Nested configuration fields use the pydantic-settings default
+> delimiter of `__` (double underscore). Use `RAINDROP_OBSERVABILITY__LOG_LEVEL`
+> and `RAINDROP_OBSERVABILITY__STRUCTURED_LOGGING` to override nested
+> observability settings.
 
 ## Shutdown Handling
 

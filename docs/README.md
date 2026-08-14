@@ -13,7 +13,7 @@ Raindrop.io MCP server.
   HTTP transport, and deployment considerations for assistants.
 
 Example MCP configuration files live at the repository root:
-`example.mcp.json` and `example.mcp.dev.json`.
+`example.mcp.dev.json`.
 
 ## Contributing
 

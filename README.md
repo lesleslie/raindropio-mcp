@@ -63,6 +63,7 @@ Optional environment variables (all prefixed with `RAINDROP_`):
 
 | Variable | Default | Description |
 |----------|---------|-------------|
+| `RAINDROP_BASE_URL` | `https://api.raindrop.io/rest/v1` | Raindrop REST API root URL |
 | `RAINDROP_USER_AGENT` | `raindropio-mcp/0.1.0` | HTTP user agent header |
 | `RAINDROP_REQUEST_TIMEOUT` | `30.0` | Seconds before an HTTP request times out |
 | `RAINDROP_MAX_CONNECTIONS` | `10` | Maximum concurrent HTTP connections |
@@ -70,6 +71,12 @@ Optional environment variables (all prefixed with `RAINDROP_`):
 | `RAINDROP_HTTP_HOST` | `127.0.0.1` | HTTP bind host when enabled |
 | `RAINDROP_HTTP_PORT` | `3034` | HTTP port when enabled |
 | `RAINDROP_HTTP_PATH` | `/mcp` | HTTP path for the MCP endpoint |
+| `RAINDROP_CACHE_DIR` | `<unset>` | Optional persistent cache directory for Oneiric runtime snapshots |
+
+> **Note:** Nested configuration fields use the pydantic-settings default
+> delimiter of `__` (double underscore). Use `RAINDROP_OBSERVABILITY__LOG_LEVEL`
+> and `RAINDROP_OBSERVABILITY__STRUCTURED_LOGGING` to override nested
+> observability settings.
 
 ### Running the Server
 
@@ -84,7 +91,7 @@ uv run raindropio-mcp
 uv run python -m raindropio_mcp --http --http-port 3034
 ```
 
-`example.mcp.json` and `example.mcp.dev.json` demonstrate how to wire the server
+`example.mcp.dev.json` demonstrates how to wire the server
 into MCP-enabled clients such as Claude Desktop or PowerShell integrations.
 
 ### Quick Start Flowchart
@@ -134,12 +141,17 @@ shapes so downstream agents can consume data without additional parsing.
 
 ### Tool Categories Overview
 
-!Mind map showing nine tool categories: Collections, Bookmarks, Tags, Highlights, Batch Operations, Filters, Import/Export, Account, and System
+!Mind map showing eight tool categories: Collections, Bookmarks, Tags, Highlights, Search (Filters), Utils (Import/Export), Account, and System
 
 ## Observability & Shutdown
 
-Logging defaults to structured JSON. Set `RAINDROP_OBSERVABILITY_STRUCTURED_LOGGING=false`
+Logging defaults to structured JSON. Set `RAINDROP_OBSERVABILITY__STRUCTURED_LOGGING=false`
 (or override via `.env`) to switch to classic text formatting.
+
+> **Note:** Nested configuration fields use the pydantic-settings default
+> delimiter of `__` (double underscore). Use `RAINDROP_OBSERVABILITY__LOG_LEVEL`
+> and `RAINDROP_OBSERVABILITY__STRUCTURED_LOGGING` to override nested
+> observability settings.
 
 The FastMCP app registers a shutdown hook that gracefully closes the shared
 `RaindropClient`, ensuring HTTP connection pools are released when the server
