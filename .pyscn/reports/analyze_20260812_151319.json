@@ -1,169 +1,5 @@
 {
   "complexity": {
-    "Functions": [
-      {
-        "Name": "BaseHTTPClient._make_request_with_retry",
-        "FilePath": "raindropio_mcp/clients/base_client.py",
-        "StartLine": 109,
-        "StartColumn": 4,
-        "EndLine": 142,
-        "Metrics": {
-          "Complexity": 9,
-          "Nodes": 8,
-          "Edges": 15,
-          "NestingDepth": 3,
-          "IfStatements": 2,
-          "LoopStatements": 0,
-          "ExceptionHandlers": 6,
-          "SwitchCases": 0
-        },
-        "RiskLevel": "low"
-      },
-      {
-        "Name": "BaseHTTPClient.request",
-        "FilePath": "raindropio_mcp/clients/base_client.py",
-        "StartLine": 65,
-        "StartColumn": 4,
-        "EndLine": 107,
-        "Metrics": {
-          "Complexity": 8,
-          "Nodes": 15,
-          "Edges": 22,
-          "NestingDepth": 4,
-          "IfStatements": 5,
-          "LoopStatements": 0,
-          "ExceptionHandlers": 2,
-          "SwitchCases": 0
-        },
-        "RiskLevel": "low"
-      },
-      {
-        "Name": "BaseHTTPClient._map_error",
-        "FilePath": "raindropio_mcp/clients/base_client.py",
-        "StartLine": 222,
-        "StartColumn": 4,
-        "EndLine": 266,
-        "Metrics": {
-          "Complexity": 6,
-          "Nodes": 12,
-          "Edges": 18,
-          "NestingDepth": 2,
-          "IfStatements": 4,
-          "LoopStatements": 0,
-          "ExceptionHandlers": 1,
-          "SwitchCases": 0
-        },
-        "RiskLevel": "low"
-      },
-      {
-        "Name": "RaindropSettings._validate_credentials",
-        "FilePath": "raindropio_mcp/config/settings.py",
-        "StartLine": 106,
-        "StartColumn": 4,
-        "EndLine": 132,
-        "Metrics": {
-          "Complexity": 6,
-          "Nodes": 12,
-          "Edges": 17,
-          "NestingDepth": 2,
-          "IfStatements": 3,
-          "LoopStatements": 0,
-          "ExceptionHandlers": 2,
-          "SwitchCases": 0
-        },
-        "RiskLevel": "low"
-      },
-      {
-        "Name": "BaseHTTPClient.get_json",
-        "FilePath": "raindropio_mcp/clients/base_client.py",
-        "StartLine": 179,
-        "StartColumn": 4,
-        "EndLine": 214,
-        "Metrics": {
-          "Complexity": 5,
-          "Nodes": 5,
-          "Edges": 8,
-          "NestingDepth": 2,
-          "IfStatements": 1,
-          "LoopStatements": 0,
-          "ExceptionHandlers": 3,
-          "SwitchCases": 0
-        },
-        "RiskLevel": "low"
-      },
-      {
-        "Name": "BaseHTTPClient._handle_status_logic",
-        "FilePath": "raindropio_mcp/clients/base_client.py",
-        "StartLine": 144,
-        "StartColumn": 4,
-        "EndLine": 177,
-        "Metrics": {
-          "Complexity": 5,
-          "Nodes": 9,
-          "Edges": 14,
-          "NestingDepth": 2,
-          "IfStatements": 4,
-          "LoopStatements": 0,
-          "ExceptionHandlers": 0,
-          "SwitchCases": 0
-        },
-        "RiskLevel": "low"
-      },
-      {
-        "Name": "RaindropClient.list_bookmarks",
-        "FilePath": "raindropio_mcp/clients/raindrop_client.py",
-        "StartLine": 126,
-        "StartColumn": 4,
-        "EndLine": 163,
-        "Metrics": {
-          "Complexity": 5,
-          "Nodes": 7,
-          "Edges": 11,
-          "NestingDepth": 1,
-          "IfStatements": 3,
-          "LoopStatements": 0,
-          "ExceptionHandlers": 1,
-          "SwitchCases": 0
-        },
-        "RiskLevel": "low"
-      },
-      {
-        "Name": "ServerManager.start_server",
-        "FilePath": "raindropio_mcp/utils/process_utils.py",
-        "StartLine": 48,
-        "StartColumn": 4,
-        "EndLine": 80,
-        "Metrics": {
-          "Complexity": 5,
-          "Nodes": 6,
-          "Edges": 9,
-          "NestingDepth": 2,
-          "IfStatements": 1,
-          "LoopStatements": 0,
-          "ExceptionHandlers": 3,
-          "SwitchCases": 0
-        },
-        "RiskLevel": "low"
-      }
-    ],
-    "Summary": {
-      "TotalFunctions": 8,
-      "AverageComplexity": 6.125,
-      "MaxComplexity": 9,
-      "MinComplexity": 5,
-      "FilesAnalyzed": 36,
-      "LowRiskFunctions": 8,
-      "MediumRiskFunctions": 0,
-      "HighRiskFunctions": 0,
-      "ComplexityDistribution": {
-        "2-5": 4,
-        "6-10": 4
-      }
-    },
-    "Warnings": null,
-    "Errors": null,
-    "GeneratedAt": "2026-08-12T15:13:19-07:00",
-    "Version": "1.5.0",
     "Config": {
       "exclude_patterns": [
         "test_*.py",
@@ -180,28 +16,173 @@
       "recursive": false,
       "show_details": false,
       "sort_by": "complexity"
-    }
+    },
+    "Errors": null,
+    "Functions": [
+      {
+        "EndLine": 142,
+        "FilePath": "raindropio_mcp/clients/base_client.py",
+        "Metrics": {
+          "Complexity": 9,
+          "Edges": 15,
+          "ExceptionHandlers": 6,
+          "IfStatements": 2,
+          "LoopStatements": 0,
+          "NestingDepth": 3,
+          "Nodes": 8,
+          "SwitchCases": 0
+        },
+        "Name": "BaseHTTPClient._make_request_with_retry",
+        "RiskLevel": "low",
+        "StartColumn": 4,
+        "StartLine": 109
+      },
+      {
+        "EndLine": 107,
+        "FilePath": "raindropio_mcp/clients/base_client.py",
+        "Metrics": {
+          "Complexity": 8,
+          "Edges": 22,
+          "ExceptionHandlers": 2,
+          "IfStatements": 5,
+          "LoopStatements": 0,
+          "NestingDepth": 4,
+          "Nodes": 15,
+          "SwitchCases": 0
+        },
+        "Name": "BaseHTTPClient.request",
+        "RiskLevel": "low",
+        "StartColumn": 4,
+        "StartLine": 65
+      },
+      {
+        "EndLine": 266,
+        "FilePath": "raindropio_mcp/clients/base_client.py",
+        "Metrics": {
+          "Complexity": 6,
+          "Edges": 18,
+          "ExceptionHandlers": 1,
+          "IfStatements": 4,
+          "LoopStatements": 0,
+          "NestingDepth": 2,
+          "Nodes": 12,
+          "SwitchCases": 0
+        },
+        "Name": "BaseHTTPClient._map_error",
+        "RiskLevel": "low",
+        "StartColumn": 4,
+        "StartLine": 222
+      },
+      {
+        "EndLine": 132,
+        "FilePath": "raindropio_mcp/config/settings.py",
+        "Metrics": {
+          "Complexity": 6,
+          "Edges": 17,
+          "ExceptionHandlers": 2,
+          "IfStatements": 3,
+          "LoopStatements": 0,
+          "NestingDepth": 2,
+          "Nodes": 12,
+          "SwitchCases": 0
+        },
+        "Name": "RaindropSettings._validate_credentials",
+        "RiskLevel": "low",
+        "StartColumn": 4,
+        "StartLine": 106
+      },
+      {
+        "EndLine": 214,
+        "FilePath": "raindropio_mcp/clients/base_client.py",
+        "Metrics": {
+          "Complexity": 5,
+          "Edges": 8,
+          "ExceptionHandlers": 3,
+          "IfStatements": 1,
+          "LoopStatements": 0,
+          "NestingDepth": 2,
+          "Nodes": 5,
+          "SwitchCases": 0
+        },
+        "Name": "BaseHTTPClient.get_json",
+        "RiskLevel": "low",
+        "StartColumn": 4,
+        "StartLine": 179
+      },
+      {
+        "EndLine": 177,
+        "FilePath": "raindropio_mcp/clients/base_client.py",
+        "Metrics": {
+          "Complexity": 5,
+          "Edges": 14,
+          "ExceptionHandlers": 0,
+          "IfStatements": 4,
+          "LoopStatements": 0,
+          "NestingDepth": 2,
+          "Nodes": 9,
+          "SwitchCases": 0
+        },
+        "Name": "BaseHTTPClient._handle_status_logic",
+        "RiskLevel": "low",
+        "StartColumn": 4,
+        "StartLine": 144
+      },
+      {
+        "EndLine": 163,
+        "FilePath": "raindropio_mcp/clients/raindrop_client.py",
+        "Metrics": {
+          "Complexity": 5,
+          "Edges": 11,
+          "ExceptionHandlers": 1,
+          "IfStatements": 3,
+          "LoopStatements": 0,
+          "NestingDepth": 1,
+          "Nodes": 7,
+          "SwitchCases": 0
+        },
+        "Name": "RaindropClient.list_bookmarks",
+        "RiskLevel": "low",
+        "StartColumn": 4,
+        "StartLine": 126
+      },
+      {
+        "EndLine": 80,
+        "FilePath": "raindropio_mcp/utils/process_utils.py",
+        "Metrics": {
+          "Complexity": 5,
+          "Edges": 9,
+          "ExceptionHandlers": 3,
+          "IfStatements": 1,
+          "LoopStatements": 0,
+          "NestingDepth": 2,
+          "Nodes": 6,
+          "SwitchCases": 0
+        },
+        "Name": "ServerManager.start_server",
+        "RiskLevel": "low",
+        "StartColumn": 4,
+        "StartLine": 48
+      }
+    ],
+    "GeneratedAt": "2026-08-12T15:13:19-07:00",
+    "Summary": {
+      "AverageComplexity": 6.125,
+      "ComplexityDistribution": {
+        "2-5": 4,
+        "6-10": 4
+      },
+      "FilesAnalyzed": 36,
+      "HighRiskFunctions": 0,
+      "LowRiskFunctions": 8,
+      "MaxComplexity": 9,
+      "MediumRiskFunctions": 0,
+      "MinComplexity": 5,
+      "TotalFunctions": 8
+    },
+    "Version": "1.5.0",
+    "Warnings": null
   },
   "dead_code": {
-    "files": null,
-    "summary": {
-      "total_files": 36,
-      "total_functions": 0,
-      "total_findings": 0,
-      "files_with_dead_code": 0,
-      "functions_with_dead_code": 0,
-      "critical_findings": 0,
-      "warning_findings": 0,
-      "info_findings": 0,
-      "findings_by_reason": {},
-      "total_blocks": 0,
-      "dead_blocks": 0,
-      "overall_dead_ratio": 0
-    },
-    "warnings": null,
-    "errors": null,
-    "generated_at": "2026-08-12T15:13:19-07:00",
-    "version": "1.5.0",
     "config": {
       "context_lines": 3,
       "detect_after_break": true,
@@ -220,48 +201,67 @@
       "min_severity": "warning",
       "show_context": false,
       "sort_by": "severity"
-    }
+    },
+    "errors": null,
+    "files": null,
+    "generated_at": "2026-08-12T15:13:19-07:00",
+    "summary": {
+      "critical_findings": 0,
+      "dead_blocks": 0,
+      "files_with_dead_code": 0,
+      "findings_by_reason": {},
+      "functions_with_dead_code": 0,
+      "info_findings": 0,
+      "overall_dead_ratio": 0,
+      "total_blocks": 0,
+      "total_files": 36,
+      "total_findings": 0,
+      "total_functions": 0,
+      "warning_findings": 0
+    },
+    "version": "1.5.0",
+    "warnings": null
   },
-  "summary": {
-    "total_files": 36,
-    "analyzed_files": 36,
-    "skipped_files": 0,
-    "complexity_enabled": true,
-    "dead_code_enabled": true,
-    "clone_enabled": false,
-    "cbo_enabled": false,
-    "deps_enabled": false,
-    "arch_enabled": false,
-    "deps_total_modules": 0,
-    "deps_modules_in_cycles": 0,
-    "deps_max_depth": 0,
-    "deps_main_sequence_deviation": 0,
-    "arch_compliance": 0,
-    "total_functions": 8,
-    "average_complexity": 6.125,
-    "high_complexity_count": 0,
-    "dead_code_count": 0,
-    "critical_dead_code": 0,
-    "warning_dead_code": 0,
-    "info_dead_code": 0,
-    "total_clones": 0,
-    "clone_pairs": 0,
-    "clone_groups": 0,
-    "code_duplication_percentage": 0,
-    "cbo_classes": 0,
-    "high_coupling_classes": 0,
-    "medium_coupling_classes": 0,
-    "average_coupling": 0,
-    "health_score": 94,
-    "grade": "A",
-    "complexity_score": 70,
-    "dead_code_score": 100,
-    "duplication_score": 100,
-    "coupling_score": 100,
-    "dependency_score": 100,
-    "architecture_score": 100
-  },
-  "generated_at": "2026-08-12T15:13:19.11713-07:00",
   "duration_ms": 95,
+  "generated_at": "2026-08-12T15:13:19.11713-07:00",
+  "summary": {
+    "analyzed_files": 36,
+    "arch_compliance": 0,
+    "arch_enabled": false,
+    "architecture_score": 100,
+    "average_complexity": 6.125,
+    "average_coupling": 0,
+    "cbo_classes": 0,
+    "cbo_enabled": false,
+    "clone_enabled": false,
+    "clone_groups": 0,
+    "clone_pairs": 0,
+    "code_duplication_percentage": 0,
+    "complexity_enabled": true,
+    "complexity_score": 70,
+    "coupling_score": 100,
+    "critical_dead_code": 0,
+    "dead_code_count": 0,
+    "dead_code_enabled": true,
+    "dead_code_score": 100,
+    "dependency_score": 100,
+    "deps_enabled": false,
+    "deps_main_sequence_deviation": 0,
+    "deps_max_depth": 0,
+    "deps_modules_in_cycles": 0,
+    "deps_total_modules": 0,
+    "duplication_score": 100,
+    "grade": "A",
+    "health_score": 94,
+    "high_complexity_count": 0,
+    "high_coupling_classes": 0,
+    "info_dead_code": 0,
+    "medium_coupling_classes": 0,
+    "skipped_files": 0,
+    "total_clones": 0,
+    "total_files": 36,
+    "total_functions": 8,
+    "warning_dead_code": 0
+  },
   "version": "1.5.0"
 }
