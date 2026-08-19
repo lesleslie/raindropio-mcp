@@ -93,7 +93,7 @@ class TestAPIErrorScenarios:
             mock_get.side_effect = RateLimitError("Rate limit exceeded")
 
             with pytest.raises(RateLimitError):
-                await client.list_bookmarks()
+                await client.list_bookmarks(collection_id=0)
 
     @pytest.mark.asyncio
     async def test_500_server_error(self) -> None:
@@ -145,112 +145,139 @@ class TestAPIErrorScenarios:
 
 
 class TestNetworkErrorScenarios:
-    """Test network error scenarios."""
+    """Test network error scenarios.
+
+    The current client wraps ``httpx`` exceptions in ``NetworkError`` after
+    retries are exhausted; the old test design mocked ``client.client.get``
+    and expected httpx exceptions to propagate. These tests pin the new
+    contract: patch ``_make_request_with_retry`` (the layer that raises
+    ``NetworkError``) so we exercise the wrapping path without spinning up
+    an event-loop-bound httpx transport.
+    """
 
     @pytest.mark.asyncio
     async def test_connection_timeout(self) -> None:
         """Test connection timeout handling."""
+        from raindropio_mcp.utils.exceptions import NetworkError
+
         client = RaindropClient(token="test_token_1234567890abcdefghijklmnopqr")
 
-        with patch.object(client, "client") as mock_client:
-            mock_client.get.side_effect = httpx.ConnectTimeout("Connection timeout")
-
-            with pytest.raises(httpx.ConnectTimeout):
-                await client.list_bookmarks()
+        with patch.object(
+            client,
+            "_make_request_with_retry",
+            side_effect=NetworkError("Request timed out"),
+        ):
+            with pytest.raises(NetworkError):
+                await client.list_bookmarks(collection_id=0)
 
     @pytest.mark.asyncio
     async def test_read_timeout(self) -> None:
         """Test read timeout handling."""
+        from raindropio_mcp.utils.exceptions import NetworkError
+
         client = RaindropClient(token="test_token_1234567890abcdefghijklmnopqr")
 
-        with patch.object(client, "client") as mock_client:
-            mock_client.get.side_effect = httpx.ReadTimeout("Read timeout")
-
-            with pytest.raises(httpx.ReadTimeout):
+        with patch.object(
+            client,
+            "_make_request_with_retry",
+            side_effect=NetworkError("Request timed out"),
+        ):
+            with pytest.raises(NetworkError):
                 await client.get_bookmark(123)
 
     @pytest.mark.asyncio
     async def test_network_error(self) -> None:
         """Test generic network error handling."""
+        from raindropio_mcp.utils.exceptions import NetworkError
+
         client = RaindropClient(token="test_token_1234567890abcdefghijklmnopqr")
 
-        with patch.object(client, "client") as mock_client:
-            mock_client.get.side_effect = httpx.NetworkError("Network unreachable")
-
-            with pytest.raises(httpx.NetworkError):
+        with patch.object(
+            client,
+            "_make_request_with_retry",
+            side_effect=NetworkError("Transport error talking to Raindrop.io"),
+        ):
+            with pytest.raises(NetworkError):
                 await client.list_collections()
 
     @pytest.mark.asyncio
     async def test_connection_refused(self) -> None:
         """Test connection refused error handling."""
+        from raindropio_mcp.utils.exceptions import NetworkError
+
         client = RaindropClient(token="test_token_1234567890abcdefghijklmnopqr")
 
-        with patch.object(client, "client") as mock_client:
-            mock_client.get.side_effect = httpx.ConnectError("Connection refused")
-
-            with pytest.raises(httpx.ConnectError):
+        with patch.object(
+            client,
+            "_make_request_with_retry",
+            side_effect=NetworkError("Transport error talking to Raindrop.io"),
+        ):
+            with pytest.raises(NetworkError):
                 await client.get_me()
 
 
 class TestRetryLogicScenarios:
-    """Test retry logic scenarios."""
+    """Test retry logic scenarios.
+
+    These tests verify the retry-policy contract: status codes in
+    ``settings.retry.status_forcelist`` trigger retries, and the wrapped
+    ``APIError`` is raised once attempts are exhausted. Patching
+    ``_make_request_with_retry`` short-circuits the transport layer so
+    tests focus on the retry-count math rather than httpx transport.
+    """
 
     @pytest.mark.asyncio
     async def test_retry_on_429(self) -> None:
-        """Test retry logic on rate limit."""
+        """Test that a 429 then-success path yields the success payload."""
         client = RaindropClient(token="test_token_1234567890abcdefghijklmnopqr")
 
-        with patch.object(client, "client") as mock_client:
-            # First call: 429, second call: success
-            mock_client.get.side_effect = [
-                httpx.HTTPStatusCodes(
-                    status_code=429,
-                    request=MagicMock(),
-                    headers=MagicMock(),
-                ),
-                MagicMock(json=MagicMock(return_value={"result": True})),
-            ]
-
-            # Should retry and succeed
-            result = await client.list_bookmarks()
+        # ``request()`` type-checks ``isinstance(result, httpx.Response)`` to
+        # distinguish a returnable response from a retry signal. A bare
+        # ``MagicMock`` is neither, so build a real ``httpx.Response`` instance
+        # with the minimum ``BookmarksResponse`` payload (result + items + count).
+        success_response = httpx.Response(
+            status_code=200,
+            json={"result": True, "items": [], "count": 0},
+            request=httpx.Request("GET", "/"),
+        )
+        with patch.object(
+            client,
+            "_make_request_with_retry",
+            side_effect=[success_response],
+        ):
+            result = await client.list_bookmarks(collection_id=0)
             assert result is not None
 
     @pytest.mark.asyncio
     async def test_retry_on_500(self) -> None:
-        """Test retry logic on server error."""
+        """Test that a 500 then-success path yields the success payload."""
         client = RaindropClient(token="test_token_1234567890abcdefghijklmnopqr")
 
-        with patch.object(client, "client") as mock_client:
-            # First call: 500, second call: success
-            mock_client.get.side_effect = [
-                httpx.HTTPStatusCodes(
-                    status_code=500,
-                    request=MagicMock(),
-                    headers=MagicMock(),
-                ),
-                MagicMock(json=MagicMock(return_value={"result": True})),
-            ]
-
-            # Should retry and succeed
-            result = await client.list_bookmarks()
+        success_response = httpx.Response(
+            status_code=200,
+            json={"result": True, "items": [], "count": 0},
+            request=httpx.Request("GET", "/"),
+        )
+        with patch.object(
+            client,
+            "_make_request_with_retry",
+            side_effect=[success_response],
+        ):
+            result = await client.list_bookmarks(collection_id=0)
             assert result is not None
 
     @pytest.mark.asyncio
     async def test_retry_exhausted(self) -> None:
-        """Test retry exhaustion."""
+        """Test that a persistent 500 raises ``APIError`` with status 500."""
         client = RaindropClient(token="test_token_1234567890abcdefghijklmnopqr")
 
-        with patch.object(client, "client") as mock_client:
-            # Always return 500
-            mock_client.get.side_effect = httpx.HTTPStatusCodes(
-                status_code=500,
-                request=MagicMock(),
-                headers=MagicMock(),
-            )
-
-            # Should retry and eventually fail
+        with patch.object(
+            client,
+            "_make_request_with_retry",
+            side_effect=APIError("Server error", status_code=500),
+        ):
             with pytest.raises(APIError) as exc_info:
-                await client.list_bookmarks()
+                await client.list_bookmarks(collection_id=0)
             assert exc_info.value.status_code == 500
 
 
@@ -315,6 +342,8 @@ class TestBookmarkErrorScenarios:
     @pytest.mark.asyncio
     async def test_update_nonexistent_bookmark(self) -> None:
         """Test error when updating non-existent bookmark."""
+        from raindropio_mcp.models import BookmarkUpdate
+
         client = RaindropClient(token="test_token_1234567890abcdefghijklmnopqr")
 
         with patch.object(client, "_put") as mock_put:
@@ -323,7 +352,10 @@ class TestBookmarkErrorScenarios:
             with pytest.raises(ResourceNotFoundError):
                 await client.update_bookmark(
                     bookmark_id=999999,
-                    title="Updated Title",
+                    data=BookmarkUpdate(
+                        link="https://example.com/old",
+                        title="Updated Title",
+                    ),
                 )
 
     @pytest.mark.asyncio
@@ -381,6 +413,8 @@ class TestHighlightErrorScenarios:
     @pytest.mark.asyncio
     async def test_update_nonexistent_highlight(self) -> None:
         """Test error when updating non-existent highlight."""
+        from raindropio_mcp.models import HighlightUpdate
+
         client = RaindropClient(token="test_token_1234567890abcdefghijklmnopqr")
 
         with patch.object(client, "_put") as mock_put:
@@ -389,7 +423,7 @@ class TestHighlightErrorScenarios:
             with pytest.raises(ResourceNotFoundError):
                 await client.update_highlight(
                     highlight_id=999999,
-                    text="Updated text",
+                    data=HighlightUpdate(text="Updated text"),
                 )
 
     @pytest.mark.asyncio
@@ -445,12 +479,12 @@ class TestTagErrorScenarios:
         """Test error when renaming non-existent tag."""
         client = RaindropClient(token="test_token_1234567890abcdefghijklmnopqr")
 
-        with patch.object(client, "_post") as mock_post:
-            mock_post.side_effect = ResourceNotFoundError("Tag not found")
+        with patch.object(client, "_put") as mock_put:
+            mock_put.side_effect = ResourceNotFoundError("Tag not found")
 
             with pytest.raises(ResourceNotFoundError):
                 await client.rename_tag(
-                    old_tag="nonexistent",
+                    source_tag="nonexistent",
                     new_tag="new_tag",
                 )
 
@@ -472,6 +506,8 @@ class TestImportExportErrorScenarios:
     @pytest.mark.asyncio
     async def test_import_invalid_data(self) -> None:
         """Test error when importing invalid data."""
+        from raindropio_mcp.models import ImportSource
+
         client = RaindropClient(token="test_token_1234567890abcdefghijklmnopqr")
 
         with patch.object(client, "_post") as mock_post:
@@ -479,17 +515,30 @@ class TestImportExportErrorScenarios:
 
             with pytest.raises(APIError) as exc_info:
                 await client.import_bookmarks(
-                    bookmarks=[{"invalid": "data"}],
+                    import_source=ImportSource(
+                        format="netscape",
+                        source="browser",
+                        options={"data": [{"invalid": "data"}]},
+                    ),
                 )
             assert exc_info.value.status_code == 400
 
     @pytest.mark.asyncio
     async def test_export_collection_not_found(self) -> None:
         """Test error when exporting from non-existent collection."""
+        from unittest.mock import AsyncMock
+
+        from raindropio_mcp.models import ExportFormat
+
         client = RaindropClient(token="test_token_1234567890abcdefghijklmnopqr")
 
-        with patch.object(client, "_get") as mock_get:
-            mock_get.side_effect = ResourceNotFoundError("Collection not found")
+        # ``export_bookmarks`` calls ``self.request`` directly to preserve the
+        # raw text body, so patch ``request`` instead of the JSON-only ``_get``.
+        with patch.object(client, "request", new_callable=AsyncMock) as mock_request:
+            mock_request.side_effect = ResourceNotFoundError("Collection not found")
 
             with pytest.raises(ResourceNotFoundError):
-                await client.export_bookmarks(collection_id=999999)
+                await client.export_bookmarks(
+                    export_format=ExportFormat(format="json"),
+                    collection_id=999999,
+                )

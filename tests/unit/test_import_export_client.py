@@ -23,7 +23,7 @@ def settings():
 async def test_import_bookmarks(settings):
     """Test the import_bookmarks method."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._post = AsyncMock(
         return_value={
             "result": True,
             "imported_count": 5,
@@ -42,8 +42,8 @@ async def test_import_bookmarks(settings):
     assert result.skipped_count == 1
 
     expected_payload = import_source.model_dump(exclude_none=True, by_alias=True)
-    client.get_json.assert_called_once_with(
-        "POST", "/import", params={"collection": 123}, json_body=expected_payload
+    client._post.assert_called_once_with(
+        "/import", params={"collection": 123}, json_body=expected_payload
     )
 
 
@@ -51,7 +51,7 @@ async def test_import_bookmarks(settings):
 async def test_import_bookmarks_no_collection(settings):
     """Test the import_bookmarks method without specifying a collection."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._post = AsyncMock(
         return_value={
             "result": True,
             "imported_count": 3,
@@ -71,8 +71,8 @@ async def test_import_bookmarks_no_collection(settings):
     assert result.imported_count == 3
 
     expected_payload = import_source.model_dump(exclude_none=True, by_alias=True)
-    client.get_json.assert_called_once_with(
-        "POST", "/import", params={}, json_body=expected_payload
+    client._post.assert_called_once_with(
+        "/import", params={}, json_body=expected_payload
     )
 
 
@@ -80,7 +80,7 @@ async def test_import_bookmarks_no_collection(settings):
 async def test_import_bookmarks_error(settings):
     """Test the import_bookmarks method with error response."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._post = AsyncMock(
         return_value={"result": False, "error": "Import failed"}
     )
 

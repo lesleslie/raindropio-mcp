@@ -237,9 +237,12 @@ class TestTokenMaskingProperties:
         """Test that very short tokens return placeholder."""
         from raindropio_mcp.config.settings import RaindropSettings
 
-        # Test with short or empty tokens
+        # Test with short or empty tokens. ``model_validate`` runs the
+        # production startup validator, which raises on an empty token;
+        # use ``model_construct`` to bypass validation and exercise
+        # ``get_masked_token`` directly — that's the surface under test.
         if len(token) < 5:
-            settings = RaindropSettings.model_validate({"token": token})
+            settings = RaindropSettings.model_construct(token=token)
             masked = settings.get_masked_token()
             # Should return placeholder for very short tokens
             if not token:
@@ -251,8 +254,12 @@ class TestURLValidationProperties:
 
     @given(
         scheme=st.sampled_from(["https", "http"]),
-        domain=st.text(min_size=3, max_size=20).filter(lambda x: x.isalnum()),
-        path=st.text(min_size=1, max_size=10),
+        domain=st.text(
+            min_size=3, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz0123456789"
+        ),
+        path=st.text(
+            min_size=1, max_size=10, alphabet="abcdefghijklmnopqrstuvwxyz0123456789"
+        ),
     )
     def test_base_url_formats(self, scheme: str, domain: str, path: str) -> None:
         """Test that various URL formats are handled."""

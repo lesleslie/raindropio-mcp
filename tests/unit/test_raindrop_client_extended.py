@@ -42,7 +42,7 @@ async def test_raindrop_client_init(mock_settings):
 async def test_get_me_success(mock_settings):
     """Test successful retrieval of user profile."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(
+    client._get = AsyncMock(
         return_value={
             "result": True,
             "user": {"_id": 123, "email": "test@example.com", "name": "Test User"},
@@ -51,14 +51,14 @@ async def test_get_me_success(mock_settings):
 
     user = await client.get_me()
     assert isinstance(user, User)
-    client.get_json.assert_called_once_with("GET", "/me")
+    client._get.assert_called_once_with("/me")
 
 
 @pytest.mark.asyncio
 async def test_get_me_api_error(mock_settings):
     """Test get_me with API error response."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={"result": False})
+    client._get = AsyncMock(return_value={"result": False})
 
     with pytest.raises(APIError):
         await client.get_me()
@@ -68,7 +68,7 @@ async def test_get_me_api_error(mock_settings):
 async def test_list_collections_success(mock_settings):
     """Test successful listing of collections."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(
+    client._get = AsyncMock(
         return_value={
             "result": True,
             "items": [
@@ -84,14 +84,14 @@ async def test_list_collections_success(mock_settings):
     collections = await client.list_collections()
     assert len(collections) == 1
     assert isinstance(collections[0], Collection)
-    client.get_json.assert_called_once_with("GET", "/collections")
+    client._get.assert_called_once_with("/collections")
 
 
 @pytest.mark.asyncio
 async def test_list_collections_api_error(mock_settings):
     """Test list_collections with API error response."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={"result": False, "items": []})
+    client._get = AsyncMock(return_value={"result": False, "items": []})
 
     with pytest.raises(APIError):
         await client.list_collections()
@@ -101,7 +101,7 @@ async def test_list_collections_api_error(mock_settings):
 async def test_get_collection_success(mock_settings):
     """Test successful retrieval of a collection."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(
+    client._get = AsyncMock(
         return_value={
             "result": True,
             "collection": {
@@ -115,14 +115,14 @@ async def test_get_collection_success(mock_settings):
     collection = await client.get_collection(123)
     assert isinstance(collection, Collection)
     assert collection.id == 123
-    client.get_json.assert_called_once_with("GET", "/collection/123")
+    client._get.assert_called_once_with("/collection/123")
 
 
 @pytest.mark.asyncio
 async def test_get_collection_api_error(mock_settings):
     """Test get_collection with API error response."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={"result": False})
+    client._get = AsyncMock(return_value={"result": False})
 
     with pytest.raises(APIError):
         await client.get_collection(123)
@@ -136,7 +136,7 @@ async def test_create_collection_success(mock_settings):
         title="New Collection", description="A new collection"
     )
 
-    client.get_json = AsyncMock(
+    client._post = AsyncMock(
         return_value={
             "result": True,
             "collection": {
@@ -150,7 +150,7 @@ async def test_create_collection_success(mock_settings):
     created_collection = await client.create_collection(collection_data)
     assert isinstance(created_collection, Collection)
     assert created_collection.id == 456
-    client.get_json.assert_called_once()
+    client._post.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -159,7 +159,7 @@ async def test_update_collection_success(mock_settings):
     client = RaindropClient(mock_settings)
     update_data = CollectionUpdate(title="Updated Title")
 
-    client.get_json = AsyncMock(
+    client._put = AsyncMock(
         return_value={
             "result": True,
             "collection": {
@@ -173,8 +173,7 @@ async def test_update_collection_success(mock_settings):
     updated_collection = await client.update_collection(123, update_data)
     assert isinstance(updated_collection, Collection)
     assert updated_collection.title == "Updated Title"
-    client.get_json.assert_called_once_with(
-        "PUT",
+    client._put.assert_called_once_with(
         "/collection/123",
         json_body=update_data.model_dump(exclude_none=True, by_alias=True),
     )
@@ -184,18 +183,18 @@ async def test_update_collection_success(mock_settings):
 async def test_delete_collection_success(mock_settings):
     """Test successful deletion of a collection."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={"result": True})
+    client._delete = AsyncMock(return_value={"result": True})
 
     result = await client.delete_collection(123)
     assert result is True
-    client.get_json.assert_called_once_with("DELETE", "/collection/123")
+    client._delete.assert_called_once_with("/collection/123")
 
 
 @pytest.mark.asyncio
 async def test_delete_collection_api_error(mock_settings):
     """Test delete_collection with API error response."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={"result": False})
+    client._delete = AsyncMock(return_value={"result": False})
 
     with pytest.raises(APIError):
         await client.delete_collection(123)
@@ -205,7 +204,7 @@ async def test_delete_collection_api_error(mock_settings):
 async def test_list_bookmarks_success(mock_settings):
     """Test successful listing of bookmarks."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(
+    client._get = AsyncMock(
         return_value={
             "result": True,
             "items": [
@@ -219,14 +218,14 @@ async def test_list_bookmarks_success(mock_settings):
     assert isinstance(bookmarks, PaginatedBookmarks)
     assert len(bookmarks.items) == 1
     assert isinstance(bookmarks.items[0], Bookmark)
-    client.get_json.assert_called_once()
+    client._get.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_search_bookmarks_success(mock_settings):
     """Test successful bookmark search."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(
+    client._get = AsyncMock(
         return_value={
             "result": True,
             "items": [
@@ -239,14 +238,14 @@ async def test_search_bookmarks_success(mock_settings):
     bookmarks = await client.search_bookmarks("test query")
     assert isinstance(bookmarks, PaginatedBookmarks)
     assert len(bookmarks.items) == 1
-    client.get_json.assert_called_once()
+    client._get.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_get_bookmark_success(mock_settings):
     """Test successful retrieval of a bookmark."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(
+    client._get = AsyncMock(
         return_value={
             "result": True,
             "item": {
@@ -260,7 +259,7 @@ async def test_get_bookmark_success(mock_settings):
     bookmark = await client.get_bookmark(789)
     assert isinstance(bookmark, Bookmark)
     assert bookmark.id == 789
-    client.get_json.assert_called_once_with("GET", "/raindrop/789")
+    client._get.assert_called_once_with("/raindrop/789")
 
 
 @pytest.mark.asyncio
@@ -269,7 +268,7 @@ async def test_create_bookmark_success(mock_settings):
     client = RaindropClient(mock_settings)
     bookmark_data = BookmarkCreate(link="https://example.com", title="Test Bookmark")
 
-    client.get_json = AsyncMock(
+    client._post = AsyncMock(
         return_value={
             "result": True,
             "item": {
@@ -283,7 +282,7 @@ async def test_create_bookmark_success(mock_settings):
     created_bookmark = await client.create_bookmark(123, bookmark_data)
     assert isinstance(created_bookmark, Bookmark)
     assert created_bookmark.id == 999
-    client.get_json.assert_called_once()
+    client._post.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -292,7 +291,7 @@ async def test_update_bookmark_success(mock_settings):
     client = RaindropClient(mock_settings)
     update_data = BookmarkUpdate(link="https://example.com", title="Updated Title")
 
-    client.get_json = AsyncMock(
+    client._put = AsyncMock(
         return_value={
             "result": True,
             "item": {
@@ -306,8 +305,7 @@ async def test_update_bookmark_success(mock_settings):
     updated_bookmark = await client.update_bookmark(789, update_data)
     assert isinstance(updated_bookmark, Bookmark)
     assert updated_bookmark.title == "Updated Title"
-    client.get_json.assert_called_once_with(
-        "PUT",
+    client._put.assert_called_once_with(
         "/raindrop/789",
         json_body={"item": update_data.model_dump(exclude_none=True, by_alias=True)},
     )
@@ -317,18 +315,18 @@ async def test_update_bookmark_success(mock_settings):
 async def test_delete_bookmark_success(mock_settings):
     """Test successful deletion of a bookmark."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={"result": True})
+    client._delete = AsyncMock(return_value={"result": True})
 
     result = await client.delete_bookmark(789)
     assert result is True
-    client.get_json.assert_called_once_with("DELETE", "/raindrop/789")
+    client._delete.assert_called_once_with("/raindrop/789")
 
 
 @pytest.mark.asyncio
 async def test_delete_bookmark_api_error(mock_settings):
     """Test delete_bookmark with API error response."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={"result": False})
+    client._delete = AsyncMock(return_value={"result": False})
 
     with pytest.raises(APIError):
         await client.delete_bookmark(789)
@@ -338,7 +336,7 @@ async def test_delete_bookmark_api_error(mock_settings):
 async def test_list_tags_success(mock_settings):
     """Test successful listing of tags."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(
+    client._get = AsyncMock(
         return_value={
             "result": True,
             "items": [{"_id": "test", "count": 5}, {"_id": "example", "count": 2}],
@@ -348,19 +346,18 @@ async def test_list_tags_success(mock_settings):
     tags = await client.list_tags()
     assert len(tags) == 2
     assert all(isinstance(tag, Tag) for tag in tags)
-    client.get_json.assert_called_once_with("GET", "/tags")
+    client._get.assert_called_once_with("/tags")
 
 
 @pytest.mark.asyncio
 async def test_rename_tag_success(mock_settings):
     """Test successful renaming of a tag."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={"result": True})
+    client._put = AsyncMock(return_value={"result": True})
 
     result = await client.rename_tag("old_tag", "new_tag")
     assert result is True
-    client.get_json.assert_called_once_with(
-        "PUT",
+    client._put.assert_called_once_with(
         "/tag/old_tag",
         json_body={"tag": "new_tag"},
     )
@@ -370,18 +367,18 @@ async def test_rename_tag_success(mock_settings):
 async def test_delete_tag_success(mock_settings):
     """Test successful deletion of a tag."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={"result": True})
+    client._delete = AsyncMock(return_value={"result": True})
 
     result = await client.delete_tag("test_tag")
     assert result is True
-    client.get_json.assert_called_once_with("DELETE", "/tag/test_tag")
+    client._delete.assert_called_once_with("/tag/test_tag")
 
 
 @pytest.mark.asyncio
 async def test_rename_tag_api_error(mock_settings):
     """Test rename_tag with API error response."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={"result": False})
+    client._put = AsyncMock(return_value={"result": False})
 
     with pytest.raises(APIError):
         await client.rename_tag("old_tag", "new_tag")
@@ -391,7 +388,7 @@ async def test_rename_tag_api_error(mock_settings):
 async def test_delete_tag_api_error(mock_settings):
     """Test delete_tag with API error response."""
     client = RaindropClient(mock_settings)
-    client.get_json = AsyncMock(return_value={"result": False})
+    client._delete = AsyncMock(return_value={"result": False})
 
     with pytest.raises(APIError):
         await client.delete_tag("test_tag")

@@ -11,6 +11,10 @@ from oneiric.runtime.mcp_health import HealthStatus
 # Import the main server from the existing codebase
 from raindropio_mcp.server import create_app_sync, get_settings
 
+# Alias for tests / external callers that expect ``create_app`` at module level.
+# ``create_app_sync`` is the sync wrapper around the async ``create_app``.
+create_app = create_app_sync
+
 # Type annotation to help with type checking
 OneiricMCPConfigType = (
     OneiricMCPConfig if not TYPE_CHECKING else "TypedOneiricMCPConfig"
@@ -34,7 +38,7 @@ class RaindropMCPServer(BaseOneiricServerMixin):
 
     def __init__(self, config: RaindropConfig):
         self.config = config  # ty: ignore[invalid-assignment]
-        self.app = create_app_sync()  # Use the existing FastMCP instance (sync shim over async create_app)
+        self.app = create_app()  # ``create_app`` is aliased to ``create_app_sync`` at module top.
 
         # Initialize runtime components using mcp-common helper
         self.runtime = create_runtime_components(

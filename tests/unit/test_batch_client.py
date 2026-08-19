@@ -42,7 +42,7 @@ def sample_batch_response():
 async def test_batch_move_bookmarks(settings, sample_batch_response):
     """Test the batch_move_bookmarks method."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._put = AsyncMock(
         return_value=sample_batch_response.model_dump(by_alias=True)
     )
 
@@ -56,8 +56,7 @@ async def test_batch_move_bookmarks(settings, sample_batch_response):
     assert result.error_count == 1
 
     expected_payload = batch_data.model_dump(exclude_none=True, by_alias=True)
-    client.get_json.assert_called_once_with(
-        "PUT", "/raindrops", json_body=expected_payload
+    client._put.assert_called_once_with("/raindrops", json_body=expected_payload
     )
 
 
@@ -65,7 +64,7 @@ async def test_batch_move_bookmarks(settings, sample_batch_response):
 async def test_batch_move_bookmarks_error(settings):
     """Test the batch_move_bookmarks method with error response."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._put = AsyncMock(
         return_value={"result": False, "error": "Operation failed"}
     )
 
@@ -79,7 +78,7 @@ async def test_batch_move_bookmarks_error(settings):
 async def test_batch_delete_bookmarks(settings, sample_batch_response):
     """Test the batch_delete_bookmarks method."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._delete = AsyncMock(
         return_value=sample_batch_response.model_dump(by_alias=True)
     )
 
@@ -91,8 +90,7 @@ async def test_batch_delete_bookmarks(settings, sample_batch_response):
     assert result.processed_count == 5
 
     expected_payload = batch_data.model_dump(exclude_none=True, by_alias=True)
-    client.get_json.assert_called_once_with(
-        "DELETE", "/raindrops", json_body=expected_payload
+    client._delete.assert_called_once_with("/raindrops", json_body=expected_payload
     )
 
 
@@ -100,7 +98,7 @@ async def test_batch_delete_bookmarks(settings, sample_batch_response):
 async def test_batch_update_bookmarks(settings, sample_batch_response):
     """Test the batch_update_bookmarks method."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._put = AsyncMock(
         return_value=sample_batch_response.model_dump(by_alias=True)
     )
 
@@ -114,8 +112,7 @@ async def test_batch_update_bookmarks(settings, sample_batch_response):
     assert result.success_count == 4
 
     expected_payload = batch_data.model_dump(exclude_none=True, by_alias=True)
-    client.get_json.assert_called_once_with(
-        "PUT", "/raindrops", json_body=expected_payload
+    client._put.assert_called_once_with("/raindrops", json_body=expected_payload
     )
 
 
@@ -123,7 +120,7 @@ async def test_batch_update_bookmarks(settings, sample_batch_response):
 async def test_batch_tag_bookmarks(settings, sample_batch_response):
     """Test the batch_tag_bookmarks method."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._put = AsyncMock(
         return_value=sample_batch_response.model_dump(by_alias=True)
     )
 
@@ -135,8 +132,7 @@ async def test_batch_tag_bookmarks(settings, sample_batch_response):
 
     assert result.result is True
     expected_payload = batch_data.model_dump(exclude_none=True, by_alias=True)
-    client.get_json.assert_called_once_with(
-        "PUT", "/raindrops/tags", json_body=expected_payload
+    client._put.assert_called_once_with("/raindrops/tags", json_body=expected_payload
     )
 
 
@@ -144,7 +140,7 @@ async def test_batch_tag_bookmarks(settings, sample_batch_response):
 async def test_batch_untag_bookmarks(settings, sample_batch_response):
     """Test the batch_untag_bookmarks method."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._delete = AsyncMock(
         return_value=sample_batch_response.model_dump(by_alias=True)
     )
 
@@ -154,6 +150,5 @@ async def test_batch_untag_bookmarks(settings, sample_batch_response):
 
     assert result.result is True
     expected_payload = batch_data.model_dump(exclude_none=True, by_alias=True)
-    client.get_json.assert_called_once_with(
-        "DELETE", "/raindrops/tags", json_body=expected_payload
+    client._delete.assert_called_once_with("/raindrops/tags", json_body=expected_payload
     )

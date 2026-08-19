@@ -13,6 +13,7 @@ from raindropio_mcp.server import (
     SECURITY_AVAILABLE,
     SERVERPANELS_AVAILABLE,
     create_app,
+    create_app_sync,
     __getattr__,
 )
 
@@ -26,8 +27,8 @@ async def test_create_app(mock_get_settings: object) -> None:
     mock_settings.token = "test_token_1234567890abcdefghijklmnopqr"  # At least 32 chars
     mock_get_settings.return_value = mock_settings
 
-    # Create a test app
-    test_app = create_app()
+    # Create a test app (await the coroutine returned by create_app)
+    test_app = await create_app()
 
     # Verify the app is created correctly
     assert isinstance(test_app, FastMCP)
@@ -42,9 +43,10 @@ async def test_create_app(mock_get_settings: object) -> None:
     assert original_lifespan is not None
 
 
+@pytest.mark.asyncio
 @patch("raindropio_mcp.server.build_raindrop_client")
 @patch("raindropio_mcp.server.get_settings")
-def test_create_app_integration(
+async def test_create_app_integration(
     mock_get_settings: object, mock_build_client: object
 ) -> None:
     """Integration test for create_app."""
@@ -55,7 +57,7 @@ def test_create_app_integration(
     mock_build_client.return_value = mock_client
 
     # Create app
-    test_app = create_app()
+    test_app = await create_app()
 
     # Verify all steps were called
     mock_get_settings.assert_called_once()
@@ -74,7 +76,7 @@ async def test_app_lifespan(mock_get_settings: object) -> None:
     mock_settings.token = "test_token_1234567890abcdefghijklmnopqr"  # At least 32 chars
     mock_get_settings.return_value = mock_settings
 
-    test_app = create_app()
+    test_app = await create_app()
 
     # Get the lifespan context manager
     lifespan = test_app._mcp_server.lifespan
@@ -100,28 +102,28 @@ def test_server_availability_flags(mock_find_spec: object) -> None:
     assert importlib.util.find_spec("mcp_common.ui") is not None
 
 
-@patch("raindropio_mcp.server.create_app")
-def test_getattr_app(mock_create_app: object) -> None:
+@patch("raindropio_mcp.server.create_app_sync")
+def test_getattr_app(mock_create_app_sync: object) -> None:
     """Test the __getattr__ function for 'app'."""
     mock_app = MagicMock()
-    mock_create_app.return_value = mock_app
+    mock_create_app_sync.return_value = mock_app
 
     result = __getattr__("app")
     assert result == mock_app
-    mock_create_app.assert_called_once()
+    mock_create_app_sync.assert_called_once()
 
 
-@patch("raindropio_mcp.server.create_app")
-def test_getattr_http_app(mock_create_app: object) -> None:
+@patch("raindropio_mcp.server.create_app_sync")
+def test_getattr_http_app(mock_create_app_sync: object) -> None:
     """Test the __getattr__ function for 'http_app'."""
     mock_app = MagicMock()
     mock_http_app = MagicMock()
     mock_app.http_app = mock_http_app
-    mock_create_app.return_value = mock_app
+    mock_create_app_sync.return_value = mock_app
 
     result = __getattr__("http_app")
     assert result == mock_http_app
-    mock_create_app.assert_called_once()
+    mock_create_app_sync.assert_called_once()
 
 
 def test_getattr_invalid_attribute() -> None:
@@ -130,35 +132,40 @@ def test_getattr_invalid_attribute() -> None:
         __getattr__("invalid_attr")
 
 
+@pytest.mark.asyncio
 @patch("raindropio_mcp.server.get_settings")
 @patch("raindropio_mcp.server.RATE_LIMITING_AVAILABLE", True)
-@patch("raindropio_mcp.server.hasattr")
-def test_create_app_with_rate_limiting(
-    mock_hasattr: object, mock_get_settings: object
-) -> None:
+async def test_create_app_with_rate_limiting(mock_get_settings: object) -> None:
     """Test create_app with rate limiting enabled."""
     # Mock settings
     mock_settings = MagicMock()
     mock_settings.token = "test_token_1234567890abcdefghijklmnopqr"
     mock_get_settings.return_value = mock_settings
 
-    # Mock hasattr to return True so middleware is added
-    mock_hasattr.return_value = True
-
     # Mock the RateLimitingMiddleware from the fastmcp module
     with patch("fastmcp.server.middleware.rate_limiting.RateLimitingMiddleware") as mock_rate_limiter_class:
         mock_rate_limiter_instance = MagicMock()
         mock_rate_limiter_class.return_value = mock_rate_limiter_instance
 
-        # Mock the app's _mcp_server
+        # Mock the app's _mcp_server. MagicMock has every attribute, so the
+        # ``hasattr(app._mcp_server, "add_middleware")`` guard in ``create_app``
+        # passes naturally — patching the ``hasattr`` builtin globally breaks
+        # ``asyncio.run`` internals.
         with patch("raindropio_mcp.server.FastMCP") as mock_fastmcp_class:
             mock_app = MagicMock()
             mock_server = MagicMock()
             mock_app._mcp_server = mock_server
+            # ``_apply_tool_profile`` calls ``await server.list_tools()`` after the
+            # per-profile pass to build the registered-names set. The test does not
+            # exercise tool registration, so return an empty list from a real async.
+            mock_tool = MagicMock()
+            mock_tool.name = "health_check"
+            mock_app.list_tools = AsyncMock(return_value=[mock_tool])
             mock_fastmcp_class.return_value = mock_app
 
-            # Create the app
-            result = create_app()
+            # Await the async create_app directly inside pytest-asyncio's loop —
+            # ``create_app_sync`` calls ``asyncio.run`` which collides with that loop.
+            result = await create_app()
 
             # Verify that rate limiting middleware was added
             mock_rate_limiter_class.assert_called_once_with(

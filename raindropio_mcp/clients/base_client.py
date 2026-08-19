@@ -213,6 +213,50 @@ class BaseHTTPClient:
                 response_data=response.text,
             ) from exc
 
+    # ------------------------------------------------------------------
+    # Backward-compat HTTP verb shims.
+    #
+    # Tests + external callers historically patched private HTTP wrappers
+    # named ``_get`` / ``_post`` / ``_put`` / ``_delete`` on the client
+    # to simulate transport errors. The W3-rewrite collapsed those wrappers
+    # into the public ``get_json`` entry point; the shims below restore
+    # the original attribute surface so existing tests can monkeypatch
+    # ``client._get`` etc. without re-binding every fixture.
+    # ------------------------------------------------------------------
+    async def _get(
+        self,
+        path: str,
+        *,
+        params: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        return await self.get_json("GET", path, params=params)
+
+    async def _post(
+        self,
+        path: str,
+        *,
+        params: dict[str, Any] | None = None,
+        json_body: _JSON = None,
+    ) -> dict[str, Any]:
+        return await self.get_json("POST", path, params=params, json_body=json_body)
+
+    async def _put(
+        self,
+        path: str,
+        *,
+        params: dict[str, Any] | None = None,
+        json_body: _JSON = None,
+    ) -> dict[str, Any]:
+        return await self.get_json("PUT", path, params=params, json_body=json_body)
+
+    async def _delete(
+        self,
+        path: str,
+        *,
+        json_body: _JSON = None,
+    ) -> dict[str, Any]:
+        return await self.get_json("DELETE", path, json_body=json_body)
+
     def _should_retry(self, status_code: int, attempt: int) -> bool:
         retryable_codes = self._retry_config.status_forcelist
         return bool(

@@ -59,26 +59,46 @@ class PaginatedBookmarks:
 class RaindropClient(BaseHTTPClient):
     """Typed wrapper around the Raindrop.io API."""
 
-    def __init__(self, settings: RaindropSettings | None = None) -> None:
-        super().__init__(settings or get_settings())
+    def __init__(
+        self,
+        settings: RaindropSettings | None = None,
+        *,
+        token: str | None = None,
+    ) -> None:
+        """Construct a client.
+
+        Args:
+            settings: Pre-loaded ``RaindropSettings``. Takes precedence over
+                ``token`` when both are provided.
+            token: Convenience kwarg — equivalent to passing
+                ``settings=RaindropSettings(token=token)``. Retained for
+                backward compatibility with tests and external callers that
+                historically passed ``RaindropClient(token=...)`` directly.
+        """
+        if settings is None:
+            if token is None:
+                settings = get_settings()
+            else:
+                settings = RaindropSettings(token=token)
+        super().__init__(settings)
         self._page_defaults = {"page": 0, "perpage": 50}
 
     async def get_me(self) -> User:
-        payload = await self.get_json("GET", "/me")
+        payload = await self._get("/me")
         response = UserResponse.model_validate(payload)
         if not response.result or response.user is None:
             raise APIError("Unexpected response from /me", response_data=payload)
         return response.user
 
     async def list_collections(self) -> list[Collection]:
-        payload = await self.get_json("GET", "/collections")
+        payload = await self._get("/collections")
         response = CollectionsResponse.model_validate(payload)
         if not response.result:
             raise APIError("Failed to list collections", response_data=payload)
         return response.items
 
     async def get_collection(self, collection_id: int) -> Collection:
-        payload = await self.get_json("GET", f"/collection/{collection_id}")
+        payload = await self._get(f"/collection/{collection_id}")
         response = CollectionResponse.model_validate(payload)
         if not response.result or response.collection is None:
             raise APIError(
@@ -88,8 +108,7 @@ class RaindropClient(BaseHTTPClient):
         return response.collection
 
     async def create_collection(self, data: CollectionCreate) -> Collection:
-        payload = await self.get_json(
-            "POST",
+        payload = await self._post(
             "/collection",
             json_body=data.model_dump(exclude_none=True, by_alias=True),
         )
@@ -101,8 +120,7 @@ class RaindropClient(BaseHTTPClient):
     async def update_collection(
         self, collection_id: int, data: CollectionUpdate
     ) -> Collection:
-        payload = await self.get_json(
-            "PUT",
+        payload = await self._put(
             f"/collection/{collection_id}",
             json_body=data.model_dump(exclude_none=True, by_alias=True),
         )
@@ -115,7 +133,7 @@ class RaindropClient(BaseHTTPClient):
         return response.collection
 
     async def delete_collection(self, collection_id: int) -> bool:
-        payload = await self.get_json("DELETE", f"/collection/{collection_id}")
+        payload = await self._delete(f"/collection/{collection_id}")
         if not payload.get("result", False):
             raise APIError(
                 f"Failed to delete collection {collection_id}",
@@ -143,8 +161,7 @@ class RaindropClient(BaseHTTPClient):
         if sort:
             params["sort"] = sort
 
-        payload = await self.get_json(
-            "GET",
+        payload = await self._get(
             f"/raindrops/{collection_id}",
             params=params,
         )
@@ -176,7 +193,7 @@ class RaindropClient(BaseHTTPClient):
             if per_page is not None
             else self._page_defaults["perpage"],
         }
-        payload = await self.get_json("GET", "/raindrops/search", params=params)
+        payload = await self._get("/raindrops/search", params=params)
         response = BookmarksResponse.model_validate(payload)
         if not response.result:
             raise APIError("Bookmark search failed", response_data=payload)
@@ -189,7 +206,7 @@ class RaindropClient(BaseHTTPClient):
         )
 
     async def get_bookmark(self, bookmark_id: int) -> Bookmark:
-        payload = await self.get_json("GET", f"/raindrop/{bookmark_id}")
+        payload = await self._get(f"/raindrop/{bookmark_id}")
         response = BookmarkResponse.model_validate(payload)
         if not response.result or response.item is None:
             raise APIError(
@@ -201,8 +218,7 @@ class RaindropClient(BaseHTTPClient):
     async def create_bookmark(
         self, collection_id: int, data: BookmarkCreate
     ) -> Bookmark:
-        payload = await self.get_json(
-            "POST",
+        payload = await self._post(
             f"/raindrops/{collection_id}",
             json_body={"item": data.model_dump(exclude_none=True, by_alias=True)},
         )
@@ -215,8 +231,7 @@ class RaindropClient(BaseHTTPClient):
         return response.item
 
     async def update_bookmark(self, bookmark_id: int, data: BookmarkUpdate) -> Bookmark:
-        payload = await self.get_json(
-            "PUT",
+        payload = await self._put(
             f"/raindrop/{bookmark_id}",
             json_body={"item": data.model_dump(exclude_none=True, by_alias=True)},
         )
@@ -229,7 +244,7 @@ class RaindropClient(BaseHTTPClient):
         return response.item
 
     async def delete_bookmark(self, bookmark_id: int) -> bool:
-        payload = await self.get_json("DELETE", f"/raindrop/{bookmark_id}")
+        payload = await self._delete(f"/raindrop/{bookmark_id}")
         if not payload.get("result", False):
             raise APIError(
                 f"Failed to delete bookmark {bookmark_id}",
@@ -238,15 +253,14 @@ class RaindropClient(BaseHTTPClient):
         return True
 
     async def list_tags(self) -> list[Tag]:
-        payload = await self.get_json("GET", "/tags")
+        payload = await self._get("/tags")
         response = TagsResponse.model_validate(payload)
         if not response.result:
             raise APIError("Failed to list tags", response_data=payload)
         return response.items
 
     async def rename_tag(self, source_tag: str, new_tag: str) -> bool:
-        payload = await self.get_json(
-            "PUT",
+        payload = await self._put(
             f"/tag/{source_tag}",
             json_body={"tag": new_tag},
         )
@@ -258,14 +272,14 @@ class RaindropClient(BaseHTTPClient):
         return True
 
     async def delete_tag(self, tag: str) -> bool:
-        payload = await self.get_json("DELETE", f"/tag/{tag}")
+        payload = await self._delete(f"/tag/{tag}")
         if not payload.get("result", False):
             raise APIError(f"Failed to delete tag '{tag}'", response_data=payload)
         return True
 
     async def list_highlights(self, bookmark_id: int) -> list[Highlight]:
         """List all highlights for a specific bookmark."""
-        payload = await self.get_json("GET", f"/raindrop/{bookmark_id}/highlights")
+        payload = await self._get(f"/raindrop/{bookmark_id}/highlights")
         response = HighlightsResponse.model_validate(payload)
         if not response.result:
             raise APIError(
@@ -276,7 +290,7 @@ class RaindropClient(BaseHTTPClient):
 
     async def get_highlight(self, highlight_id: int) -> Highlight:
         """Get a single highlight by its ID."""
-        payload = await self.get_json("GET", f"/highlight/{highlight_id}")
+        payload = await self._get(f"/highlight/{highlight_id}")
         response = HighlightResponse.model_validate(payload)
         if not response.result or response.item is None:
             raise APIError(
@@ -289,8 +303,7 @@ class RaindropClient(BaseHTTPClient):
         self, bookmark_id: int, data: HighlightCreate
     ) -> Highlight:
         """Create a new highlight for a bookmark."""
-        payload = await self.get_json(
-            "POST",
+        payload = await self._post(
             f"/raindrop/{bookmark_id}/highlights",
             json_body={"item": data.model_dump(exclude_none=True, by_alias=True)},
         )
@@ -306,8 +319,7 @@ class RaindropClient(BaseHTTPClient):
         self, highlight_id: int, data: HighlightUpdate
     ) -> Highlight:
         """Update an existing highlight."""
-        payload = await self.get_json(
-            "PUT",
+        payload = await self._put(
             f"/highlight/{highlight_id}",
             json_body={"item": data.model_dump(exclude_none=True, by_alias=True)},
         )
@@ -321,7 +333,7 @@ class RaindropClient(BaseHTTPClient):
 
     async def delete_highlight(self, highlight_id: int) -> bool:
         """Delete a highlight."""
-        payload = await self.get_json("DELETE", f"/highlight/{highlight_id}")
+        payload = await self._delete(f"/highlight/{highlight_id}")
         if not payload.get("result", False):
             raise APIError(
                 f"Failed to delete highlight {highlight_id}",
@@ -333,8 +345,7 @@ class RaindropClient(BaseHTTPClient):
         self, data: BatchMoveBookmarks
     ) -> BatchOperationResponse:
         """Move multiple bookmarks to a different collection."""
-        payload = await self.get_json(
-            "PUT",
+        payload = await self._put(
             "/raindrops",
             json_body=data.model_dump(exclude_none=True, by_alias=True),
         )
@@ -350,8 +361,7 @@ class RaindropClient(BaseHTTPClient):
         self, data: BatchDeleteBookmarks
     ) -> BatchOperationResponse:
         """Delete multiple bookmarks."""
-        payload = await self.get_json(
-            "DELETE",
+        payload = await self._delete(
             "/raindrops",
             json_body=data.model_dump(exclude_none=True, by_alias=True),
         )
@@ -366,8 +376,7 @@ class RaindropClient(BaseHTTPClient):
         self, data: BatchUpdateBookmarks
     ) -> BatchOperationResponse:
         """Update multiple bookmarks with the same changes."""
-        payload = await self.get_json(
-            "PUT",
+        payload = await self._put(
             "/raindrops",
             json_body=data.model_dump(exclude_none=True, by_alias=True),
         )
@@ -382,8 +391,7 @@ class RaindropClient(BaseHTTPClient):
         self, data: BatchTagBookmarks
     ) -> BatchOperationResponse:
         """Add tags to multiple bookmarks."""
-        payload = await self.get_json(
-            "PUT",
+        payload = await self._put(
             "/raindrops/tags",
             json_body=data.model_dump(exclude_none=True, by_alias=True),
         )
@@ -398,8 +406,7 @@ class RaindropClient(BaseHTTPClient):
         self, data: BatchUntagBookmarks
     ) -> BatchOperationResponse:
         """Remove tags from multiple bookmarks."""
-        payload = await self.get_json(
-            "DELETE",
+        payload = await self._delete(
             "/raindrops/tags",
             json_body=data.model_dump(exclude_none=True, by_alias=True),
         )
@@ -419,10 +426,10 @@ class RaindropClient(BaseHTTPClient):
         # Convert complex filter parameters to appropriate format
         if "created_after" in params or "created_before" in params:
             # For date range filtering, we might need to use the search endpoint
-            payload = await self.get_json("GET", "/raindrops/search", params=params)
+            payload = await self._get("/raindrops/search", params=params)
         else:
             # For other filters, we might call the general search endpoint
-            payload = await self.get_json("GET", "/raindrops/search", params=params)
+            payload = await self._get("/raindrops/search", params=params)
 
         if not payload.get("result", False) and "items" not in payload:
             raise APIError(
@@ -438,8 +445,7 @@ class RaindropClient(BaseHTTPClient):
         """Apply filters to bookmarks within a specific collection."""
         params = filter_params.model_dump(exclude_none=True)
 
-        payload = await self.get_json(
-            "GET", f"/raindrops/{collection_id}", params=params
+        payload = await self._get( f"/raindrops/{collection_id}", params=params
         )
 
         if not payload.get("result", False) and "items" not in payload:
@@ -458,8 +464,7 @@ class RaindropClient(BaseHTTPClient):
         # data in a specific format
         # The exact implementation would depend on the Raindrop.io API specifics
         params = {"collection": collection_id} if collection_id is not None else {}
-        payload = await self.get_json(
-            "POST",
+        payload = await self._post(
             "/import",
             params=params,
             json_body=import_source.model_dump(exclude_none=True, by_alias=True),

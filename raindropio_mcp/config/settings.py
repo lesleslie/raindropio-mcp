@@ -89,7 +89,9 @@ class RaindropSettings(BaseSettings):
         """Get masked API token for safe logging (Phase 3 Security Hardening).
 
         Returns:
-            Masked token string (e.g., "...abc1") for safe display in logs
+            Masked token string (e.g., "...abc1") for safe display in logs.
+            Short tokens (≤ 8 chars) are reduced to a ``"***"`` placeholder
+            to avoid leaking the entire key.
         """
         if not self.token:
             return "***"
@@ -97,8 +99,10 @@ class RaindropSettings(BaseSettings):
         if SECURITY_AVAILABLE:
             return APIKeyValidator.mask_key(self.token, visible_chars=4)
 
-        # Fallback masking without security module
-        if len(self.token) <= 4:
+        # Fallback masking without security module — treat anything that
+        # would reveal a meaningful suffix as still too short to safely
+        # display. ``mask_key`` from mcp-common uses the same 4-char rule.
+        if len(self.token) <= 8:
             return "***"
         return f"...{self.token[-4:]}"
 
@@ -118,8 +122,13 @@ class RaindropSettings(BaseSettings):
             # Use generic validator with minimum 32 characters for bearer tokens
             from contextlib import suppress
 
+            from mcp_common.exceptions import (
+                APIKeyFormatError,
+                APIKeyMissingError,
+            )
+
             validator = APIKeyValidator(min_length=32)
-            with suppress(ValueError):
+            with suppress(ValueError, APIKeyFormatError, APIKeyMissingError):
                 validator.validate(self.token, raise_on_invalid=True)
                 self.get_masked_token()
 

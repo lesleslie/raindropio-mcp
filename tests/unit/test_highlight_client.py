@@ -36,7 +36,7 @@ def sample_highlight():
 async def test_list_highlights(settings, sample_highlight):
     """Test the list_highlights method."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._get = AsyncMock(
         return_value={
             "result": True,
             "items": [sample_highlight.model_dump(by_alias=True)],
@@ -50,14 +50,14 @@ async def test_list_highlights(settings, sample_highlight):
     assert result[0].id == 123
     assert result[0].text == "Sample highlight text"
 
-    client.get_json.assert_called_once_with("GET", "/raindrop/456/highlights")
+    client._get.assert_called_once_with("/raindrop/456/highlights")
 
 
 @pytest.mark.asyncio
 async def test_list_highlights_error(settings):
     """Test the list_highlights method with error response."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._get = AsyncMock(
         return_value={"result": False, "items": [], "error": "Not found"}
     )
 
@@ -69,7 +69,7 @@ async def test_list_highlights_error(settings):
 async def test_get_highlight(settings, sample_highlight):
     """Test the get_highlight method."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._get = AsyncMock(
         return_value={
             "result": True,
             "item": sample_highlight.model_dump(by_alias=True),
@@ -81,14 +81,14 @@ async def test_get_highlight(settings, sample_highlight):
     assert result.id == 123
     assert result.text == "Sample highlight text"
 
-    client.get_json.assert_called_once_with("GET", "/highlight/123")
+    client._get.assert_called_once_with("/highlight/123")
 
 
 @pytest.mark.asyncio
 async def test_get_highlight_error(settings):
     """Test the get_highlight method with error response."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(return_value={"result": False, "error": "Not found"})
+    client._get = AsyncMock(return_value={"result": False, "error": "Not found"})
 
     with pytest.raises(APIError):
         await client.get_highlight(123)
@@ -98,7 +98,7 @@ async def test_get_highlight_error(settings):
 async def test_create_highlight(settings, sample_highlight):
     """Test the create_highlight method."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._post = AsyncMock(
         return_value={
             "result": True,
             "item": sample_highlight.model_dump(by_alias=True),
@@ -117,8 +117,8 @@ async def test_create_highlight(settings, sample_highlight):
     expected_payload = {
         "item": highlight_data.model_dump(exclude_none=True, by_alias=True)
     }
-    client.get_json.assert_called_once_with(
-        "POST", "/raindrop/456/highlights", json_body=expected_payload
+    client._post.assert_called_once_with(
+        "/raindrop/456/highlights", json_body=expected_payload
     )
 
 
@@ -126,7 +126,7 @@ async def test_create_highlight(settings, sample_highlight):
 async def test_create_highlight_error(settings):
     """Test the create_highlight method with error response."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._post = AsyncMock(
         return_value={"result": False, "error": "Creation failed"}
     )
 
@@ -140,7 +140,7 @@ async def test_create_highlight_error(settings):
 async def test_update_highlight(settings, sample_highlight):
     """Test the update_highlight method."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._put = AsyncMock(
         return_value={
             "result": True,
             "item": sample_highlight.model_dump(by_alias=True),
@@ -159,8 +159,8 @@ async def test_update_highlight(settings, sample_highlight):
     expected_payload = {
         "item": highlight_data.model_dump(exclude_none=True, by_alias=True)
     }
-    client.get_json.assert_called_once_with(
-        "PUT", "/highlight/123", json_body=expected_payload
+    client._put.assert_called_once_with(
+        "/highlight/123", json_body=expected_payload
     )
 
 
@@ -168,7 +168,7 @@ async def test_update_highlight(settings, sample_highlight):
 async def test_update_highlight_error(settings):
     """Test the update_highlight method with error response."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._put = AsyncMock(
         return_value={"result": False, "error": "Update failed"}
     )
 
@@ -182,20 +182,20 @@ async def test_update_highlight_error(settings):
 async def test_delete_highlight(settings):
     """Test the delete_highlight method."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(return_value={"result": True})
+    client._delete = AsyncMock(return_value={"result": True})
 
     result = await client.delete_highlight(123)  # highlight_id
 
     assert result is True
 
-    client.get_json.assert_called_once_with("DELETE", "/highlight/123")
+    client._delete.assert_called_once_with("/highlight/123")
 
 
 @pytest.mark.asyncio
 async def test_delete_highlight_error(settings):
     """Test the delete_highlight method with error response."""
     client = RaindropClient(settings)
-    client.get_json = AsyncMock(
+    client._delete = AsyncMock(
         return_value={"result": False, "error": "Deletion failed"}
     )
 

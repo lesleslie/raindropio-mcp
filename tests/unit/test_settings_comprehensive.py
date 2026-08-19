@@ -255,8 +255,8 @@ class TestGetMaskedToken:
             monkeypatch.setenv("RAINDROP_TOKEN", "test_token_1234567890abcdefghijklmnopqr")
             settings = RaindropSettings()
             masked = settings.get_masked_token()
-            # Fallback should show last 4 chars
-            assert masked == "...pqrs"
+            # Fallback should show last 4 chars of the token (``...opqr``)
+            assert masked == "...opqr"
 
     @patch("raindropio_mcp.config.settings.SECURITY_AVAILABLE", True)
     def test_get_masked_token_with_security(self, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -264,8 +264,8 @@ class TestGetMaskedToken:
         monkeypatch.setenv("RAINDROP_TOKEN", "test_token_1234567890abcdefghijklmnopqr")
         settings = RaindropSettings()
         masked = settings.get_masked_token()
-        # Security module should mask with 4 visible chars
-        assert masked.endswith("pqrs")
+        # Security module should mask with 4 visible chars at the tail
+        assert masked.endswith("opqr")
 
 
 class TestHttpClientConfig:

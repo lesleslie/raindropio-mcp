@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -119,10 +119,14 @@ class TestRaindropMCPServer:
         assert server.health_monitor is mock_health_monitor
 
     @patch("raindropio_mcp.__main__.create_runtime_components")
+    @patch("raindropio_mcp.__main__.get_settings")
     @patch("raindropio_mcp.__main__.create_app")
     @pytest.mark.asyncio
     async def test_startup_lifecycle(
-        self, mock_create_app: MagicMock, mock_create_runtime: MagicMock
+        self,
+        mock_create_app: MagicMock,
+        mock_get_settings: MagicMock,
+        mock_create_runtime: MagicMock,
     ) -> None:
         """Test server startup lifecycle."""
         from raindropio_mcp.__main__ import RaindropConfig, RaindropMCPServer
@@ -130,8 +134,12 @@ class TestRaindropMCPServer:
         mock_app = MagicMock()
         mock_create_app.return_value = mock_app
 
-        mock_runtime = MagicMock()
+        mock_runtime = AsyncMock()
         mock_create_runtime.return_value = mock_runtime
+
+        mock_get_settings.return_value = MagicMock(
+            token="test_token_1234567890abcdefghijklmnopqr"
+        )
 
         config = RaindropConfig()
         server = RaindropMCPServer(config)
@@ -139,13 +147,17 @@ class TestRaindropMCPServer:
         await server.startup()
 
         # Verify runtime initialization was called
-        mock_runtime.initialize.assert_called_once()
+        mock_runtime.initialize.assert_awaited_once()
 
     @patch("raindropio_mcp.__main__.create_runtime_components")
+    @patch("raindropio_mcp.__main__.get_settings")
     @patch("raindropio_mcp.__main__.create_app")
     @pytest.mark.asyncio
     async def test_shutdown_lifecycle(
-        self, mock_create_app: MagicMock, mock_create_runtime: MagicMock
+        self,
+        mock_create_app: MagicMock,
+        mock_get_settings: MagicMock,
+        mock_create_runtime: MagicMock,
     ) -> None:
         """Test server shutdown lifecycle."""
         from raindropio_mcp.__main__ import RaindropConfig, RaindropMCPServer
@@ -153,8 +165,12 @@ class TestRaindropMCPServer:
         mock_app = MagicMock()
         mock_create_app.return_value = mock_app
 
-        mock_runtime = MagicMock()
+        mock_runtime = AsyncMock()
         mock_create_runtime.return_value = mock_runtime
+
+        mock_get_settings.return_value = MagicMock(
+            token="test_token_1234567890abcdefghijklmnopqr"
+        )
 
         config = RaindropConfig()
         server = RaindropMCPServer(config)
@@ -162,7 +178,7 @@ class TestRaindropMCPServer:
         await server.shutdown()
 
         # Verify runtime cleanup was called
-        mock_runtime.cleanup.assert_called_once()
+        mock_runtime.cleanup.assert_awaited_once()
 
     @patch("raindropio_mcp.__main__.create_runtime_components")
     @patch("raindropio_mcp.__main__.create_app")
@@ -184,6 +200,13 @@ class TestRaindropMCPServer:
         mock_runtime = MagicMock()
         mock_health_monitor = MagicMock()
         mock_runtime.health_monitor = mock_health_monitor
+
+        mock_runtime.cache_manager = MagicMock()
+        mock_runtime.cache_manager.get_cache_stats = AsyncMock(
+            return_value={"total_entries": 0, "initialized": True}
+        )
+        mock_runtime.snapshot_manager = MagicMock()
+        mock_runtime.snapshot_manager.current_snapshot = None
 
         mock_health_monitor.create_component_health.return_value = MagicMock(
             status=HealthStatus.HEALTHY
@@ -224,6 +247,13 @@ class TestRaindropMCPServer:
         mock_runtime = MagicMock()
         mock_health_monitor = MagicMock()
         mock_runtime.health_monitor = mock_health_monitor
+
+        mock_runtime.cache_manager = MagicMock()
+        mock_runtime.cache_manager.get_cache_stats = AsyncMock(
+            return_value={"total_entries": 0, "initialized": True}
+        )
+        mock_runtime.snapshot_manager = MagicMock()
+        mock_runtime.snapshot_manager.current_snapshot = None
 
         def create_component_health(name: str, status: HealthStatus, details: dict):
             return MagicMock(status=status, details=details)

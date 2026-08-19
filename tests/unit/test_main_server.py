@@ -26,6 +26,18 @@ class DummyClient:
 
 
 def test_create_app_registers_tools(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Verify ``create_app_sync`` wires the RaindropClient + tool-profile dispatch.
+
+    The pre-W4 architecture called a single ``register_all_tools`` function
+    after construction. The W4 design replaced that with a profile-driven
+    dispatch via ``apply_raindropio_tool_profile`` (which itself calls
+    ``_apply_tool_profile`` from mcp-common). This test asserts the new
+    contract: the dispatch helper is invoked once with the constructed
+    FastMCP server, the same ``dummy_client`` instance, and the local
+    settings object — and the server carries the same client on its
+    ``_raindrop_client`` attribute so the lifespan ``finally`` block can
+    close the right instance (the W4.3 reviewer lesson).
+    """
     dummy_client = DummyClient()
     calls: dict[str, Any] = {}
 
@@ -38,12 +50,13 @@ def test_create_app_registers_tools(monkeypatch: pytest.MonkeyPatch) -> None:
         server_module, "build_raindrop_client", lambda settings: dummy_client
     )
 
-    def fake_register(app, client):
+    async def fake_dispatch(server, settings, client):
         calls["client"] = client
-        calls["app"] = app
+        calls["app"] = server
+        calls["settings"] = settings
 
-    monkeypatch.setattr(server_module, "register_all_tools", fake_register)
-    app = server_module.create_app()
+    monkeypatch.setattr(server_module, "apply_raindropio_tool_profile", fake_dispatch)
+    app = server_module.create_app_sync()
     assert app.name == server_module.APP_NAME
     assert calls["client"] is dummy_client
     assert calls["app"] is app

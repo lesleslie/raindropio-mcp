@@ -14,8 +14,8 @@ from raindropio_mcp.server import (
     RATE_LIMITING_AVAILABLE,
     SECURITY_AVAILABLE,
     SERVERPANELS_AVAILABLE,
-    create_app,
 )
+from raindropio_mcp.server import create_app_sync as create_app
 
 logger = logging.getLogger(__name__)
 

@@ -21,6 +21,11 @@ from raindropio_mcp.tools.profiles import (
     register_all_tool_groups,
 )
 
+# Module-level alias retained for legacy tests/external callers that
+# expect ``register_all_tools``. Mirrors the W3-era function name;
+# ``register_all_tool_groups`` is the current production name.
+register_all_tools = register_all_tool_groups
+
 # Check FastMCP rate limiting middleware availability (Phase 3.3 M2: improved pattern)
 RATE_LIMITING_AVAILABLE = (
     importlib.util.find_spec("fastmcp.server.middleware.rate_limiting") is not None
@@ -84,7 +89,7 @@ async def apply_raindropio_tool_profile(
         profile_env_var="RAINDROPIO_TOOL_PROFILE",
         registrations=PROFILE_REGISTRATIONS,
         registration_map=_build_registration_map(client),
-        register_all_fn=lambda srv: register_all_tool_groups(srv, client),
+        register_all_fn=lambda srv: register_all_tools(srv, client),
         mandatory_groups=RAINDROPIO_MANDATORY_GROUPS,
         essential_tool_names={"health_check"},
     )
@@ -226,4 +231,5 @@ __all__ = [
     "create_app",
     "create_app_sync",
     "get_settings",  # Added to fix zuban type error
+    "register_all_tools",
 ]
