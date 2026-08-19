@@ -9,7 +9,7 @@ from oneiric.core.config import OneiricMCPConfig
 from oneiric.runtime.mcp_health import HealthStatus
 
 # Import the main server from the existing codebase
-from raindropio_mcp.server import create_app, get_settings
+from raindropio_mcp.server import create_app_sync, get_settings
 
 # Type annotation to help with type checking
 OneiricMCPConfigType = (
@@ -34,7 +34,7 @@ class RaindropMCPServer(BaseOneiricServerMixin):
 
     def __init__(self, config: RaindropConfig):
         self.config = config  # ty: ignore[invalid-assignment]
-        self.app = create_app()  # Use the existing FastMCP instance
+        self.app = create_app_sync()  # Use the existing FastMCP instance (sync shim over async create_app)
 
         # Initialize runtime components using mcp-common helper
         self.runtime = create_runtime_components(

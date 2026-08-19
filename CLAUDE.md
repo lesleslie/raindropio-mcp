@@ -1,319 +1,57 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with code in this repository.
 
 For a shorter, tool-neutral bootstrap document, start with `AGENTS.md`.
 
 ## Project Overview
 
-FastMCP-based Model Context Protocol server that exposes the Raindrop.io API to AI assistants. The server provides comprehensive bookmark management including collections, tags, highlights, batch operations, filtering, and import/export functionality.
+MCP server for the Raindrop.io bookmark management API. Exposes 30 tools
+across 9 groups (account, batch, bookmarks, collections, filters,
+highlights, import_export, system, tags) plus a `health_check` tool and
+the `discover_tools` meta-tool.
 
-**Tech Stack:** Python 3.13, FastMCP, httpx, Pydantic, pytest
+## Tool Profile System
 
-## Common Commands
+Tools are gated by the `RAINDROPIO_TOOL_PROFILE` environment variable:
 
-```bash
-# Dependency management
-uv sync                          # Install/sync all dependencies
+- `full` (default): All 30 Raindrop.io tools + `health_check` + `discover_tools`
+- `standard`: Same as `full` (Tier-A trivial mapping)
+- `minimal`: Only `health_check` + `discover_tools` + HTTP `/health` + `/healthz`
 
-# Running the server
-uv run python -m raindropio_mcp           # Run in stdio mode (default)
-uv run raindropio-mcp                     # Alternative via console script
-uv run python -m raindropio_mcp --http    # Run with HTTP transport
-uv run python -m raindropio_mcp --http --http-port 3034  # Custom port
+`health_check` is always present (mandatory group) — the W4.1 keystone
+for `MINIMAL=health, STANDARD/FULL=all`.
 
-# Testing
-uv run pytest                             # Run all tests
-uv run pytest tests/unit/test_client.py   # Run specific test file
-uv run pytest -k "test_name"              # Run tests matching pattern
-uv run pytest --cov=. --cov-report=html   # Generate HTML coverage report
+### Custom registry wrapper
 
-# Code quality
-uv run crackerjack                        # Run full suite (ruff + mypy + pytest + bandit)
-uv run ruff check --fix                   # Lint and auto-fix
-uv run mypy .                             # Type checking only
-uv run bandit -r raindropio_mcp           # Security scanning
-```
+raindropio-mcp uses a custom `FastMCPToolRegistry` (see
+`raindropio_mcp/tools/tool_registry.py`) that wraps FastMCP's `@tool`
+decorator. The W3.1 backend-lambda adapter pattern is used: each
+`register_<group>_tools(registry, client)` is wrapped in a closure that
+captures a caller-supplied `RaindropClient` and constructs
+`FastMCPToolRegistry(server)` inside the call.
 
-## Architecture Overview
+### Production path
 
-### Core Components
+`create_app` is async (calls `await _apply_tool_profile(...)`); sync
+callers (CLI startup, `__main__.py`, `__getattr__`) use
+`create_app_sync()` which wraps via `_run_async_safely` (asyncio.run or
+private ThreadPoolExecutor — the W4.6 unifi-mcp / porkbun-domain-mcp
+precedent).
 
-1. **Configuration Layer** (`raindropio_mcp/config/`)
+### Lifespan
 
-   - `RaindropSettings`: Pydantic-based settings that validate environment variables
-   - Cached via `@lru_cache` in `get_settings()`
-   - Required: `RAINDROP_TOKEN` (personal access token)
-   - Optional: request timeout, connection limits, HTTP transport settings
-   - Nested configs: `RetryConfig`, `CacheConfig`, `ObservabilityConfig`
+The MCP server's lifespan finally block closes the `RaindropClient`
+instance — the W4.3 keystone prevents httpx pool leaks in long-running
+deployments.
 
-1. **Client Layer** (`raindropio_mcp/clients/`)
+## Architecture
 
-   - `BaseHTTPClient`: Abstract async HTTP client with retry logic, error mapping, and rate-limit handling
-   - `RaindropClient`: Typed wrapper around Raindrop.io REST API
-     - Inherits retry/error handling from `BaseHTTPClient`
-     - Returns typed Pydantic models for all responses
-     - Includes pagination helpers for bookmark lists
-   - `client_factory.py`: Factory functions for client instantiation
+- **Entry point**: `raindropio_mcp/server.py` — async `create_app` + sync shim
+- **Tools**: `raindropio_mcp/tools/` — 9 register fns + `register_health_tool` + `profiles.py`
+- **Client**: `raindropio_mcp/clients/` — `RaindropClient` (httpx-based)
+- **Config**: `raindropio_mcp/config/` — Oneiric-style layered settings
+- **Tests**: `tests/unit/test_tool_profile.py` — W4 contract guards
 
-1. **Models Layer** (`raindropio_mcp/models/`)
-
-   - Pydantic models mirroring Raindrop.io API responses
-   - Key models: `Bookmark`, `Collection`, `Tag`, `User`, `Highlight`
-   - Payload models: `BookmarkCreate`, `BookmarkUpdate`, `CollectionCreate`, `CollectionUpdate`
-   - Batch operation models: `BatchMoveBookmarks`, `BatchDeleteBookmarks`, `BatchUpdateBookmarks`, `BatchTagBookmarks`, `BatchUntagBookmarks`
-   - Filter models: `BookmarkFilter`, `FilteredBookmarksResponse`
-   - Import/Export models: `ImportSource`, `ImportResult`, `ExportFormat`
-   - Uses field aliases to map API's `_id` to Pydantic-friendly names
-
-1. **Tools Layer** (`raindropio_mcp/tools/`)
-
-   - FastMCP tools organized by domain (9 categories total):
-     - `collections.py`: List, get, create, update, delete collections
-     - `bookmarks.py`: List, search, get, create, update, delete bookmarks
-     - `tags.py`: List, rename, delete tags
-     - `highlights.py`: List, get, create, update, delete highlights/annotations
-     - `batch.py`: Batch move, delete, update, tag, untag bookmarks
-     - `filters.py`: Apply complex filters across collections
-     - `import_export.py`: Import from external sources, export to various formats
-     - `account.py`: Get authenticated user profile
-     - `system.py`: Health check / ping
-   - `tool_registry.py`: Custom registry that wraps FastMCP decorators with metadata
-   - Tools registered via `register_all_tools()` in `__init__.py`
-
-1. **Server & Entrypoint** (`raindropio_mcp/`)
-
-   - `server.py`: `create_app()` builds FastMCP app with lifecycle management
-     - Creates shared `RaindropClient` instance
-     - Registers shutdown hook to close client and release HTTP connections
-     - Stores client reference on app for access by tools
-   - `main.py`: CLI entrypoint with argument parsing
-     - Configures structured JSON or text logging
-     - Supports both stdio and HTTP transports
-     - Accepts `--http`, `--http-host`, `--http-port`, `--http-path` flags
-
-### Layered Architecture
-
-!Five-layer architecture diagram showing Config, Client, Models, Tools, and Server layers with dependencies
-
-### Data Flow
-
-1. MCP client sends tool request → FastMCP receives and routes to registered tool
-1. Tool validates input with Pydantic models → calls `RaindropClient` method
-1. `RaindropClient` makes async HTTP request via `BaseHTTPClient`
-1. `BaseHTTPClient` applies retry logic, handles errors, maps to exceptions
-1. Response validated with Pydantic models → returned as JSON-serializable dict
-1. FastMCP sends response back to MCP client
-
-!Sequence diagram showing complete request lifecycle from MCP client through FastMCP, Tool, RaindropClient, BaseHTTPClient to Raindrop API with retry and error handling
-
-### Error Handling Strategy
-
-- Custom exceptions in `raindropio_mcp/utils/exceptions.py`:
-  - `APIError`: Base for all Raindrop API errors
-  - `NotFoundError`: HTTP 404 responses
-  - `RateLimitError`: HTTP 429 with optional retry-after
-  - `NetworkError`: Transport/timeout failures
-  - `ConfigurationError`: Missing/invalid settings
-- Retry logic in `BaseHTTPClient` for status codes: 408, 425, 429, 500, 502, 503, 504
-- Exponential backoff with configurable factor and max attempts
-
-### Error Mapping Flow
-
-!Flowchart showing HTTP status codes mapped to appropriate exception types including NotFoundError, RateLimitError, and APIError
-
-## Development Guidelines
-
-### Code Style
-
-- Python 3.13 syntax and features
-- Ruff line length: 88 characters
-- Type hints required for all functions (enforced by mypy)
-- Async/await used throughout (no sync blocking calls)
-- Prefer Pydantic models over raw dicts
-- Use dataclasses with `slots=True` for internal data structures
-
-### Adding New Tools
-
-1. Define Pydantic models in `raindropio_mcp/models/` if needed
-1. Add client method to `RaindropClient` with typed return
-1. Create tool function in appropriate `raindropio_mcp/tools/*.py` file
-1. Register with `@registry.register(ToolMetadata(...))` decorator
-1. Call registration function from `register_all_tools()`
-1. Write unit tests in `tests/unit/` mocking HTTP responses
-
-### Testing Strategy
-
-- All tests in `tests/unit/` (26 test files)
-- `conftest.py` auto-injects `RAINDROP_TOKEN` via fixture
-- `reset_settings_cache` fixture ensures clean state between tests
-- Coverage threshold: 80% (enforced in `pyproject.toml`)
-- Mock HTTP responses using `pytest` fixtures
-- Tests never hit live Raindrop.io API
-
-### Configuration & Environment
-
-Required environment variable:
-
-```bash
-export RAINDROP_TOKEN="your-token-here"
-```
-
-Optional environment variables (all prefixed with `RAINDROP_`):
-
-- `RAINDROP_BASE_URL`: API root (default: `https://api.raindrop.io/rest/v1`)
-- `RAINDROP_USER_AGENT`: HTTP user agent (default: `raindropio-mcp/0.1.0`)
-- `RAINDROP_REQUEST_TIMEOUT`: Timeout in seconds (default: 30.0)
-- `RAINDROP_MAX_CONNECTIONS`: HTTP connection pool size (default: 10)
-- `RAINDROP_ENABLE_HTTP_TRANSPORT`: Enable HTTP mode (default: false)
-- `RAINDROP_HTTP_HOST`: HTTP bind address (default: `127.0.0.1`)
-- `RAINDROP_HTTP_PORT`: HTTP port (default: 3034)
-- `RAINDROP_HTTP_PATH`: HTTP endpoint path (default: `/mcp`)
-
-Environment variables can also be set via `.env` file in project root.
-
-## Key Implementation Notes
-
-### Lifecycle Management
-
-- The FastMCP app wraps its original lifespan context manager
-- On shutdown, `client.close()` is called to release httpx connection pool
-- This prevents resource leaks in long-running server processes
-
-### Pagination Defaults
-
-- `RaindropClient` stores pagination defaults: `{"page": 0, "perpage": 50}`
-- `list_bookmarks()` and `search_bookmarks()` return `PaginatedBookmarks` dataclass
-- Contains `items`, `count`, `collection_id`, `page`, `per_page` for pagination UI
-
-### Authentication
-
-- Bearer token authentication via `Authorization` header
-- Token validation happens on first API call (not at startup)
-- 401 responses raise `APIError` with helpful message about checking `RAINDROP_TOKEN`
-
-### Tool Registry Pattern
-
-- Custom `FastMCPToolRegistry` wraps FastMCP's `@app.tool` decorator
-- Adds `ToolMetadata` with `name`, `description`, `category`, `examples`
-- Enables programmatic inspection of registered tools
-- All tools must be async functions (enforced at registration time)
-
-## MCP Client Configuration
-
-Example `mcp.json` for Claude Desktop:
-
-```json
-{
-  "mcpServers": {
-    "raindropio": {
-      "command": "uv",
-      "args": ["run", "python", "-m", "raindropio_mcp"],
-      "env": {
-        "RAINDROP_TOKEN": "your-token-here"
-      }
-    }
-  }
-}
-```
-
-For HTTP transport (see `example.mcp.json` and `example.mcp.dev.json` in repo).
-
-## Troubleshooting
-
-### Common Issues
-
-- **Missing token error**: Ensure `RAINDROP_TOKEN` is set in environment or `.env`
-- **Import errors**: Run `uv sync` to ensure all dependencies are installed
-- **Test failures**: Check that `conftest.py` fixtures are being applied
-- **Type errors**: Run `uv run mypy .` to catch type issues before running tests
-- **Coverage below 80%**: Add tests for uncovered code paths or adjust threshold in `pyproject.toml`
-
-### Debug Mode
-
-Set `RAINDROP_OBSERVABILITY_LOG_LEVEL=DEBUG` for verbose logging.
-
-<!-- CRACKERJACK INTEGRATION START -->
-
-This project uses crackerjack for Python project management and quality assurance.
-
-For optimal development experience with this crackerjack - enabled project, use these specialized agents:
-
-- **🏗️ crackerjack-architect**: Expert in crackerjack's modular architecture and Python project management patterns. **Use PROACTIVELY** for all feature development, architectural decisions, and ensuring code follows crackerjack standards from the start.
-
-- **🐍 python-pro**: Modern Python development with type hints, async/await patterns, and clean architecture
-
-- **🧪 pytest-hypothesis-specialist**: Advanced testing patterns, property-based testing, and test optimization
-
-- **🧪 crackerjack-test-specialist**: Advanced testing specialist for complex testing scenarios and coverage optimization
-
-- **🏗️ backend-architect**: System design, API architecture, and service integration patterns
-
-- **🔒 security-auditor**: Security analysis, vulnerability detection, and secure coding practices
-
-```bash
-
-Task tool with subagent_type ="crackerjack-architect" for feature planning
-
-
-Task tool with subagent_type ="python-pro" for code implementation
-
-
-Task tool with subagent_type ="pytest-hypothesis-specialist" for test development
-
-
-Task tool with subagent_type ="security-auditor" for security analysis
-```
-
-**💡 Pro Tip**: The crackerjack-architect agent automatically ensures code follows crackerjack patterns from the start, eliminating the need for retrofitting and quality fixes.
-
-This project follows crackerjack's clean code philosophy:
-
-- **EVERY LINE OF CODE IS A LIABILITY**: The best code is no code
-
-- **DRY (Don't Repeat Yourself)**: If you write it twice, you're doing it wrong
-
-- **YAGNI (You Ain't Gonna Need It)**: Build only what's needed NOW
-
-- **KISS (Keep It Simple, Stupid)**: Complexity is the enemy of maintainability
-
-- \*\*Cognitive complexity ≤15 \*\*per function (automatically enforced)
-
-- **Coverage ratchet system**: Never decrease coverage, always improve toward 100%
-
-- **Type annotations required**: All functions must have return type hints
-
-- **Security patterns**: No hardcoded paths, proper temp file handling
-
-- **Python 3.13+ modern patterns**: Use `|` unions, pathlib over os.path
-
-```bash
-
-python -m crackerjack
-
-
-python -m crackerjack - t
-
-
-python -m crackerjack - - ai - agent - t
-
-
-python -m crackerjack - a patch
-```
-
-1. **Plan with crackerjack-architect**: Ensure proper architecture from the start
-1. **Implement with python-pro**: Follow modern Python patterns
-1. **Test comprehensively**: Use pytest-hypothesis-specialist for robust testing
-1. **Run quality checks**: `python -m crackerjack -t` before committing
-1. **Security review**: Use security-auditor for final validation
-
-- **Use crackerjack-architect agent proactively** for all significant code changes
-- **Never reduce test coverage** - the ratchet system only allows improvements
-- **Follow crackerjack patterns** - the tools will enforce quality automatically
-- **Leverage AI agent auto-fixing** - `python -m crackerjack --ai-agent -t` for autonomous quality fixes
-
-______________________________________________________________________
-
-- This project is enhanced by crackerjack's intelligent Python project management.\*
-
-<!-- CRACKERJACK INTEGRATION END -->
+See `docs/architecture/tool-profile-rationale.md` for the full
+architectural decision rationale.

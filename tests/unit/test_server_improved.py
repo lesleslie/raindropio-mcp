@@ -14,6 +14,7 @@ from raindropio_mcp.server import (
     SERVERPANELS_AVAILABLE,
     __getattr__,
     create_app,
+    create_app_sync,
 )
 
 
@@ -25,28 +26,28 @@ def test_server_availability_flags():
     assert isinstance(SECURITY_AVAILABLE, bool)
 
 
-@patch("raindropio_mcp.server.create_app")
-def test_getattr_app(mock_create_app):
+@patch("raindropio_mcp.server.create_app_sync")
+def test_getattr_app(mock_create_app_sync):
     """Test the __getattr__ function for 'app'."""
     mock_app = MagicMock()
-    mock_create_app.return_value = mock_app
+    mock_create_app_sync.return_value = mock_app
 
     result = __getattr__("app")
     assert result == mock_app
-    mock_create_app.assert_called_once()
+    mock_create_app_sync.assert_called_once()
 
 
-@patch("raindropio_mcp.server.create_app")
-def test_getattr_http_app(mock_create_app):
+@patch("raindropio_mcp.server.create_app_sync")
+def test_getattr_http_app(mock_create_app_sync):
     """Test the __getattr__ function for 'http_app'."""
     mock_app = MagicMock()
     mock_http_app = MagicMock()
     mock_app.http_app = mock_http_app
-    mock_create_app.return_value = mock_app
+    mock_create_app_sync.return_value = mock_app
 
     result = __getattr__("http_app")
     assert result == mock_http_app
-    mock_create_app.assert_called_once()
+    mock_create_app_sync.assert_called_once()
 
 
 def test_getattr_invalid_attribute():
@@ -55,10 +56,11 @@ def test_getattr_invalid_attribute():
         __getattr__("invalid_attr")
 
 
+@patch("raindropio_mcp.server.apply_raindropio_tool_profile")
 @patch("raindropio_mcp.server.get_settings")
 @patch("raindropio_mcp.server.RATE_LIMITING_AVAILABLE", True)
 @patch("raindropio_mcp.server.hasattr")
-def test_create_app_with_rate_limiting_not_addable(mock_hasattr, mock_get_settings):
+def test_create_app_with_rate_limiting_not_addable(mock_hasattr, mock_get_settings, mock_apply_profile):
     """Test create_app with rate limiting available but not addable to server."""
     # Mock settings
     mock_settings = MagicMock()
@@ -68,6 +70,9 @@ def test_create_app_with_rate_limiting_not_addable(mock_hasattr, mock_get_settin
     # Mock hasattr to return False so middleware is not added
     mock_hasattr.return_value = False
 
+    # apply_raindropio_tool_profile is async — make it return None when awaited
+    mock_apply_profile.return_value = None
+
     # Mock the app's _mcp_server
     with patch("raindropio_mcp.server.FastMCP") as mock_fastmcp_class:
         mock_app = MagicMock()
@@ -75,8 +80,8 @@ def test_create_app_with_rate_limiting_not_addable(mock_hasattr, mock_get_settin
         mock_app._mcp_server = mock_server
         mock_fastmcp_class.return_value = mock_app
 
-        # Create the app
-        result = create_app()
+        # Create the app (sync shim over async create_app)
+        result = create_app_sync()
 
         # Verify that rate limiting middleware was NOT added
         # (because hasattr returned False)
@@ -109,8 +114,8 @@ def test_create_app_without_rate_limiting(mock_get_settings):
 
 @patch("raindropio_mcp.server.get_settings")
 @patch("raindropio_mcp.server.build_raindrop_client")
-@patch("raindropio_mcp.server.register_all_tools")
-def test_create_app_lifespan_exception(mock_register_tools, mock_build_client, mock_get_settings):
+@patch("raindropio_mcp.server.apply_raindropio_tool_profile")
+def test_create_app_lifespan_exception(mock_apply_profile, mock_build_client, mock_get_settings):
     """Test the lifespan context manager when an exception occurs."""
     # Mock settings and client
     mock_settings = MagicMock()
@@ -118,8 +123,10 @@ def test_create_app_lifespan_exception(mock_register_tools, mock_build_client, m
     mock_client = AsyncMock()
     mock_get_settings.return_value = mock_settings
     mock_build_client.return_value = mock_client
+    # apply_raindropio_tool_profile is async — return an awaitable that resolves to None
+    mock_apply_profile.return_value = None
 
-    test_app = create_app()
+    test_app = create_app_sync()
 
     # Get the lifespan context manager
     lifespan = test_app._mcp_server.lifespan
