@@ -20,7 +20,7 @@ export RAINDROP_TOKEN="your-token"
 uv run python -m raindropio_mcp
 ```
 
-Use `example.mcp.json` as a starting point for Claude Desktop or other MCP clients. Switch to HTTP transport with `--http` flags or corresponding env vars.
+Use `example.mcp.dev.json` as a starting point for Claude Desktop or other MCP clients. Switch to HTTP transport with `--http` flags or corresponding env vars.
 
 ## Tooling & Quality
 
