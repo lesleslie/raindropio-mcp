@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from contextlib import suppress
 from functools import lru_cache
+from importlib.metadata import version as _importlib_version
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -12,6 +13,9 @@ from pydantic import BaseModel, Field, HttpUrl, ValidationInfo, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from raindropio_mcp.utils.exceptions import ConfigurationError
+
+_PACKAGE_VERSION = _importlib_version("raindropio-mcp")
+_DEFAULT_USER_AGENT = f"raindropio-mcp/{_PACKAGE_VERSION}"
 
 # Import mcp-common security utilities for API key validation
 # (Phase 3 Security Hardening)
@@ -58,7 +62,7 @@ class RaindropSettings(BaseSettings):
         description="Root URL for Raindrop.io REST API",
     )
     user_agent: str = Field(
-        "raindropio-mcp/0.1.0",
+        _DEFAULT_USER_AGENT,
         description="User-Agent header sent with API requests",
     )
     request_timeout: float = Field(30.0, ge=1.0, le=120.0)

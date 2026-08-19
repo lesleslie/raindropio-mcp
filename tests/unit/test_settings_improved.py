@@ -7,6 +7,7 @@ from unittest.mock import Mock, patch
 import pytest
 from pydantic import ValidationError
 
+from raindropio_mcp import __version__
 from raindropio_mcp.config.settings import (
     CacheConfig,
     ObservabilityConfig,
@@ -90,7 +91,7 @@ def test_raindrop_settings_defaults():
         settings = RaindropSettings()
         assert settings.token == "test_token_12345678901234567890123456789012"
         assert str(settings.base_url) == "https://api.raindrop.io/rest/v1"
-        assert settings.user_agent == "raindropio-mcp/0.1.0"
+        assert settings.user_agent == f"raindropio-mcp/{__version__}"
         assert settings.request_timeout == 30.0
         assert settings.max_connections == 10
         assert settings.enable_http_transport is False
@@ -169,7 +170,7 @@ def test_auth_headers():
     settings = RaindropSettings(token="test_token_12345678901234567890123456789012")
     headers = settings.auth_headers()
     assert headers["Authorization"] == "Bearer test_token_12345678901234567890123456789012"
-    assert headers["User-Agent"] == "raindropio-mcp/0.1.0"
+    assert headers["User-Agent"] == f"raindropio-mcp/{__version__}"
 
 
 def test_http_client_config():
