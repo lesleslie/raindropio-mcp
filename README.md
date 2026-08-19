@@ -141,7 +141,7 @@ shapes so downstream agents can consume data without additional parsing.
 
 ### Tool Categories Overview
 
-!Mind map showing eight tool categories: Collections, Bookmarks, Tags, Highlights, Search (Filters), Utils (Import/Export), Account, and System
+!Mind map showing nine tool categories: Collections, Bookmarks, Tags, Highlights, Search (Filters), Batch, Utils (Import/Export), Account, and System
 
 ## Observability & Shutdown
 
