@@ -172,6 +172,16 @@ uv run pytest --cov=. --cov-report=term-missing
 Test fixtures live in `tests/` and automatically inject `RAINDROP_TOKEN` so unit
 execution never reaches the live API.
 
+## Installation via Bodai Marketplace
+
+This repo ships as a Bodai-style Claude Code plugin. Add the marketplace locally
+and install `raindropio` to expose the MCP server plus three slash commands
+(`/raindrop-search`, `/raindrop-add`, `/raindrop-collections`) to Claude Code.
+The HTTP server must be running on `localhost:3034` (start with
+`uv run python -m raindropio_mcp --http --http-port 3034`) before the commands
+can reach the underlying tools. See `bodai-plugins` for marketplace validation
+helpers.
+
 ## Roadmap
 
 - Add optional caching middleware for high-volume assistant workflows

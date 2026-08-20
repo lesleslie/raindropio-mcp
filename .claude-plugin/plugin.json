@@ -1,0 +1,17 @@
+{
+  "author": {
+    "name": "Bodai"
+  },
+  "description": "Bodai plugin for the raindropio-mcp bookmark management server.",
+  "keywords": [
+    "bodai",
+    "mcp",
+    "raindropio",
+    "bookmarks",
+    "collections"
+  ],
+  "mcpServers": "./.mcp.json",
+  "name": "raindropio",
+  "schema_version": "1.0.0",
+  "version": "0.1.0"
+}

@@ -1,0 +1,6 @@
+{
+  "raindropio": {
+    "type": "http",
+    "url": "http://localhost:3034/mcp"
+  }
+}
