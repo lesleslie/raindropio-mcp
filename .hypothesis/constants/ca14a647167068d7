@@ -1,4 +1,0 @@
-# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/models/collection.py
-# hypothesis_version: 6.158.0
-
-['$id', 'Collection', 'CollectionRef', 'CollectionResponse', 'CollectionsResponse', '_id', 'creatorRef', 'ignore', 'lastAction', 'lastUpdate', 'parentId']

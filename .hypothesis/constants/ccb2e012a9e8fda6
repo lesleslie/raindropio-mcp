@@ -1,4 +1,0 @@
-# file: /Users/les/Projects/mcp-common/mcp_common/profiles/standard.py
-# hypothesis_version: 6.158.0
-
-['<anonymous>', 'Server description', 'Standard MCP Server', '__name__', 'description', 'healthy', 'resources', 'server', 'status', 'tools']

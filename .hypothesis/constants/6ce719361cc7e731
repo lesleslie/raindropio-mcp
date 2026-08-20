@@ -1,4 +1,0 @@
-# file: /Users/les/Projects/mcp-common/mcp_common/tools/descriptions.py
-# hypothesis_version: 6.158.0
-
-[0.5, 200, '! ', '. ', '...', '? ', 'Args:', 'Example:', 'Examples:', 'Note:', 'Notes:', 'Raises:', 'Returns:']

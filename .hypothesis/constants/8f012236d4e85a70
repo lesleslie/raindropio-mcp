@@ -1,4 +1,0 @@
-# file: /Users/les/Projects/mcp-common/mcp_common/tools/__init__.py
-# hypothesis_version: 6.158.0
-
-['MANDATORY_TOOLS', 'ToolProfile', 'trim_description']

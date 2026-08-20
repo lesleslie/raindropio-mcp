@@ -1,4 +1,0 @@
-# file: /Users/les/Projects/mcp-common/mcp_common/validation/__init__.py
-# hypothesis_version: 6.158.0
-
-[' -> ', 'Expected schema:', 'Received input:', 'Received output:', 'T', 'Validation errors:', 'input', 'loc', 'validate_input', 'validate_output']

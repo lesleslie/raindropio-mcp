@@ -1,4 +1,0 @@
-# file: /Users/les/Projects/raindropio-mcp/raindropio_mcp/models/bookmark.py
-# hypothesis_version: 6.158.0
-
-['Bookmark', 'BookmarkResponse', 'BookmarksResponse', 'MediaPreview', '_id', 'collectionId', 'creatorRef', 'ignore', 'lastUpdate', 'pleaseParse']
