@@ -79,14 +79,13 @@ block. No httpx pool leak.
 
 ## Profile Tiers
 
-Tier-A canonical mapping per the W4 plan: `MINIMAL=health,
-STANDARD/FULL=all`.
+Tier-A canonical mapping per the W4 plan: `MINIMAL=health, STANDARD/FULL=all`.
 
-| Profile   | Tools                                                        |
+| Profile | Tools |
 |-----------|--------------------------------------------------------------|
-| MINIMAL   | `health_check` + `discover_tools` + `/health` + `/healthz`   |
-| STANDARD  | All 30 Raindrop.io tools + `health_check` + `discover_tools` |
-| FULL      | All 30 Raindrop.io tools + `health_check` + `discover_tools` |
+| MINIMAL | `health_check` + `discover_tools` + `/health` + `/healthz` |
+| STANDARD | All 30 Raindrop.io tools + `health_check` + `discover_tools` |
+| FULL | All 30 Raindrop.io tools + `health_check` + `discover_tools` |
 
 `RAINDROPIO_MANDATORY_GROUPS = {"health_tools"}` so `health_check` is
 exposed at every level. The W0 helper's `essential_tool_names={"health_check"}`

@@ -38,7 +38,9 @@ class RaindropMCPServer(BaseOneiricServerMixin):
 
     def __init__(self, config: RaindropConfig):
         self.config = config  # ty: ignore[invalid-assignment]
-        self.app = create_app()  # ``create_app`` is aliased to ``create_app_sync`` at module top.
+        self.app = (
+            create_app()
+        )  # ``create_app`` is aliased to ``create_app_sync`` at module top.
 
         # Initialize runtime components using mcp-common helper
         self.runtime = create_runtime_components(

@@ -445,8 +445,7 @@ class RaindropClient(BaseHTTPClient):
         """Apply filters to bookmarks within a specific collection."""
         params = filter_params.model_dump(exclude_none=True)
 
-        payload = await self._get( f"/raindrops/{collection_id}", params=params
-        )
+        payload = await self._get(f"/raindrops/{collection_id}", params=params)
 
         if not payload.get("result", False) and "items" not in payload:
             raise APIError(
