@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-08-21
+
+### Added
+
+- raindropio-mcp: Adopt apply_tool_profile() (W4.7)
+- raindropio: Bodai plugin conversion (manifest, mcp.json, slash commands)
+
+### Fixed
+
+- raindropio-mcp: Add trailing newlines to W4.7 files (task-20 Minor 3)
+- raindropio-mcp: Resolve 74 pre-existing test failures (test-failure-batch 2026-08-19)
+- raindropio-mcp: Sync version stamps (2026-08-19)
+- raindropio-mcp: Untrack .pyscn/reports/ artifacts
+
+### Documentation
+
+- raindropio-mcp: Fix documented-but-not-wired audit findings (2026-08-19)
+- raindropio-mcp: Refresh tool category count (2026-08-19)
+
+### Testing
+
+- raindropio-mcp: Add doc-drift CI guard (2026-08-19)
+
+### Internal
+
+- Gitignore runtime artifacts + untrack user-authorized cache files (bodai cleanup 2026-08-17)
+- gitignore: Untrack .pyscn/ (bodai 2026-08-20)
+- raindropio-mcp: Fill [tool.crackerjack] baseline + uv sync upgrade
+- raindropio-mcp: Gitignore .lycheecache (file, not just dir)
+- raindropio-mcp: Gitignore .lycheecache + .hypothesis
+- raindropio-mcp: Refresh crackerjack + oneiric deps
+- raindropio-mcp: Untrack .lycheecache + .hypothesis runtime artifacts
+
 ## [0.3.1] - 2026-08-16
 
 ### Documentation
