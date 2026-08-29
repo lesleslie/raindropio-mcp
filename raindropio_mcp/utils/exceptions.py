@@ -116,7 +116,7 @@ class RateLimitError(APIError):
             return default
         try:
             return int(float(self.retry_after))
-        except (TypeError, ValueError):  # pragma: no cover - defensive
+        except TypeError, ValueError:  # pragma: no cover - defensive
             return default
 
 

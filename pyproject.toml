@@ -1,6 +1,6 @@
 [project]
 name = "raindropio-mcp"
-version = "0.5.0"
+version = "0.5.1"
 description = "Unofficial MCP Server for the Raindrop.io API"
 readme = "README.md"
 authors = [
@@ -15,9 +15,6 @@ dependencies = [
     "pydantic>=2.5.0",
     "pydantic-settings>=2.1.0",
 ]
-
-[tool.uv.sources]
-mcp-common = { path = "../mcp-common", editable = true }
 
 [tool.uv]
 constraint-dependencies = [
