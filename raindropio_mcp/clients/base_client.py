@@ -9,7 +9,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Self
 
-import httpx
+import httpx2 as httpx
 
 from raindropio_mcp.utils.exceptions import (
     APIError,

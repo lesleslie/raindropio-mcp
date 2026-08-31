@@ -8,7 +8,7 @@ from importlib.metadata import version as _importlib_version
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-import httpx
+import httpx2 as httpx
 from pydantic import BaseModel, Field, HttpUrl, ValidationInfo, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
