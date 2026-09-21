@@ -183,3 +183,7 @@ This repo ships as a Claude Code plugin. Register the [www-mcp-servers marketpla
 - Enhance filter capabilities with additional options
 
 Contributions and feature suggestions are welcome via issues or pull requests.
+
+Built on [Oneiric](https://github.com/lesleslie/oneiric) for runtime configuration
+and [mcp-common](https://github.com/lesleslie/mcp-common) for the FastMCP
+baseline. [Crackerjack](https://github.com/lesleslie/crackerjack) gates every commit.
